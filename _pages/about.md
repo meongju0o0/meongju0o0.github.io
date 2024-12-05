@@ -186,4 +186,4 @@ author_profile: true
 * 2022.09 -- 2023.02: T.G.WinG Academic Club
     * 2022.09 -- 2022.12: T.G.WinG Machine Learning Study, **Study Leader**
 * 2024.03 -- 2026.02: Lighthouse Volunteering Club
-    * Accumulated Volunteer Hours: 48
+    * Accumulated Volunteer Hours: 54
