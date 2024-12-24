@@ -18,4 +18,21 @@ author_profile: true
     - iterator 혹은 pointer를 통한 삽입, 삭제 연산에서는 유리
     - item 값을 통한 탐색 후 삽입, 삭제가 발생하는 경우 시간복잡도 증가
 
-![doubly_linked_list](/images/2024-08-03-LinkedList1/Doubly-Linked-List-in-Data-Structure.webp)
+![doubly_linked_list](/images/2024-12-23-LinkedList2/DLL1.webp)
+
+## 링크드 리스트(Linked List)에 필요한 Operator
+- Constructor
+    - Linked List 객체 생성을 위한 생성자
+- Destructor
+    - Linked List 객체 삭제를 위한 소멸자
+- Transformer
+    - Linked List의 상태를 변환하는 변환자
+- Observer
+    - Linked List의 아이템이나 길이 등의 정보에 접근하기 위한 관측자
+
+## Doubly Linked List(DLL)
+- Singly Linked List는 현재 노드에서 다음 노드로만 이동이 가능했음
+- Doubly Linked List는 현재 노드의 이전 노드와 다음 노드 모두 이동이 가능
+- 즉, Doubly Linked List는 양 옆으로 이동이 가능하다
+
+![doubly_linked_list](/images/2024-12-23-LinkedList2/DLL2.png)
