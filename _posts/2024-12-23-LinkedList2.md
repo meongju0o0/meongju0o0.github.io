@@ -35,4 +35,31 @@ author_profile: true
 - Doubly Linked List는 현재 노드의 이전 노드와 다음 노드 모두 이동이 가능
 - 즉, Doubly Linked List는 양 옆으로 이동이 가능하다
 
+## Doubly Linked List vs. Singly Linked List
+### Singly Linked List
+![doubly_linked_list](/images/2024-12-23-LinkedList2/SLL.png)
+
+### Doubly Linked List
 ![doubly_linked_list](/images/2024-12-23-LinkedList2/DLL2.png)
+
+## Doubly Linked List Search Algorithm
+- 위 그림에서 Head를 현재 노드의 Next 포인터를 따라 한 칸씩 이동시키며 탐색
+
+- 3번 째 item~~('C')~~을 찾고자 한다면 아래와 같이 코드를 작성할 수 있을 것
+    - Node라는 별도의 구조체와 SLL이라는 클래스는 이미 있다고 가정하자
+
+```cpp
+Node* cur_node = SLL.get_head(); // cur_node->item == 'A'
+for(int i = 0; i < 2; i++) {
+    cur_node = cur_node->next;
+}
+// 0번째 iteration 종료 시, cur_node->item == 'B'
+// 1번째 iteration 종료 시, cur_node->item == 'C'
+cout << cur_node->item;
+```
+
+## 참고문헌
+- Nell Dale. (2016). “C++ Plus Data Structues Sixth Edition”. Jones&Bartlett Learning.
+- GeeksforGeeks. (2024). “Why use a Doubly Linked List?”. [https://www.geeksforgeeks.org/why-use-a-doubly-linked-list/](https://www.geeksforgeeks.org/why-use-a-doubly-linked-list/).
+- GeeksforGeeks. (2024). “Operations of Doubly Linked List with Implementation”. [https://www.geeksforgeeks.org/doubly-linked-list-tutorial/](https://www.geeksforgeeks.org/doubly-linked-list-tutorial/).
+- OpenAI. (2024). ChatGPT(Dec 13, 2024). GPT-4o. https://chat.openai.com.

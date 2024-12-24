@@ -56,15 +56,17 @@ author_profile: true
 ### Preprocessing
 ```cpp
 #include <iostream>
+
 using namespace std;
 
 #define MAX_ITEMS 50
+
 typedef int ItemType;
 class UnsortedType;
 ```
-> typedef를 사용하는 이유는 후에 리스트 아이템의 자료형을 쉽게 변경하기 위함
 
-> 하나의 소스파일에서 모든 멤버를 정의할 것이기 때문에 상단에 미리 클래스 및 함수 선언
+- typedef를 사용하는 이유는 후에 리스트 아이템의 자료형을 쉽게 변경하기 위함
+- 하나의 소스파일에서 모든 멤버를 정의할 것이기 때문에 상단에 미리 클래스 및 함수 선언
 
 ### Class Definition
 ```cpp

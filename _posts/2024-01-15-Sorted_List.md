@@ -119,15 +119,17 @@ mid = low + (high - low) / 2
 ```cpp
 #include <iostream>
 #include <climits>
-using namespace std;
 
 #define MAX_ITEMS 50
+
+using namespace std;
+
 typedef int ItemType;
 class SortedType;
 ```
-> typedef를 사용하는 이유는 후에 리스트 아이템의 자료형을 쉽게 변경하기 위함
 
-> 하나의 소스파일에서 모든 멤버를 정의할 것이기 때문에 상단에 미리 클래스 및 함수 선언
+- typedef를 사용하는 이유는 후에 리스트 아이템의 자료형을 쉽게 변경하기 위함
+- 하나의 소스파일에서 모든 멤버를 정의할 것이기 때문에 상단에 미리 클래스 및 함수 선언
 
 ### Class Definition
 ```cpp
@@ -149,12 +151,6 @@ private:
     int currentPos;
 };
 ```
-> **Attribute에 대해서 알아보자**
-> - C++11 이후로 추가된 기능
-> - 함수 선언 시 attribute를 추가하여 컴파일러의 최적화에 도움을 줌
-> - [[nodiscard, noreturn]]과 같은 방식으로 사용
-> - 사용하지 않아도 상관 없음
-> - C++11, C++14, C++17, C++20, C++23 버전별로 계속 추가됨
 
 ### Class Constructor
 ```cpp
