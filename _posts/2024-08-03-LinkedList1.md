@@ -18,7 +18,7 @@ author_profile: true
     - iterator 혹은 pointer를 통한 삽입, 삭제 연산에서는 유리
     - item 값을 통한 탐색 후 삽입, 삭제가 발생하는 경우 시간복잡도 증가
 
-![doubly_linked_list](/images/2024-08-03-LinkedList/Doubly-Linked-List-in-Data-Structure.webp)
+![doubly_linked_list](/images/2024-08-03-LinkedList1/Doubly-Linked-List-in-Data-Structure.webp)
 
 ## 링크드 리스트(Linked List)에 필요한 Operator
 - Constructor
@@ -34,7 +34,7 @@ author_profile: true
 - Doubly Linked List에 앞서 특수한 상황을 위한 Linked List
 - Doubly Linked List는 현재 노드의 전, 후 모두 이동 가능하나, Sigly Linked List는 현재 노드의 후로만 이동 가능
 
-![singly_linked_list](/images/2024-08-03-LinkedList/LLdrawio.png)
+![singly_linked_list](/images/2024-08-03-LinkedList1/LLdrawio.png)
 
 ### Singly Linked List Search Algorithm
 - 위 그림에서 Head를 현재 노드의 Next 포인터를 따라 한 칸씩 이동시키며 탐색
@@ -70,7 +70,7 @@ cout << cur_node->item;
         - 반대로 새로운 객체의 next 포인터가 'C'를 먼저 가르키게 한 뒤 'B' 노드의 next포인터가 새로운 객체를 가르키게 한다
     - 당연히 'Solution 2'가 교과서적인 접근이다.
 
-![sll_insert](/images/2024-08-03-LinkedList/SLL_Insert.png)
+![sll_insert](/images/2024-08-03-LinkedList1/SLL_Insert.png)
 
 - '너무 쉽고도 당연한 solution 아닌가?' 라고 생각될 수 있으나, Doubly Linked List의 Insertion 알고리즘에도 동일하게 적용되는 아이디어이다. 막상 Doubly Linked List를 보면 Insertion의 순서가 마냥 쉽게 떠올르진 않을 것이다. (적어도 나는 그랬다)
 

@@ -170,10 +170,10 @@ author_profile: true
     * Korea Software Congress, 2022
 
 ## Research Interests
-* Vector Database / Parallel Computing / Distributed Computing
+* Vector Database / Retrieval Augmented Genration / Distributed Computing
 
 ## Study Interests
-* Data Mining / Computer Vision / Graph Convolutional Network / Natural Language Processing
+* Graph Algorithm / Natural Language Processing / Graph Convolutional Network
 
 ## Participations
 ### Conference
