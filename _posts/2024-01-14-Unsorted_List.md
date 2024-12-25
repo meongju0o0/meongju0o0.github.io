@@ -57,30 +57,28 @@ author_profile: true
 ```cpp
 #include <iostream>
 
-using namespace std;
-
 #define MAX_ITEMS 50
 
-typedef int ItemType;
-class UnsortedType;
-```
+using namespace std;
 
-- typedef를 사용하는 이유는 후에 리스트 아이템의 자료형을 쉽게 변경하기 위함
-- 하나의 소스파일에서 모든 멤버를 정의할 것이기 때문에 상단에 미리 클래스 및 함수 선언
+typedef int ItemType;
+class UnsortedList;
+```
 
 ### Class Definition
 ```cpp
-class UnsortedType {
+class UnsortedList {
 public:
-    UnsortedType();
-    [[nodiscard]] bool IsFull() const; //리스트가 가득 차있는지 확인
-    [[nodiscard]] int LengthIs() const; //리스트 길이 반환
-    bool RetrieveItem(ItemType& item); //리스트에 파라미터로 준 아이템이 있는지 확인
-    void InsertItem(ItemType item); //입력받은 아이템을 삽입
-    void DeleteItem(ItemType item); //입력받은 아이템과 일치하는 아이템을 삭제
-    void MakeEmpty(); //현재 리스트의 모든 요소 삭제
-    void ResetList(); //아이템을 가리키는 CurrentPos를 0으로 초기화
-    ItemType GetNextItem(); //다음 위치의 아이템을 반환
+    UnsortedList();
+    [[nodiscard]] bool IsFull() const; // 리스트가 가득 차있는지 확인
+    [[nodiscard]] bool IsEmpty() const; // 리스트가 모두 비었는지 확인
+    [[nodiscard]] int LengthIs() const; // 리스트 길이 반환
+    [[nodiscard]] bool RetrieveItem(const ItemType& item) const; // 리스트에 파라미터로 준 아이템이 있는지 확인
+    void InsertItem(ItemType item); // 입력받은 아이템을 삽입
+    void DeleteItem(ItemType item); // 입력받은 아이템과 일치하는 아이템을 삭제
+    void MakeEmpty(); // 현재 리스트의 모든 요소 삭제
+    void ResetList(); // 아이템을 가리키는 CurrentPos를 0으로 초기화
+    ItemType GetNextItem(); // 다음 위치의 아이템을 반환
 
 private:
     int length;
@@ -91,69 +89,75 @@ private:
 
 ### Class Constructor
 ```cpp
-UnsortedType::UnsortedType() {
+UnsortedList::UnsortedList() {
     length = 0;
     currentPos = 0;
-};
+}
 ```
 
 ### Class Transformer
 ```cpp
-void UnsortedType::InsertItem(ItemType item) {
+void UnsortedList::InsertItem(ItemType item) {
     info[length++] = item;
 }
 ```
 
 ```cpp
-void UnsortedType::DeleteItem(ItemType item) {
-    for (int i = 0; i < length; i++) { //list 길이 만큼 일치하는 아이템이 있는지 탐색
-        if (info[i] == item) { //일치하는 아이템이 있으면
-            info[i] = info[length-1]; //맨 마지막 요소를 해당 위치로 옮김
-            length--; //맨 마지막 요소를 지웠다 가정한 후 길이를 줄임
+void UnsortedList::DeleteItem(ItemType item) {
+    for (int i = 0; i < length; i++) { // list 길이 만큼 일치하는 아이템이 있는지 탐색
+        if (info[i] == item) { // 일치하는 아이템이 있으면
+            info[i] = info[length-1]; // 맨 마지막 요소를 해당 위치로 옮김
+            length--; // 맨 마지막 요소를 지웠다 가정한 후 길이를 줄임
         }
     }
 }
 ```
 
 ```cpp
-void UnsortedType::MakeEmpty() {
-    length = 0; //length를 0으로 만들어 리스트가 빈 것 처럼 만듦
+void UnsortedList::MakeEmpty() {
+    length = 0; // length를 0으로 만들어 리스트가 빈 것 처럼 만듦
 }
 ```
 
 ### Class Observer
 ```cpp
-bool UnsortedType::RetrieveItem(ItemType& item) {
-    for (int i = 0; i < length; i++) { //list 길이 만큼 일치하는 아이템이 있는지 탐색
-        if (info[i] == item) { //일치하는 아이템이 있으면
-            return true; //true 반환
+bool UnsortedList::RetrieveItem(const ItemType& item) const {
+    for (int i = 0; i < length; i++) { // list 길이 만큼 일치하는 아이템이 있는지 탐색
+        if (info[i] == item) { // 일치하는 아이템이 있으면
+            return true; // true 반환
         }
     }
-    return false; //일치하는 아이템을 찾지 못하면 false 반환
+    return false; // 일치하는 아이템을 찾지 못하면 false 반환
 }
 ```
 
 ```cpp
-int UnsortedType::LengthIs() const {
+int UnsortedList::LengthIs() const {
     return length;
 }
 ```
 
 ```cpp
-bool UnsortedType::IsFull() const {
+bool UnsortedList::IsFull() const {
     return length == MAX_ITEMS;
+}
+```
+
+```cpp
+bool UnsortedList::IsEmpty() const {
+    return length == 0;
 }
 ```
 
 ### Class Iterator
 ```cpp
-void UnsortedType::ResetList() {
-    currentPos = 0; //currentPos를 0으로 만들어 다시 처음부터 값 접근 가능
+void UnsortedList::ResetList() {
+    currentPos = 0;
 }
 ```
 
 ```cpp
-ItemType UnsortedType::GetNextItem() {
+ItemType UnsortedList::GetNextItem() {
     return info[currentPos++];
 }
 ```
@@ -161,7 +165,8 @@ ItemType UnsortedType::GetNextItem() {
 ### Main Function
 ```cpp
 int main() {
-    UnsortedType list;
+    UnsortedList list;
+
     for (int i = 1; i <= 3; i++) {
         list.InsertItem(i * 10);
     }

@@ -34,11 +34,14 @@ author_profile: true
 
 ## Sorted List(Array Based)
 - 리스트의 아이템들이 정렬된 상태로 배열됨
-- 아이템들이 정렬되어 있으면, 탐색이 빈번하게 발생하는 경우 용이하게 사용할 수 있음.
+- 아이템들이 정렬되어 있으면, 탐색이 빈번하게 발생하는 경우 용이하게 사용할 수 있음
     - 탐색 알고리즘: 이진 탐색(Binary Search)
     - 삽입 Big-O: O(N)
+        - 아이템을 삽입할 위치로부터 기존 아이템을 모두 뒤로 미루어야 함
     - 삭제 Big-O: O(N)
+        - 아이템을 삭제할 위치로부터 기존 아이템을 모두 앞으로 당겨야 함
     - 탐색 Big-O: O(logN)
+        - 이진 탐색을 활용
 
 ### 이진 탐색(Binary Search)
 - 정렬된 리스트의 중간 값과 찾고자 하는 값을 비교하여 탐색
@@ -49,9 +52,9 @@ author_profile: true
 #### 이진 탐색의 동작 방식
 1. 배열의 중간 값을 가져옴
 2. 중간 값과 검색 값을 비교
-    - 중간 값이 검색 값과 같으면 종료 (mid==key)
-    - 중간 값보다 검색 값이 크면 기준 배열의 오른쪽 구간을 탐색 (mid<key)
-    - 중간 값보다 검색 값이 작으면 기준 배열의 왼쪽 구간을 탐색 (mid>key)
+    - 중간 값이 검색 값과 같으면 종료 (mid == key)
+    - 중간 값보다 검색 값이 크면 기준 배열의 오른쪽 구간을 탐색 (mid < key)
+    - 중간 값보다 검색 값이 작으면 기준 배열의 왼쪽 구간을 탐색 (mid > key)
 3. 값을 찾거나 간격이 비어있을 때까지 반복
 
 #### 검색 예
@@ -125,85 +128,100 @@ mid = low + (high - low) / 2
 using namespace std;
 
 typedef int ItemType;
-class SortedType;
+class SortedList;
 ```
-
-- typedef를 사용하는 이유는 후에 리스트 아이템의 자료형을 쉽게 변경하기 위함
-- 하나의 소스파일에서 모든 멤버를 정의할 것이기 때문에 상단에 미리 클래스 및 함수 선언
 
 ### Class Definition
 ```cpp
-class SortedType {
+class SortedList {
 public:
-    SortedType();
-    [[nodiscard]] bool IsFull() const; //리스트가 가득 차있는지 확인
-    [[nodiscard]] int LengthIs() const; //리스트 길이 반환
-    bool RetrieveItem(ItemType& item); //리스트에 파라미터로 준 아이템이 있는지 확인
-    void InsertItem(ItemType item); //입력받은 아이템을 삽입
-    void DeleteItem(ItemType item); //입력받은 아이템과 일치하는 아이템을 삭제
-    void MakeEmpty(); //현재 리스트의 모든 요소 삭제
-    void ResetList(); //아이템을 가리키는 CurrentPos를 0으로 초기화
-    ItemType GetNextItem(); //다음 위치의 아이템을 반환
+    SortedList();
+    [[nodiscard]] bool IsFull() const; // 리스트가 가득 차있는지 확인
+    [[nodiscard]] bool IsEmpty() const; // 리스트가 모두 비었는지 확인
+    [[nodiscard]] int LengthIs() const; // 리스트 길이 반환
+    [[nodiscard]] bool RetrieveItem(const ItemType& item) const; // 리스트에 파라미터로 준 아이템이 있는지 확인
+    void InsertItem(ItemType item); // 입력받은 아이템을 삽입
+    void DeleteItem(ItemType item); // 입력받은 아이템과 일치하는 아이템을 삭제
+    void MakeEmpty(); // 현재 리스트의 모든 요소 삭제
+    void ResetList(); // 아이템을 가리키는 CurrentPos를 0으로 초기화
+    ItemType GetNextItem(); // 다음 위치의 아이템을 반환
 
 private:
-    int length;
-    ItemType info[MAX_ITEMS]{};
-    int currentPos;
+    int length; // 리스트의 길이 관리
+    ItemType info[MAX_ITEMS]{}; // 리스트에 저장된 데이터 관리
+    int currentPos; // 리스트의 현재 위치 관리
 };
 ```
 
 ### Class Constructor
 ```cpp
-SortedType::SortedType() {
+SortedList::SortedList() {
     length = 0;
     currentPos = 0;
     for (int& i : info) {
-        i = INT_MIN; //편의상 INT_MIN으로 고정, 자료형 변경 시 수정 필요
+        i = INT_MIN; // 편의상 INT_MIN으로 고정, 자료형 변경 시 수정 필요
     }
 }
 ```
 
 ### Class Transformer
 ```cpp
-void SortedType::InsertItem(ItemType item) {
-    //아이템을 삽입할 위치 찾기
-    int correctPos = 0;
-    for (int i = 0; i < length; i++) {
-        if (info[i] <= item) {
-            correctPos++;
-        }
-        else {
-            break;
+void SortedList::InsertItem(const ItemType item) {
+    if (IsFull()) {
+        cerr << "List is full. Cannot insert item." << endl;
+        return;
+    }
+
+    // 이진 탐색으로 삽입 위치 찾기
+    int first = 0, last = length - 1;
+    while (first <= last) {
+        int mid = (first + last) / 2;
+        if (info[mid] < item) {
+            first = mid + 1;
+        } else {
+            last = mid - 1;
         }
     }
-    //해당 위치 뒤부터 있는 아이템들을 한 칸씩 미루기
+    const int correctPos = first; // 삽입 위치는 first가 최종적으로 가리키는 위치
+
+    // 삽입 위치 이후의 요소를 한 칸씩 뒤로 이동
     for (int i = length; i > correctPos; i--) {
-        info[i] = info[i-1];
+        info[i] = info[i - 1];
     }
-    //해당 위치에 넣고자 하는 아이템을 넣기
+
+    // 삽입 위치에 아이템 삽입
     info[correctPos] = item;
-    length++; //길이를 1만큼 늘림
+    length++; // 리스트 길이 증가
 }
 ```
 
 ```cpp
-void SortedType::DeleteItem(ItemType item) {
-    //아이템을 삭제할 위치 찾기
-    int correctPos = 0;
-    for (int i = 0; i < length; i++) {
-        if (info[i] != item) {
-            correctPos++;
-        }
-        else {
-            break;
+void SortedList::DeleteItem(const ItemType item) {
+    if (IsEmpty()) {
+        cerr << "List is empty. Cannot delete item." << endl;
+        return;
+    }
+
+    // 이진 탐색으로 삽입 위치 찾기
+    int first = 0, last = length - 1;
+    while (first <= last) {
+        int mid = (first + last) / 2;
+        if (info[mid] < item) {
+            first = mid + 1;
+        } else {
+            last = mid - 1;
         }
     }
-    //해당 위치에 아이템을 한 칸 씩 앞으로 당기기
+    const int correctPos = first; // 삽입 위치는 first가 최종적으로 가리키는 위치
+
+    // 해당 위치에 아이템을 한 칸씩 앞으로 이동
     for (int i = correctPos; i < length; i++) {
         info[i] = info[i+1];
     }
+
+    // 기존 아이템 삭제
     info[length - 1] = INT_MIN;
-    length--; //길이를 1만큼 줄임
+    length--; // 리스트 길이 감소
 }
 ```
 
@@ -218,21 +236,20 @@ void SortedType::MakeEmpty() {
 
 ### Class Observer
 ```cpp
-bool SortedType::RetrieveItem(ItemType& item) { //BinarySearch 구현
-    int first = 0; //탐색 범위 시작 인덱스
-    int last = length - 1; //탐색 범위 마지막 인덱스
-    int midPoint = (first + last) / 2; //탐색 범위 중심 인덱스
-    bool found = false; //탐색 완료 시 참으로 변경
+bool SortedList::RetrieveItem(const ItemType& item) const { // BinarySearch 구현
+    int first = 0; // 탐색 범위 시작 인덱스
+    int last = length - 1; // 탐색 범위 마지막 인덱스
+    bool found = false; // 탐색 완료 시 참으로 변경
     while ((first <= last) && !found) {
-        midPoint = (first + last) / 2; //탐색 범위 중심 계산
+        const int midPoint = (first + last) / 2; // 탐색 범위 중심 계산
         if (item < info[midPoint]) {
             last = midPoint - 1;
         }
         else if (item > info[midPoint]) {
             first = midPoint + 1;
         }
-        else if (info[midPoint] == item) { //일치하는 아이템이 있으면
-            found = true; //found 참으로 변환
+        else if (info[midPoint] == item) { // 일치하는 아이템이 있으면
+            found = true; // found 참으로 변환
         }
     }
     return found;
@@ -248,6 +265,12 @@ int UnsortedType::LengthIs() const {
 ```cpp
 bool UnsortedType::IsFull() const {
     return length == MAX_ITEMS;
+}
+```
+
+```cpp
+bool SortedList::IsEmpty() const {
+    return length == 0;
 }
 ```
 
@@ -267,7 +290,7 @@ ItemType UnsortedType::GetNextItem() {
 ### Main Function
 ```cpp
 int main() {
-    SortedType list;
+    SortedList list;
 
     list.InsertItem(30);
     list.InsertItem(10);
