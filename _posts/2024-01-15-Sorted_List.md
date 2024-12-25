@@ -158,15 +158,13 @@ private:
 SortedList::SortedList() {
     length = 0;
     currentPos = 0;
-    for (int& i : info) {
-        i = INT_MIN; // 편의상 INT_MIN으로 고정, 자료형 변경 시 수정 필요
-    }
 }
 ```
 
 ### Class Transformer
 ```cpp
 void SortedList::InsertItem(const ItemType item) {
+    // array가 꽉 찬 경우 아이템 삽입 불가
     if (IsFull()) {
         cerr << "List is full. Cannot insert item." << endl;
         return;
@@ -197,6 +195,7 @@ void SortedList::InsertItem(const ItemType item) {
 
 ```cpp
 void SortedList::DeleteItem(const ItemType item) {
+    // array가 비어있는 경우 아이템 삭제 불가
     if (IsEmpty()) {
         cerr << "List is empty. Cannot delete item." << endl;
         return;
@@ -219,17 +218,12 @@ void SortedList::DeleteItem(const ItemType item) {
         info[i] = info[i+1];
     }
 
-    // 기존 아이템 삭제
-    info[length - 1] = INT_MIN;
     length--; // 리스트 길이 감소
 }
 ```
 
 ```cpp
-void SortedType::MakeEmpty() {
-    for (int& i : info) {
-        i = INT_MIN;
-    }
+void SortedList::MakeEmpty() {
     length = 0;
 }
 ```
@@ -257,13 +251,13 @@ bool SortedList::RetrieveItem(const ItemType& item) const { // BinarySearch 구�
 ```
 
 ```cpp
-int UnsortedType::LengthIs() const {
+int SortedList::LengthIs() const {
     return length;
 }
 ```
 
 ```cpp
-bool UnsortedType::IsFull() const {
+bool SortedList::IsFull() const {
     return length == MAX_ITEMS;
 }
 ```
@@ -276,13 +270,13 @@ bool SortedList::IsEmpty() const {
 
 ### Class Iterator
 ```cpp
-void UnsortedType::ResetList() {
-    currentPos = 0; //currentPos를 0으로 만들어 다시 처음부터 값 접근 가능
+void SortedList::ResetList() {
+    currentPos = 0;
 }
 ```
 
 ```cpp
-ItemType UnsortedType::GetNextItem() {
+ItemType SortedList::GetNextItem() {
     return info[currentPos++];
 }
 ```

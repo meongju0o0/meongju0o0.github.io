@@ -206,6 +206,17 @@ int main() {
 }
 ```
 
+### Result
+```
+Length of list: 3
+The list is not full.
+Item 20 found in the list.
+Item 20 deleted.
+Length of list after deletion: 2
+Items in the list: 10 30
+Length of list: 0
+```
+
 #### 참고문헌
 - Nell Dale. (2016). "C++ Plus Data Structues Sixth Edition". Jones&Bartlett Learning.
 - GeeksforGeeks. (2024). "ArrayList in Java". [https://www.geeksforgeeks.org/arraylist-in-java/](https://www.geeksforgeeks.org/arraylist-in-java/).
