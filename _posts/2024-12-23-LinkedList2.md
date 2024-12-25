@@ -58,6 +58,24 @@ for(int i = 0; i < 2; i++) {
 cout << cur_node->item;
 ```
 
+## Doubly Linked List Insertion Algorithm
+
+## Doubly Linked List Deletion Algorithm
+
+## Doubly Linked List Iterator Algorithm
+
+## Source Code
+### Preprocessing
+### Node Struct
+### Class Definition
+### Iterator Implementation
+### DLL Constructor
+### DLL Destructor
+### DLL Observer
+### DLL Transformer
+### Main Function
+### Result
+
 ## 참고문헌
 - Nell Dale. (2016). “C++ Plus Data Structues Sixth Edition”. Jones&Bartlett Learning.
 - GeeksforGeeks. (2024). “Why use a Doubly Linked List?”. [https://www.geeksforgeeks.org/why-use-a-doubly-linked-list/](https://www.geeksforgeeks.org/why-use-a-doubly-linked-list/).
