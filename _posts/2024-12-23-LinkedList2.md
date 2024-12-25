@@ -45,7 +45,7 @@ author_profile: true
 ## Doubly Linked List Search Algorithm
 - 위 그림에서 Head를 현재 노드의 Next 포인터를 따라 한 칸씩 이동시키며 탐색
 
-- 3번 째 item~~('C')~~을 찾고자 한다면 아래와 같이 코드를 작성할 수 있을 것
+- 3번 째 item을 찾고자 한다면 아래와 같이 코드를 작성할 수 있을 것이다
     - Node라는 별도의 구조체와 SLL이라는 클래스는 이미 있다고 가정하자
 
 ```cpp
