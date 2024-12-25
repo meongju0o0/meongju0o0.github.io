@@ -8,7 +8,7 @@ toc_sticky: true
 author_profile: true
 ---
 
-# 자료구조, Unsorted List
+# Unsorted List
 
 ## List
 - Linear relationship
