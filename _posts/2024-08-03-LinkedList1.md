@@ -118,7 +118,7 @@ void SLL::Insert(Iterator pos, ItemType new_item) {
 ### Delete Head
 ![sll_delete1](/images/2024-08-03-LinkedList1/SLL_Delete_1.webp)
 
-- 주어진 pos(포인터 혹은 이터레이터)가 Head인 경우
+- 주어진 pos(포인터 혹은 이터레이터)가 head인 경우
 
 - 기존 head 포인터를 temp_ptr에 저장
 - head는 head->next로 수정
