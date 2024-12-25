@@ -201,7 +201,7 @@ void SortedList::DeleteItem(const ItemType item) {
         return;
     }
 
-    // 이진 탐색으로 삽입 위치 찾기
+    // 이진 탐색으로 삭제 위치 찾기
     int first = 0, last = length - 1;
     while (first <= last) {
         int mid = (first + last) / 2;
@@ -211,7 +211,7 @@ void SortedList::DeleteItem(const ItemType item) {
             last = mid - 1;
         }
     }
-    const int correctPos = first; // 삽입 위치는 first가 최종적으로 가리키는 위치
+    const int correctPos = first; // 삭제 위치는 first가 최종적으로 가리키는 위치
 
     // 해당 위치에 아이템을 한 칸씩 앞으로 이동
     for (int i = correctPos; i < length; i++) {
