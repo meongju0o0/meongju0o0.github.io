@@ -143,7 +143,7 @@ void SLL::Insert(Iterator pos, ItemType new_item) {
         ```
         - 'pos'는 iterator 객체이다
         - iterator를 통해 'pos' 이전 객체의 정보를 관리하면 반복문이 불필요하다
-        - 이때, Singly Linked List는 어짜피 한 칸씩만 앞으로 이동 가능하므로 previous도 관리가 가능하다
+        - 이때, Singly Linked List는 어짜피 한 칸씩만 앞으로 이동 가능하므로 previous도 추적하여 관리가 가능하다
 
 ## Singly Linked List Iterator Algorithm
 ### Class Definition
