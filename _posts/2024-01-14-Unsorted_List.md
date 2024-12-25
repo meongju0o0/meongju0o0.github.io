@@ -1,7 +1,7 @@
 ---
 layout: single
 title:  "[자료구조] Unsorted List"
-categories: Data Structure
+categories: DataStructure
 tag: [data_structure, c++]
 toc: true
 toc_sticky: true
