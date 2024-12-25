@@ -18,7 +18,9 @@ author_profile: true
     - iterator 혹은 pointer를 통한 삽입, 삭제 연산에서는 유리
     - item 값을 통한 탐색 후 삽입, 삭제가 발생하는 경우 시간복잡도 증가
 
-![doubly_linked_list](/images/2024-12-23-LinkedList2/DLL1.webp)
+<p align="center">
+  <img src="/images/2024-12-23-LinkedList2/DLL1.webp">
+</p>
 
 ## 링크드 리스트(Linked List)에 필요한 Operator
 - Constructor

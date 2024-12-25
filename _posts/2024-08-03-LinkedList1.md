@@ -125,7 +125,7 @@ void SLL::Insert(Iterator pos, ItemType new_item) {
 ### Delete Head
 
 <p align="center">
-  <img src="/images/2024-08-03-LinkedList1/SLL_Delete_1.png">
+  <img src="/images/2024-08-03-LinkedList1/SLL_Delete_1.webp">
 </p>
 
 - 주어진 pos(포인터 혹은 이터레이터)가 head인 경우
@@ -143,7 +143,7 @@ delete temp_ptr; // 기존 head 삭제(메모리 할당 해제)
 ### Delete Other Nodes
 
 <p align="center">
-  <img src="/images/2024-08-03-LinkedList1/SLL_Delete_2.png">
+  <img src="/images/2024-08-03-LinkedList1/SLL_Delete_2.webp">
 </p>
 
 - 주어진 pos(포인터 혹은 이터레이터)의 노드를 삭제하려 한다
