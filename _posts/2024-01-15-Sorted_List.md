@@ -1,7 +1,7 @@
 ---
 layout: single
-title:  "자료구조, Sorted List"
-categories: DataStructure
+title:  "[자료구조] Sorted List"
+categories: Data Structure
 tag: [data_structure, c++]
 toc: true
 toc_sticky: true
