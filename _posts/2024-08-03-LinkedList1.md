@@ -474,7 +474,6 @@ int main() {
     }
     cout << endl;
 
-    // operator=() 테스트
     SLL::Iterator it2 = list.Begin();
     ++it2; // 두 번째 노드(10)로 이동
     SLL::Iterator it3 = it2; // operator=()로 상태 복사
