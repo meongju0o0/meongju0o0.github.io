@@ -167,12 +167,14 @@ void SLL::Insert(Iterator pos, ItemType new_item) {
 
 ### Constructor
 - iterator 객체 생성자
+
 ```cpp
 SLL::Iterator::Iterator(Node* node) : current(node), previous(nullptr) {}
 ```
 
 ### operator=
 - iterator 객체 복사
+
 ```cpp
 SLL::Iterator &SLL::Iterator::operator=(const Iterator &other) {
     if (this != &other) { // 자기 자신이 아닐 때만 복사 수행
@@ -185,6 +187,7 @@ SLL::Iterator &SLL::Iterator::operator=(const Iterator &other) {
 
 ### operator*
 - 현재 iterator가 가르키는 노드의 **데이터** 반환
+
 ```cpp
 ItemType& SLL::Iterator::operator*() const {
     return current->item;
@@ -193,6 +196,7 @@ ItemType& SLL::Iterator::operator*() const {
 
 ### operator++
 - 현재 이터레이터가 가리키는 위치를 한칸 뒤로 이동
+
 ```cpp
 SLL::Iterator& SLL::Iterator::operator++() {
     if (current != nullptr) {
@@ -209,6 +213,7 @@ SLL::Iterator& SLL::Iterator::operator++() {
 ### operator==, operator!=
 - 서로 다른 두 이터레이터가 같은 노드를 가리키는지 확인
 - 서로 다른 두 이터레이터가 다른 노드를 가리키는지 확인
+
 ```cpp
 bool SLL::Iterator::operator==(const Iterator& other) const {
     return current == other.current;
@@ -222,6 +227,7 @@ bool SLL::Iterator::operator!=(const Iterator& other) const {
 ### GetCurrent, GetPrevious
 - 이터레이터의 current노드 **포인터** 반환
 - 이터레이터의 previous노드 **포인터** 반환
+
 ```cpp
 Node* SLL::Iterator::GetCurrent() const {
     return current;
