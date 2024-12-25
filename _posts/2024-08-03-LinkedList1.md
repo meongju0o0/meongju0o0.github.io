@@ -18,7 +18,9 @@ author_profile: true
     - iterator 혹은 pointer를 통한 삽입, 삭제 연산에서는 유리
     - item 값을 통한 탐색 후 삽입, 삭제가 발생하는 경우 시간복잡도 증가
 
-![doubly_linked_list](/images/2024-08-03-LinkedList1/Doubly-Linked-List-in-Data-Structure.webp)
+<p align="center">
+  <img src="/images/2024-08-03-LinkedList1/Doubly-Linked-List-in-Data-Structure.webp">
+</p>
 
 ## 링크드 리스트(Linked List)에 필요한 Operator
 - Constructor
@@ -34,7 +36,9 @@ author_profile: true
 - Doubly Linked List에 앞서 특수한 상황을 위한 Linked List
 - Doubly Linked List는 현재 노드의 전, 후 모두 이동 가능하나, Singly Linked List는 현재 노드의 후로만 이동 가능
 
-![singly_linked_list](/images/2024-08-03-LinkedList1/LLdrawio.png)
+<p align="center">
+  <img src="/images/2024-08-03-LinkedList1/LLdrawio.png">
+</p>
 
 ## Singly Linked List Search Algorithm
 - 위 그림에서 Head를 현재 노드의 Next 포인터를 따라 한 칸씩 이동시키며 탐색
@@ -54,7 +58,10 @@ cout << cur_node->item;
 
 ## Singly Linked List Insertion Algorithm
 ### Basic Idea
-![sll_insert](/images/2024-08-03-LinkedList1/SLL_Insert.png)
+
+<p align="center">
+  <img src="/images/2024-08-03-LinkedList1/SLL_Insert.png">
+</p>
 
 - 새로운 노드를 주어진 pos(포인터 혹은 이터레이터) 다음 위치에 넣으려한다
     - 'B' 노드가 주어진 pos라 하자
@@ -116,7 +123,10 @@ void SLL::Insert(Iterator pos, ItemType new_item) {
 
 ## Singly Linked List Deletion Algorithm
 ### Delete Head
-![sll_delete1](/images/2024-08-03-LinkedList1/SLL_Delete_1.webp)
+
+<p align="center">
+  <img src="/images/2024-08-03-LinkedList1/SLL_Delete_1.png">
+</p>
 
 - 주어진 pos(포인터 혹은 이터레이터)가 head인 경우
 
@@ -131,7 +141,10 @@ delete temp_ptr; // 기존 head 삭제(메모리 할당 해제)
 ```
 
 ### Delete Other Nodes
-![sll_delete2](/images/2024-08-03-LinkedList1/SLL_Delete_2.webp)
+
+<p align="center">
+  <img src="/images/2024-08-03-LinkedList1/SLL_Delete_2.png">
+</p>
 
 - 주어진 pos(포인터 혹은 이터레이터)의 노드를 삭제하려 한다
 - 우선 삭제할 위치의 pos를 함수 파라미터로 받아온다
@@ -151,7 +164,7 @@ delete temp_ptr; // 기존 head 삭제(메모리 할당 해제)
         - 위 예시에서 'cur_node'는 'C'이다
         - 반복문을 통해 'B' 노드의 next 포인터가 'C'를 가르키면 'prev_node'가 'B' 노드이게 된다
         - 그러나, 'Solution 1'을 사용했더니 아이템 삭제 시마다 $O(N)$ 복잡도가 발생한다
-        - **Linked List의 장점이 사라졌다**
+        - **Linked List의 장점이 사라졌다!!**
 
     - **Solution 2.**
         ```cpp
