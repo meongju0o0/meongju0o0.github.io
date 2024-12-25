@@ -54,6 +54,8 @@ cout << cur_node->item;
 
 ## Singly Linked List Insertion Algorithm
 ### Basic Idea
+![sll_insert](/images/2024-08-03-LinkedList1/SLL_Insert.png)
+
 - 새로운 노드를 주어진 pos(포인터 혹은 이터레이터) 다음 위치에 넣으려한다
     - 'B' 노드가 주어진 pos라 하자
     - 'B' 노드 다음에 삽입한다는 것은 'B'와 'C' 사이에 삽입한다는 것을 의미한다
@@ -67,8 +69,6 @@ cout << cur_node->item;
     - Solution 2.
         - 반대로 새로운 객체의 next 포인터가 'C'를 먼저 가르키게 한 뒤 'B' 노드의 next포인터가 새로운 객체를 가르키게 한다
     - 당연히 'Solution 2'가 교과서적인 접근이다.
-
-![sll_insert](/images/2024-08-03-LinkedList1/SLL_Insert.png)
 
 - '너무 쉽고도 당연한 solution 아닌가?' 라고 생각될 수 있으나, Doubly Linked List의 Insertion 알고리즘에도 동일하게 적용되는 아이디어이다.
 - 막상 Doubly Linked List를 보면 Insertion의 순서가 마냥 쉽게 떠올르진 않을 것이다.
@@ -115,13 +115,30 @@ void SLL::Insert(Iterator pos, ItemType new_item) {
 ```
 
 ## Singly Linked List Deletion Algorithm
-### Basic Idea
+### Delete Head
+![sll_delete1](/images/2024-08-03-LinkedList1/SLL_Delete_1.webp)
+
+- 주어진 pos(포인터 혹은 이터레이터)가 Head인 경우
+
+- 기존 head 포인터를 temp_ptr에 저장
+- head는 head->next로 수정
+- temp_ptr 메모리 해제 (기존 head 메모리 해제)
+
+```cpp
+Node* temp_ptr = head; // 기존 head 포인터 임시 저장
+head = head->next; // head 포인터를 head->next로 수정
+delete temp_ptr; // 기존 head 삭제(메모리 할당 해제)
+```
+
+### Delete Other Nodes
+![sll_delete2](/images/2024-08-03-LinkedList1/SLL_Delete_2.webp)
+
 - 주어진 pos(포인터 혹은 이터레이터)의 노드를 삭제하려 한다
 - 우선 삭제할 위치의 pos를 함수 파라미터로 받아온다
 - 'C' 노드를 삭제하려면 우선 'B' 노드가 'D' 노드를 가리켜야 한다
     - 이때, 'C' 노드를 삭제하려면 'B' 노드를 가지고 있어야 한다
     - 이에 대한 Solution은 2가지가 존재한다
-    - Solution 1.
+    - **Solution 1.**
         ```cpp
         Node* prev_node = head;
         while (prev_node->next != cur_node) {
