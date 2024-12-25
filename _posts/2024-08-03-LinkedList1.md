@@ -70,7 +70,8 @@ cout << cur_node->item;
 
 ![sll_insert](/images/2024-08-03-LinkedList1/SLL_Insert.png)
 
-- '너무 쉽고도 당연한 solution 아닌가?' 라고 생각될 수 있으나, Doubly Linked List의 Insertion 알고리즘에도 동일하게 적용되는 아이디어이다. 막상 Doubly Linked List를 보면 Insertion의 순서가 마냥 쉽게 떠올르진 않을 것이다.
+- '너무 쉽고도 당연한 solution 아닌가?' 라고 생각될 수 있으나, Doubly Linked List의 Insertion 알고리즘에도 동일하게 적용되는 아이디어이다.
+- 막상 Doubly Linked List를 보면 Insertion의 순서가 마냥 쉽게 떠올르진 않을 것이다.
 
 ### Step by Step
 #### Step 1. 새로운 데이터를 저장할 노드 생성
