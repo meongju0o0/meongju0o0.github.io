@@ -1,7 +1,7 @@
 ---
 layout: single
 title:  "BST(Binary Search Tree)와 KD트리 그리고 B트리와 R트리"
-categories: DataStructure
+categories: AdvancedDataStructure
 tag: [data_structure, c++]
 toc: true
 toc_sticky: true
