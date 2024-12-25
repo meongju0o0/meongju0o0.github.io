@@ -32,11 +32,11 @@ author_profile: true
 
 ## Singly Linked List(SLL)
 - Doubly Linked List에 앞서 특수한 상황을 위한 Linked List
-- Doubly Linked List는 현재 노드의 전, 후 모두 이동 가능하나, Sigly Linked List는 현재 노드의 후로만 이동 가능
+- Doubly Linked List는 현재 노드의 전, 후 모두 이동 가능하나, Singly Linked List는 현재 노드의 후로만 이동 가능
 
 ![singly_linked_list](/images/2024-08-03-LinkedList1/LLdrawio.png)
 
-### Singly Linked List Search Algorithm
+## Singly Linked List Search Algorithm
 - 위 그림에서 Head를 현재 노드의 Next 포인터를 따라 한 칸씩 이동시키며 탐색
 
 - 3번 째 item~~('C')~~을 찾고자 한다면 아래와 같이 코드를 작성할 수 있을 것
@@ -52,17 +52,15 @@ for(int i = 0; i < 2; i++) {
 cout << cur_node->item;
 ```
 
-### Singly Linked List Insertion Algorithm
-
-### Naive Idea
-- naive하게 접근해보자
-    - ~~그냥 날로 접근해보자~~
-
-- 새로운 노드를 'B'와 'C' 사이에 넣을려고 한다
-- 우선 새로운 객체를 생성해야겠지?
-- 'B'노드의 next 포인터는 새로운 객체를 가르켜야 하고
-- 새로운 객체의 next 포인터는 'C'노드를 가르켜야 한다
-- 근데 'B'노드의 next 포인터를 먼저 새로운 객체를 가르키고 나니 'C' 노드의 행방이 묘연해졌다.
+## Singly Linked List Insertion Algorithm
+### Basic Idea
+- 새로운 노드를 주어진 pos(포인터 혹은 이터레이터) 다음 위치에 넣으려한다
+    - 'B' 노드가 주어진 pos라 하자
+    - 'B' 노드 다음에 삽입한다는 것은 'B'와 'C' 사이에 삽입한다는 것을 의미한다
+- 우선 새로운 객체를 생성한다
+- 'B'노드의 next 포인터는 새로운 객체를 가리켜야 하고
+- 새로운 객체의 next 포인터는 'C'노드를 가리켜야 한다
+- 근데 'B'노드의 next 포인터를 먼저 새로운 객체를 가르키니 'C' 노드의 행방이 묘연해졌다.
 - 이에 대한 2가지 솔루션이 있다
     - Solution 1.
         - 무지성으로 접근하면 temp_ptr을 생성해서 'C' 노드로의 포인터를 저장
@@ -72,7 +70,167 @@ cout << cur_node->item;
 
 ![sll_insert](/images/2024-08-03-LinkedList1/SLL_Insert.png)
 
-- '너무 쉽고도 당연한 solution 아닌가?' 라고 생각될 수 있으나, Doubly Linked List의 Insertion 알고리즘에도 동일하게 적용되는 아이디어이다. 막상 Doubly Linked List를 보면 Insertion의 순서가 마냥 쉽게 떠올르진 않을 것이다. (적어도 나는 그랬다)
+- '너무 쉽고도 당연한 solution 아닌가?' 라고 생각될 수 있으나, Doubly Linked List의 Insertion 알고리즘에도 동일하게 적용되는 아이디어이다. 막상 Doubly Linked List를 보면 Insertion의 순서가 마냥 쉽게 떠올르진 않을 것이다.
+
+### Step by Step
+#### Step 1. 새로운 데이터를 저장할 노드 생성
+```cpp
+Node* new_node = new Node(); // 새로운 노드 생성
+new_node->item = new_item; // 새로운 노드에 주어진 아이템 삽입
+```
+
+#### Step 2. 주어진 위치의 다음 위치에 노드 삽입
+```cpp
+Node* cur = pos.GetCurrent(); // 주어진 pos의 포인터 저장
+new_node->next = cur->next; // 새로운 노드의 next 포인터는 현재 노드의 다음 노드를 지칭
+cur->next = new_node; // 현재 노드의 next 포인터는 새로은 노드를 지칭
+```
+
+### Source Code
+```cpp
+void SLL::Insert(Iterator pos, ItemType new_item) {
+    if (IsFull()) {
+        cerr << "List is Full, bad_alloc exception" << endl;
+        return;
+    }
+
+    // pos == End()인 경우, 즉 current == nullptr이라면
+    // "pos 다음에 삽입"이 불가능하므로 예외적으로 처리
+    if (pos.GetCurrent() == nullptr) {
+        cerr << "Iterator is End(), cannot insert after the end of the list." << endl;
+        return;
+    }
+
+    Node* new_node = new Node(); // 새로운 노드 생성
+    new_node->item = new_item; // 새로운 노드에 주어진 아이템 삽입
+
+    // "pos 다음 위치"에 삽입
+    Node* cur = pos.GetCurrent(); // 주어진 pos의 포인터 저장
+    new_node->next = cur->next; // 새로운 노드의 next 포인터는 현재 노드의 다음 노드를 지칭
+    cur->next = new_node; // 현재 노드의 next 포인터는 새로은 노드를 지칭
+
+    size++;
+}
+```
+
+## Singly Linked List Deletion Algorithm
+### Basic Idea
+- 주어진 pos(포인터 혹은 이터레이터)의 노드를 삭제하려 한다
+- 우선 삭제할 위치의 pos를 함수 파라미터로 받아온다
+- 'C' 노드를 삭제하려면 우선 'B' 노드가 'D' 노드를 가리켜야 한다
+    - 이때, 'C' 노드를 삭제하려면 'B' 노드를 가지고 있어야 한다
+    - 이에 대한 Solution은 2가지가 존재한다
+        - Solution 1.
+        ```cpp
+        Node* prev_node = head;
+        while (prev_node->next != cur_node) {
+            prev_node = prev_node->next;
+        }
+        prev_node->next = cur_node->next;
+        delete cur_node;
+        ```
+        - 'prev_node'의 next 포인터가 'C'를 위치하면 반복문을 종료한다
+        - 위 예시에서 'cur_node'는 'C'이다
+        - 반복문을 통해 'B' 노드의 next 포인터가 'C'를 가르키면 'prev_node'가 'B' 노드이게 된다
+        - 그러나, 'Solution 1'을 사용했더니 아이템 삭제 시마다 $O(N)$ 복잡도가 발생한다
+        - **Linked List의 장점이 사라졌다**
+
+        - Solution 2.
+        ```cpp
+        Node* prev_node = pos.GetPrevious();
+        prev_node->next = cur_node->next;
+        delete cur_node;
+        ```
+        - 'pos'는 iterator 객체이다
+        - iterator를 통해 'pos' 이전 객체의 정보를 관리하면 반복문이 불필요하다
+        - 이때, Singly Linked List는 어짜피 한 칸씩만 앞으로 이동 가능하므로 previous도 관리가 가능하다
+
+## Singly Linked List Iterator Algorithm
+### Class Definition
+```cpp
+    class Iterator { // SLL 객체의 아이템 접근을 위한 iterator
+    private:
+        Node* current;
+        Node* previous;
+
+    public:
+        explicit Iterator(Node* node); // iterator 객체 생성자
+        SLL::Iterator& operator=(const Iterator& other); // iterator 복사 연산자
+        ItemType& operator*() const; // SLL Node의 item 접근을 위한 연산자 오버로딩
+        Iterator& operator++(); // SLL iterator가 다음 노드를 지시하도록 하기 위한 연산자 오버로딩
+        bool operator==(const Iterator& other) const; // SLL iterator가 지시하는 노드가 서로 동일한지 확인하는 연산자
+        bool operator!=(const Iterator& other) const; // SLL iterator가 지시하는 노드가 서로 다른지 확인하는 연산자
+        [[nodiscard]] Node* GetCurrent() const; // SLL iterator가 현재 지시하고 있는 노드의 포인터를 반환
+        [[nodiscard]] Node* GetPrevious() const; // 현재 지시하고 있는 노드의 이전 노드의 포인터를 반환
+    };
+```
+
+### Constructor
+- iterator 객체 생성자
+```cpp
+SLL::Iterator::Iterator(Node* node) : current(node), previous(nullptr) {}
+```
+
+### operator=
+- iterator 객체 복사
+```cpp
+SLL::Iterator &SLL::Iterator::operator=(const Iterator &other) {
+    if (this != &other) { // 자기 자신이 아닐 때만 복사 수행
+        current = other.current; // 현재 노드 복사
+        previous = other.previous; // 이전 노드 복사
+    }
+    return *this;
+}
+```
+
+### operator*
+- 현재 iterator가 가르키는 노드의 **데이터** 반환
+```cpp
+ItemType& SLL::Iterator::operator*() const {
+    return current->item;
+}
+```
+
+### operator++
+- 현재 이터레이터가 가리키는 위치를 한칸 뒤로 이동
+```cpp
+SLL::Iterator& SLL::Iterator::operator++() {
+    if (current != nullptr) {
+        previous = current;
+        // 이전 노드의 포인터를 직전의 현재 노드 정보를 활용하여 추적 관리
+        // 삭제 연산에 대비하기 위함
+
+        current = current->next; // 현재 노드 포인터 관리
+    }
+    return *this;
+}
+```
+
+### operator==, operator!=
+- 서로 다른 두 이터레이터가 같은 노드를 가리키는지 확인
+- 서로 다른 두 이터레이터가 다른 노드를 가리키는지 확인
+```cpp
+bool SLL::Iterator::operator==(const Iterator& other) const {
+    return current == other.current;
+}
+
+bool SLL::Iterator::operator!=(const Iterator& other) const {
+    return current != other.current;
+}
+```
+
+### GetCurrent, GetPrevious
+- 이터레이터의 current노드 **포인터** 반환
+- 이터레이터의 previous노드 **포인터** 반환
+```cpp
+Node* SLL::Iterator::GetCurrent() const {
+    return current;
+}
+
+Node* SLL::Iterator::GetPrevious() const {
+    return previous;
+}
+```
 
 ### Singly Linked List(SLL)에 필요한 Operators
 - Constructor
@@ -119,31 +277,31 @@ private:
     size_t size = 0;
 
 public:
-    class Iterator { //SLL 객체의 아이템 접근을 위한 iterator
+    class Iterator { // SLL 객체의 아이템 접근을 위한 iterator
     private:
         Node* current;
         Node* previous;
 
     public:
-        explicit Iterator(Node* node); //iterator 객체 생성자
-        ItemType& operator*() const; //SLL Node의 item 접근을 위한 연산자 오버로딩
-        Iterator& operator++(); //SLL iterator가 다음 노드를 지시하도록 하기 위한 연산자 오버로딩
-        bool operator==(const Iterator& other) const; //SLL iterator가 지시하는 노드가 서로 동일한지 확인하는 연산자
-        bool operator!=(const Iterator& other) const; //SLL iterator가 지시하는 노드가 서로 다른지 확인하는 연산자
-        [[nodiscard]] Node* GetCurrent() const; //SLL iterator가 현재 지시하고 있는 노드의 포인터를 반환
+        explicit Iterator(Node* node); // iterator 객체 생성자
+        ItemType& operator*() const; // SLL Node의 item 접근을 위한 연산자 오버로딩
+        Iterator& operator++(); // SLL iterator가 다음 노드를 지시하도록 하기 위한 연산자 오버로딩
+        bool operator==(const Iterator& other) const; // SLL iterator가 지시하는 노드가 서로 동일한지 확인하는 연산자
+        bool operator!=(const Iterator& other) const; // SLL iterator가 지시하는 노드가 서로 다른지 확인하는 연산자
+        [[nodiscard]] Node* GetCurrent() const; // SLL iterator가 현재 지시하고 있는 노드의 포인터를 반환
         [[nodiscard]] Node* GetPrevious() const; // 현재 지시하고 있는 노드의 이전 노드의 포인터를 반환
     };
 
     explicit SLL(ItemType root_item);
     ~SLL();
-    [[nodiscard]] bool IsFull() const; //SLL이 가득 차 있는지 확인
-    [[nodiscard]] bool IsEmpty() const; //SLL이 비어있는지 확인
-    [[nodiscard]] size_t SizeIs() const; //SLL의 크기 반환
-    void Insert(Iterator pos, ItemType new_item); //SLL에 아이템 삽입
-    void Erase(Iterator pos); //SLL의 아이템 삭제
+    [[nodiscard]] bool IsFull() const; // SLL이 가득 차 있는지 확인
+    [[nodiscard]] bool IsEmpty() const; // SLL이 비어있는지 확인
+    [[nodiscard]] size_t SizeIs() const; // SLL의 크기 반환
+    void Insert(Iterator pos, ItemType new_item); // SLL에 아이템 삽입
+    void Erase(Iterator pos); // SLL의 아이템 삭제
 
-    [[nodiscard]] Iterator Begin() const { return Iterator(head); } //SLL의 처음 시작위치 반환
-    [[nodiscard]] Iterator End() const { return Iterator(nullptr); } //SLL의 마지막 위치 반환(nullptr)
+    [[nodiscard]] Iterator Begin() const { return Iterator(head); } // SLL의 처음 시작위치 반환
+    [[nodiscard]] Iterator End() const { return Iterator(nullptr); } // SLL의 마지막 위치 반환(nullptr)
 };
 ```
 
@@ -209,12 +367,12 @@ SLL::~SLL() {
 ```cpp
 bool SLL::IsFull() const {
     try {
-        const Node* dummy_node = new Node(); //dummy_node가 생성 가능하면 false 반환
+        const Node* dummy_node = new Node(); // dummy_node가 생성 가능하면 false 반환
         delete dummy_node;
         return false;
     }
-    catch(const bad_alloc& e) { //dummy_node가 생성되지 않고 bad_alloc exception 발생
-        return true; //true 반환
+    catch(const bad_alloc& e) { // dummy_node가 생성되지 않고 bad_alloc exception 발생
+        return true; // true 반환
     }
 }
 ```
@@ -295,10 +453,10 @@ void SLL::Erase(Iterator pos) {
 int main() {
     SLL list(5);
 
-    SLL::Iterator it = list.Begin();
-    list.Insert(it, 10);
-    list.Insert(++it, 15);
-    list.Insert(++it, 20);
+    SLL::Iterator insert_it = list.Begin();
+    list.Insert(insert_it, 10);
+    list.Insert(++insert_it, 15);
+    list.Insert(++insert_it, 20);
 
     cout << "List Size: " << list.SizeIs() << endl;
 
