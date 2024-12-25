@@ -67,8 +67,30 @@ cout << cur_node->item;
 ```
 
 ## Doubly Linked List Insertion Algorithm
+### Insertion at the Beginning in Doubly Linked List
+
+<p align="center">
+  <img src="/images/2024-12-23-LinkedList2/DLL_Insertion_1.webp">
+</p>
+
+### Insertion after a given node in Doubly Linked List
+
+<p align="center">
+  <img src="/images/2024-12-23-LinkedList2/DLL_Insertion_2.webp">
+</p>
 
 ## Doubly Linked List Deletion Algorithm
+### Deletion at the Beginning in Doubly Linked List
+
+<p align="center">
+  <img src="/images/2024-12-23-LinkedList2/DLL_Deletion_1.webp">
+</p>
+
+### Deletion after a given node in Doubly Linked List
+
+<p align="center">
+  <img src="/images/2024-12-23-LinkedList2/DLL_Deletion_2.webp">
+</p>
 
 ## Doubly Linked List Iterator Algorithm
 
@@ -88,4 +110,6 @@ cout << cur_node->item;
 - Nell Dale. (2016). “C++ Plus Data Structues Sixth Edition”. Jones&Bartlett Learning.
 - GeeksforGeeks. (2024). “Why use a Doubly Linked List?”. [https://www.geeksforgeeks.org/why-use-a-doubly-linked-list/](https://www.geeksforgeeks.org/why-use-a-doubly-linked-list/).
 - GeeksforGeeks. (2024). “Operations of Doubly Linked List with Implementation”. [https://www.geeksforgeeks.org/doubly-linked-list-tutorial/](https://www.geeksforgeeks.org/doubly-linked-list-tutorial/).
+- GeeksforGeeks. (2024). “Insertion in a Doubly Linked List”. [https://www.geeksforgeeks.org/introduction-and-insertion-in-a-doubly-linked-list/](https://www.geeksforgeeks.org/introduction-and-insertion-in-a-doubly-linked-list/).
+- GeeksforGeeks. (2024). "Deletion in a Doubly Linked List”. [https://www.geeksforgeeks.org/delete-a-node-in-a-doubly-linked-list/](https://www.geeksforgeeks.org/delete-a-node-in-a-doubly-linked-list/).
 - OpenAI. (2024). ChatGPT(Dec 13, 2024). GPT-4o. https://chat.openai.com.
