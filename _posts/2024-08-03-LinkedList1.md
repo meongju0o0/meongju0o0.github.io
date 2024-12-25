@@ -120,7 +120,7 @@ void SLL::Insert(Iterator pos, ItemType new_item) {
 - 'C' 노드를 삭제하려면 우선 'B' 노드가 'D' 노드를 가리켜야 한다
     - 이때, 'C' 노드를 삭제하려면 'B' 노드를 가지고 있어야 한다
     - 이에 대한 Solution은 2가지가 존재한다
-        - Solution 1.
+    - Solution 1.
         ```cpp
         Node* prev_node = head;
         while (prev_node->next != cur_node) {
@@ -135,7 +135,7 @@ void SLL::Insert(Iterator pos, ItemType new_item) {
         - 그러나, 'Solution 1'을 사용했더니 아이템 삭제 시마다 $O(N)$ 복잡도가 발생한다
         - **Linked List의 장점이 사라졌다**
 
-        - Solution 2.
+    - **Solution 2.**
         ```cpp
         Node* prev_node = pos.GetPrevious();
         prev_node->next = cur_node->next;
