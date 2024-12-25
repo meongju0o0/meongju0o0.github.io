@@ -39,10 +39,16 @@ author_profile: true
 
 ## Doubly Linked List vs. Singly Linked List
 ### Singly Linked List
-![doubly_linked_list](/images/2024-12-23-LinkedList2/SLL.png)
+
+<p align="center">
+  <img src="/images/2024-12-23-LinkedList2/SLL.png">
+</p>
 
 ### Doubly Linked List
-![doubly_linked_list](/images/2024-12-23-LinkedList2/DLL2.png)
+
+<p align="center">
+  <img src="/images/2024-12-23-LinkedList2/DLL2.png">
+</p>
 
 ## Doubly Linked List Search Algorithm
 - 위 그림에서 Head를 현재 노드의 Next 포인터를 따라 한 칸씩 이동시키며 탐색
