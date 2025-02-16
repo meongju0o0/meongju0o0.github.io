@@ -129,7 +129,7 @@ author_profile: true
 
 ![ubuntu_install_17](/images/2025-02-16-DistDGL_on_Docker_1/ubuntu_install_17.png)
 
-- 서버 종료
+- 가상머신 종료
 ```bash
 shutdown -h now
 ```
