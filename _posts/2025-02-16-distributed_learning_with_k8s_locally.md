@@ -99,7 +99,7 @@ author_profile: true
 
 ![ubuntu_install_10](/images/2025-02-16-DistDGL_on_Docker_1/ubuntu_install_10.png)
 
-- 시스템 프로필은 목적에 따라 적절히 작성
+- 사용자 프로필은 목적에 따라 적절히 작성
 
 ![ubuntu_install_11](/images/2025-02-16-DistDGL_on_Docker_1/ubuntu_install_11.png)
 
