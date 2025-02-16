@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "싱글 머신에서의 VirtualBox 기반 Kubernetes 분산 학습 환경 구축"
+title:  "싱글 머신에서의 VirtualBox 기반 Kubernetes 분산 학습 환경 구축 - 1편"
 categories: DistributedLearning
 tag: [distributed_learning, docker, k8s, gnn, dgl]
 toc: true
