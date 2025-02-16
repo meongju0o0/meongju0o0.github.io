@@ -26,13 +26,11 @@ author_profile: true
 - 호스트 OS: Windows 11
 - 게스트 OS: Ubuntu-24.04 LTS
 
-- 사용할 가상 머신 수는 총 5개
-- 마스터 노드 1개, 워커 노드 4개
+- 사용할 가상 머신 수는 총 3개
+- 마스터 노드 1개, 워커 노드 2개
     - k8s-master
     - k8s-node1
     - k8s-node2
-    - k8s-node3
-    - k8s-node4
 
 ### 2-1. 가상 머신 추가
 ![vbox_hello](/images/2025-02-16-DistDGL_on_Docker_1/vbox_hello.png)
