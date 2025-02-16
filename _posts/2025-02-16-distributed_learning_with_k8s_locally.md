@@ -62,14 +62,14 @@ author_profile: true
     - 호스트 시스템 환경 확인
         - Windows (PowerShell)
 
-        - **부팅 모드 확인**
+        - **부팅 모드 확인(UEFI, BIOS)**
         ```powershell
         bcdedit /enum | findstr "path"
         ```
         - `\WINDOWS\system32\winload.efi` → UEFI 모드
         - `\WINDOWS\system32\winload.exe` → BIOS(Legacy) 모드
 
-        - **파티션 형식 확인**
+        - **파티션 형식 확인(GPT, MBR)**
         ```powershell
         diskpart
         list disk
