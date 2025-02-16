@@ -8,7 +8,7 @@ toc_sticky: true
 author_profile: true
 ---
 
-# 싱글 머신에서의 Kubernetes 기반 분산 학습 환경 구축
+# 싱글 머신에서의 VirtualBox 기반 Kubernetes 분산 학습 환경 구축
 ## 1. Virtual Box 설치
 - 아래 홈페이지에서 본인의 호스트 운영체제에 맞는 Virtual Box를 다운 받고 설치한다.
 - [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
