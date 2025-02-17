@@ -103,7 +103,13 @@ sudo apt-get install net-tools
 
 ![ubuntu_net_setting_1](/images/2025-02-16-DistDGL_on_Docker_2/ubuntu_network_setting_1.png)
 
-- ifconfig를 통해 
+- ifconfig를 통해 네트워크 어댑터 파악
+
+```bash
+ifconfig
+```
+
+![ifconfig](/images/2025-02-16-DistDGL_on_Docker_2/ifconfig.png)
 
 - vi 등의 편집기를 사용해 `/etc/netplan/00-installer-config.yaml`파일 수정
 
