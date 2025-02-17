@@ -64,7 +64,7 @@ sudo systemctl start docker
 
 ```bash
 docker --version
-docker run hello-world
+sudo docker run hello-world
 ```
 
 ![docker_version_chk](/images/2025-02-17-DistDGL_on_Docker_3/docker_version_chk.png)
