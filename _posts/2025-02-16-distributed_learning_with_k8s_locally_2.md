@@ -103,7 +103,7 @@ sudo apt-get install net-tools
 
 ![ubuntu_net_setting_1](/images/2025-02-16-DistDGL_on_Docker_2/ubuntu_network_setting_1.png)
 
-- ifconfig를 통해 네트워크 어댑터 파악
+- ifconfig를 통해 네트워크 인터페이스 파악
 
 ```bash
 ifconfig
@@ -112,6 +112,7 @@ ifconfig
 ![ifconfig](/images/2025-02-16-DistDGL_on_Docker_2/ifconfig.png)
 
 - vi 등의 편집기를 사용해 `/etc/netplan/00-installer-config.yaml`파일 수정
+- **주의!: 경우에 따라, `enp0s3`가 아닌 `eth0`과 같은 이름일 수 있음**
 
 ![ubuntu_net_setting_3](/images/2025-02-16-DistDGL_on_Docker_2/ubuntu_network_setting_3.png)
 
