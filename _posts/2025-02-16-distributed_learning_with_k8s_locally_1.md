@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "싱글 머신에서의 VirtualBox 기반 Kubernetes 분산 학습 환경 구축 - 1편, 가상머신 생성 및 Ubuntu 설치"
+title:  "싱글 머신에서의 K8s 기반 DistDGL 분산 학습 환경 구축 - 1편, 가상머신 생성 및 Ubuntu 설치"
 categories: DistributedLearning
 tag: [distributed_learning, docker, k8s, gnn, dgl]
 toc: true
