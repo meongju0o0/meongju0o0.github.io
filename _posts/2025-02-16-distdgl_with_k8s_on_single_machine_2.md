@@ -125,7 +125,7 @@ network:
   version: 2
     renderer: networkd
     ethernets:
-      enp0s3:
+      enp0s3: # 확인된 네트워크 인터페이스명 입력
         addresses: [10.0.2.102/24] # 여기서는 100을 Master Node, 101은 Worker Node 1, 102는 Worker Node 2로 사용
         routes:
           - to: default
