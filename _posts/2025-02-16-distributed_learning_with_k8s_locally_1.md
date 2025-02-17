@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "싱글 머신에서의 VirtualBox 기반 Kubernetes 분산 학습 환경 구축 - 1편"
+title:  "싱글 머신에서의 VirtualBox 기반 Kubernetes 분산 학습 환경 구축 - 1편, 가상머신 생성 및 Ubuntu 설치"
 categories: DistributedLearning
 tag: [distributed_learning, docker, k8s, gnn, dgl]
 toc: true
@@ -78,10 +78,9 @@ author_profile: true
 
 ## 3. 우분투 설치
 ### 3-1. 가상 머신 실행
+- 설정을 완료한 후, 가상 머신을 실행한다.
 
 ![vm_run](/images/2025-02-16-DistDGL_on_Docker_1/vm_run.png)
-
-- 설정을 완료한 후, 가상 머신을 실행한다.
 
 ### 3-2. 우분투 설치
 - 언어는 English로 설정
@@ -128,6 +127,7 @@ author_profile: true
 ![ubuntu_install_17](/images/2025-02-16-DistDGL_on_Docker_1/ubuntu_install_17.png)
 
 - 가상머신 종료
+
 ```bash
 shutdown -h now
 ```
