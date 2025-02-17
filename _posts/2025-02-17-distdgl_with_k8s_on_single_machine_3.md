@@ -109,4 +109,4 @@ sudo apt-mark hold kubelet kubeadm kubectl
 kubectl version --client && kubeadm version
 ```
 
-![K8s_install_4](/images/2025-02-17-DistDGL_on_Docker_3/k8s_install_4.png)
+![K8s_version_chk](/images/2025-02-17-DistDGL_on_Docker_3/k8s_version_chk.png)
