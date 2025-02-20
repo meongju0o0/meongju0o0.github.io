@@ -115,7 +115,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ### 3-4. CNI(Container Network Interface, calico) 설치
 
 ```bash
-![calico_install](/images/2025-02-17-DistDGL_on_Docker_3/calico_install.png)
+kubectl apply -f https://docs.projectcalico.org/manifests/calcio.yaml
 ```
 
 ![calico_install](/images/2025-02-17-DistDGL_on_Docker_3/calico_install.png)
@@ -128,3 +128,6 @@ kubectl get pods -n kube-system
 ```
 
 ![kubectl_pod_chk](/images/2025-02-17-DistDGL_on_Docker_3/kubectl_cni_chk.png)
+
+## 4. K8s 워커 노드 설정 (워커 노드)
+### 4-1. 
