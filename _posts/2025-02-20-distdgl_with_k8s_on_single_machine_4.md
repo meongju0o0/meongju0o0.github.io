@@ -121,6 +121,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ![calico_install](/images/2025-02-17-DistDGL_on_Docker_3/calico_install.png)
 
 ### 3-5. CNI Pod 확인
+- 현재 실행 중인 모든 Pod가 `Running`이어야 한다.
 
 ```bash
 kubectl get pods -n kube-system
