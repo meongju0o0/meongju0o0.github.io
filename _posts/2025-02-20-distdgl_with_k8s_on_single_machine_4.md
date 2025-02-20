@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "싱글 머신에서의 K8s 기반 DistDGL 분산 학습 환경 구축 - 3편, K8s 클러스터 구성"
+title:  "싱글 머신에서의 K8s 기반 DistDGL 분산 학습 환경 구축 - 4편, K8s 클러스터 구성"
 categories: DistributedLearning
 tag: [distributed_learning, docker, k8s, gnn, dgl]
 toc: true
