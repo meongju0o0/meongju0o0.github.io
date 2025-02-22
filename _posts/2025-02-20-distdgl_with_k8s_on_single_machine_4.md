@@ -17,7 +17,7 @@ sudo swapoff -a
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
 ```
 
-![swapoff](/images/2025-02-17-DistDGL_on_Docker_3/swapoff.png)
+![swapoff](/images/2025-02-20-DistDGL_on_Docker_4/swapoff.png)
 
 ## 2. 방화벽 설정 (전체 노드)
 - 방화벽 설정
@@ -40,7 +40,7 @@ EOF
 sudo sysctl --system
 ```
 
-![firewall_setting](/images/2025-02-17-DistDGL_on_Docker_3/firewall_setting.png)
+![firewall_setting](/images/2025-02-20-DistDGL_on_Docker_4/firewall_setting.png)
 
 ## 3. K8s 마스터 노드 설정 (마스터 노드)
 ### 3-1. containerd 설정 수정
@@ -51,7 +51,7 @@ sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 ```
 
-![cri_activate_1](/images/2025-02-17-DistDGL_on_Docker_3/cri_activate_1.png)
+![cri_activate_1](/images/2025-02-20-DistDGL_on_Docker_4/cri_activate_1.png)
 
 - `config.toml` 수정
 
@@ -59,7 +59,7 @@ containerd config default | sudo tee /etc/containerd/config.toml
 sudo vi /etc/containerd/config.toml
 ```
 
-![cri_activate_2](/images/2025-02-17-DistDGL_on_Docker_3/cri_activate_2.png)
+![cri_activate_2](/images/2025-02-20-DistDGL_on_Docker_4/cri_activate_2.png)
 
 - `SystemdCtroup`을 `true`로 설정
 
@@ -75,7 +75,7 @@ sudo systemctl restart containerd
 sudo systemctl status containerd
 ```
 
-![containerd_restart](/images/2025-02-17-DistDGL_on_Docker_3/containerd_restart.png)
+![containerd_restart](/images/2025-02-20-DistDGL_on_Docker_4/containerd_restart.png)
 
 ### 3-2. kubeadm을 활용한 클러스터 초기화
 - kubeadm init
@@ -85,7 +85,7 @@ sudo kubeadm reset -f
 sudo kubeadm init --pod-network-cidr=192.168.1.0/16
 ```
 
-![kubeadm_init](/images/2025-02-17-DistDGL_on_Docker_3/kubeadm_init.png)
+![kubeadm_init](/images/2025-02-20-DistDGL_on_Docker_4/kubeadm_init.png)
 
 - 성공시, 아래와 같은 메시지 출력
 
@@ -100,7 +100,7 @@ To start using your cluster, you need to run the following as a regular user:
 You should now deploy a pod network to the cluster.
 ```
 
-![kubeadm_init_success](/images/2025-02-17-DistDGL_on_Docker_3/kubeadm_init_success.png)
+![kubeadm_init_success](/images/2025-02-20-DistDGL_on_Docker_4/kubeadm_init_success.png)
 
 ### 3-3. kubectl 설정
 
@@ -110,7 +110,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-![kubectl_setting](/images/2025-02-17-DistDGL_on_Docker_3/kubectl_setting.png)
+![kubectl_setting](/images/2025-02-20-DistDGL_on_Docker_4/kubectl_setting.png)
 
 ### 3-4. CNI(Container Network Interface, calico) 설치
 
@@ -118,7 +118,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl apply -f https://docs.projectcalico.org/manifests/calcio.yaml
 ```
 
-![calico_install](/images/2025-02-17-DistDGL_on_Docker_3/calico_install.png)
+![calico_install](/images/2025-02-20-DistDGL_on_Docker_4/calico_install.png)
 
 ### 3-5. CNI Pod 확인
 - 현재 실행 중인 모든 Pod가 `Running`이어야 한다.
@@ -127,7 +127,7 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calcio.yaml
 kubectl get pods -n kube-system
 ```
 
-![kubectl_pod_chk](/images/2025-02-17-DistDGL_on_Docker_3/kubectl_cni_chk.png)
+![kubectl_pod_chk](/images/2025-02-20-DistDGL_on_Docker_4/kubectl_cni_chk.png)
 
 ## 4. K8s 워커 노드 설정 (워커 노드)
 ### 4-1. 
