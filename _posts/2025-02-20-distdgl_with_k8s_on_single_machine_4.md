@@ -70,7 +70,7 @@ sudo sysctl --system
 
 ![firewall_setting](/images/2025-02-20-DistDGL_on_Docker_4/firewall_setting.png)
 
-## 3. containerd 설정 수정
+## 3. containerd 설정 수정 (전체 노드)
 ### 3-1. containerd SystemdCgroup 설정 수정
 - 기본 설정 파일 생성
 
@@ -147,8 +147,8 @@ sudo reboot now
 
 ![reboot](/images/2025-02-20-DistDGL_on_Docker_4/reboot.png)
 
-## 3. K8s 마스터 노드 설정 (마스터 노드)
-### 3-1. kubeadm을 활용한 클러스터 초기화
+## 4. K8s 마스터 노드 설정 (마스터 노드)
+### 4-1. kubeadm을 활용한 클러스터 초기화
 - kubeadm init
 
 ```bash
@@ -173,7 +173,7 @@ You should now deploy a pod network to the cluster.
 
 ![kubeadm_init_success](/images/2025-02-20-DistDGL_on_Docker_4/kubeadm_init_success.png)
 
-### 3-2. kubectl 설정
+### 4-2. kubectl 설정
 
 ```bash
 mkdir -p $HOME/.kube
@@ -183,7 +183,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ![kubectl_setting](/images/2025-02-20-DistDGL_on_Docker_4/kubectl_setting.png)
 
-### 3-4. CNI(Container Network Interface, calico) 설치
+### 4-3. CNI(Container Network Interface, calico) 설치
 
 ```bash
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
@@ -191,7 +191,7 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 
 ![calico_install](/images/2025-02-20-DistDGL_on_Docker_4/calico_install.png)
 
-### 3-3. CNI Pod 확인
+### 4-4. CNI Pod 확인
 - 현재 실행 중인 모든 Pod가 `Running`이어야 한다.
 
 ```bash
@@ -200,5 +200,5 @@ kubectl get pods -n kube-system
 
 ![kubectl_pod_chk](/images/2025-02-20-DistDGL_on_Docker_4/kubectl_cni_chk.png)
 
-## 4. K8s 워커 노드 설정 (워커 노드)
-### 4-1. 
+## 5. K8s 워커 노드 설정 (워커 노드)
+### 5-1. 
