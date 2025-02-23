@@ -221,10 +221,6 @@ sudo kubeadm join 10.0.2.100:6443 --token ia6lda.jy9a25mml713f1be --discovery-to
 ### 5-2. 워커 노드에서 join 명령어 실행
 - 워커 노드에서 join 명령어를 실행한다
 
-```bash
-sudo kubeadm join 10.0.2.100:6443 --token ia6lda.jy9a25mml713f1be --discovery-token-ca-cert-hash sha256:a7fdc543810f3852ed2dfccd4315329a4615122014c76b0ae9618cc7d6bcafca
-```
-
 ![kubeadm_join](/images/2025-02-20-DistDGL_on_Docker_4/kubeadm_join_1.png)
 ![kubeadm_join](/images/2025-02-20-DistDGL_on_Docker_4/kubeadm_join_2.png)
 
