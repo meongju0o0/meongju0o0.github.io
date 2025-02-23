@@ -235,6 +235,6 @@ sudo kubeadm join 10.0.2.100:6443 --token ia6lda.jy9a25mml713f1be --discovery-to
 kubectl get nodes
 ```
 
-- 정상적으로 조인된 경우, 결과는 아래오 같다.
+- 정상적으로 조인된 경우, 결과는 아래와 같다.
 
 ![kubectl_get_nodes](/images/2025-02-20-DistDGL_on_Docker_4/kubectl_get_nodes.png)
