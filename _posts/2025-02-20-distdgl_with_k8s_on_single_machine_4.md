@@ -201,4 +201,40 @@ kubectl get pods -n kube-system
 ![kubectl_pod_chk](/images/2025-02-20-DistDGL_on_Docker_4/kubectl_cni_chk.png)
 
 ## 5. K8s 워커 노드 설정 (워커 노드)
-### 5-1. 
+### 5-1. 마스터 노드에서 토큰 생성
+- 마스터 노드로의 워커 노드 조인을 위한 토큰을 생성한다
+
+```bash
+kubeadm token create --print-join-command
+```
+
+- 마스터 노드에서 생성한 join 명령어를 확인한다
+
+- 생성된 join 명령어 예시는 아래와 같다
+
+```bash
+sudo kubeadm join 10.0.2.100:6443 --token ia6lda.jy9a25mml713f1be --discovery-token-ca-cert-hash sha256:a7fdc543810f3852ed2dfccd4315329a4615122014c76b0ae9618cc7d6bcafca
+```
+
+![kubeadm_token](/images/2025-02-20-DistDGL_on_Docker_4/kubeadm_token_create.png)
+
+### 5-2. 워커 노드에서 join 명령어 실행
+- 워커 노드에서 join 명령어를 실행한다
+
+```bash
+sudo kubeadm join 10.0.2.100:6443 --token ia6lda.jy9a25mml713f1be --discovery-token-ca-cert-hash sha256:a7fdc543810f3852ed2dfccd4315329a4615122014c76b0ae9618cc7d6bcafca
+```
+
+![kubeadm_join](/images/2025-02-20-DistDGL_on_Docker_4/kubeadm_join_1.png)
+![kubeadm_join](/images/2025-02-20-DistDGL_on_Docker_4/kubeadm_join_2.png)
+
+### 5-3. 마스터 노드에서 노드 목록 확인
+- 마스터 노드로 돌아가서 워커 노드가 정상적으로 조인되었는지 확인한다.
+
+```bash
+kubectl get nodes
+```
+
+- 정상적으로 조인된 경우, 결과는 아래오 같다.
+
+![kubectl_get_nodes](/images/2025-02-20-DistDGL_on_Docker_4/kubectl_get_nodes.png)
