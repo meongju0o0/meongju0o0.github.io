@@ -19,6 +19,34 @@ sudo sed -i '/ swap / s/^/#/' /etc/fstab
 
 ![swapoff](/images/2025-02-20-DistDGL_on_Docker_4/swapoff.png)
 
+- `/etc/fstab` 파일 수정
+- `/swap.img`로 시작하는 라인 주석 처리
+
+```bash
+sudo vi /etc/fstab
+```
+
+![swapoff_edit_1](/images/2025-02-20-DistDGL_on_Docker_4/swapoff_edit_1.png)
+
+```
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/ubuntu-vg/ubuntu-lv during curtin installation
+/dev/disk/by-id/dm-uuid-LVM-7iRSDgELhIC3qGrechDxHZm688AAiIJu6ZihYnbzIs7KtrinT2igDgTc2OtK4r5N / ext4 defaults 0 1
+# /boot was on /dev/sda2 during curtin installation
+/dev/disk/by-uuid/8a895e5b-79c6-4914-96bc-6aac65aa0eb8 /boot ext4 defaults 0 1
+# /boot/efi was on /dev/sda1 during curtin installation
+/dev/disk/by-uuid/A39C-96A5 /boot/efi vfat defaults 0 1
+# /swap.img     none    swap    sw      0       0 # 주석처리!
+```
+
+![swapoff_edit_2](/images/2025-02-20-DistDGL_on_Docker_4/swapoff_edit_2.png)
+
 ## 2. 방화벽 설정 (전체 노드)
 - 방화벽 설정
 
@@ -43,7 +71,7 @@ sudo sysctl --system
 ![firewall_setting](/images/2025-02-20-DistDGL_on_Docker_4/firewall_setting.png)
 
 ## 3. K8s 마스터 노드 설정 (마스터 노드)
-### 3-1. containerd 설정 수정
+### 3-1. containerd SystemdCgroup 설정 수정
 - 기본 설정 파일 생성
 
 ```bash
@@ -61,14 +89,48 @@ sudo vi /etc/containerd/config.toml
 
 ![cri_activate_2](/images/2025-02-20-DistDGL_on_Docker_4/cri_activate_2.png)
 
-- `SystemdCtroup`을 `true`로 설정
+- `SystemdCgroup`을 `true`로 설정
 
 ```ini
 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
   SystemdCgroup = true
 ```
 
-- containerd 재시작
+## 3-2. containerd 접근 권한 수정
+- containerd-fix-permissions 서비스 정의 파일 생성
+
+```bash
+sudo vi /etc/systemd/system/containerd-fix-permissions.service
+```
+
+![systemd_service_file_gen](/images/2025-02-20-DistDGL_on_Docker_4/systemd_service_file_gen.png)
+
+```
+[Unit]
+Description=Fix permissions for containerd.sock
+After=containerd.service
+Requires=containerd.service
+
+[Service]
+ExecStart=/bin/bash -c 'sleep 5; chmod 666 /var/run/containerd/containerd.sock'
+ExecStartPost=/bin/bash -c 'chown root:docker /var/run/containerd/containerd.sock'
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+
+![containerd_fix_permissions](/images/2025-02-20-DistDGL_on_Docker_4/containerd_fix_permissions.png)
+
+- `containerd-fix-permissions` 서비스 시작
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable containerd-fix-permissions.service
+```
+
+- `containerd` 재시작
 
 ```bash
 sudo systemctl restart containerd
@@ -76,6 +138,15 @@ sudo systemctl status containerd
 ```
 
 ![containerd_restart](/images/2025-02-20-DistDGL_on_Docker_4/containerd_restart.png)
+
+- 시스템 재시작
+
+```bash
+sudo reboot now
+```
+
+![reboot](/images/2025-02-20-DistDGL_on_Docker_4/reboot.png)
+
 
 ### 3-2. kubeadm을 활용한 클러스터 초기화
 - kubeadm init
@@ -115,7 +186,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ### 3-4. CNI(Container Network Interface, calico) 설치
 
 ```bash
-kubectl apply -f https://docs.projectcalico.org/manifests/calcio.yaml
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 ```
 
 ![calico_install](/images/2025-02-20-DistDGL_on_Docker_4/calico_install.png)
