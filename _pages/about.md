@@ -136,7 +136,7 @@ author_profile: true
 
 ### Toy Projects
 - **Emergency Room Comprehensive Situation Information Service**, 2025
-    - Dart, Flutter, Dart Frog, Python, PosgreSQL, LangChain, Gemma2
+    - Dart, Flutter, Dart Frog, Python, PostgreSQL, LangChain, Gemma2
 - **Domestic Stock Followup Service**, 2024
     - Python, bs4, selenium, node.js, crontab, MySQL, Hadoop, Spark, Github Flow, AWS EC2, AWS RDS
 - **Distributed GraphSAGE Training using DistDGL and K8s**, 2023
