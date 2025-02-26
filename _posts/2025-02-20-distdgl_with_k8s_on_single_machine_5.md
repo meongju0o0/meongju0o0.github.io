@@ -31,6 +31,8 @@ git clone https://github.com/meongju0o0/distdgl-on-docker
 cd distdgl-on-docker
 ```
 
+![git_clone](/images/2025-02-26-DistDGL_on_Docker_5/git_clone.png)
+
 ### 1-4. 도커 이미지 빌드 및 컨테이너 실행
 - 도커 이미지 빌드
 
@@ -38,19 +40,26 @@ cd distdgl-on-docker
 docker build -t distdgl-cpu .
 ```
 
+![docker_build](/images/2025-02-26-DistDGL_on_Docker_5/docker_build.png)
+
 - 빌드된 이미지 실행
 
 ```bash
 docker run -it --rm -p 2222:22 distdgl-cpu
 ```
 
+![docker_run](/images/2025-02-26-DistDGL_on_Docker_5/docker_run.png)
+
 ### 1-5. 실행 중인 컨테이너로 SSH 접속 및 학습 수행
+- WSL2 터미널 세션 추가 생성
 - 컨테이너 SSH 접속
 - 비밀번호: DistDGL
 
 ```bash
 ssh root@localhost -p 2222
 ```
+
+![container_ssh](/images/2025-02-26-DistDGL_on_Docker_5/container_ssh.png)
 
 ### 1-6. 그래프 데이터 다운로드 및 파티셔닝
 - `/workspace/graphsage` 디렉토리로 이동
@@ -65,6 +74,8 @@ cd /workspace/graphsage
 python partition_graph.py --dataset citeseer --num_parts 1 --part_method metis --balance_train --balance_edges
 ```
 
+![partition_graph](/images/2025-02-26-DistDGL_on_Docker_5/partition_graph.png)
+
 ### 1-7. DistDGL 기반 GraphSAGE 학습 수행
 - `/workspace` 디렉토리로 이동
 
@@ -75,11 +86,10 @@ cd /workspace
 - 학습 수행
 
 ```bash
-python launch.py --workspace /workspace/graphsage/ \
---num_trainers 1 --num_samplers 0 --num_servers 1 \ 
---part_config data/citeseer.json --ip_config ip_config.txt \ 
-"python node_classification.py --graph_name citeseer --ip_config ip_config.txt --num_epochs 70"
+python launch.py --workspace /workspace/graphsage/ --num_trainers 1 --num_samplers 0 --num_servers 1 --part_config data/citeseer.json --ip_config ip_config.txt "python node_classification.py --graph_name citeseer --ip_config ip_config.txt --num_epochs 70"
 ```
+
+![node_classification](/images/2025-02-26-DistDGL_on_Docker_5/node_classification.png)
 
 ## 2. 멀티 노드 및 컨테이너에서의 DistDGL 학습
 ### 2-1. NFS(Network File System) 서버 파드 생성
