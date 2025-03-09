@@ -170,11 +170,13 @@ sudo modprobe nfs && sudo modprobe nfsd
 
 ### 2-2. NFS 클라이언트 접속 테스트(k8s-node1, k8s-node2)
 - k8s-node1 접속
+
 ```powershell
 ssh vboxuser@192.168.137.1 -p 20122
 ```
 
 - 폴더 마운트
+
 ```
 cd /mnt
 sudo mkdir workspace
