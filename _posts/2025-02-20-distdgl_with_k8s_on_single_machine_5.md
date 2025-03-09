@@ -145,6 +145,7 @@ python launch.py --workspace /workspace/graphsage/ --num_trainers 1 --num_sample
 ## 2. NFS 서버 컨테이너 실행 테스트
 ### 2-1. NFS 서버 컨테이너 실행(K8s-master)
 - nfs-common 패키지 설치
+
 ```
 sudo apt update && sudo apt install -y nfs-common
 ```
@@ -162,6 +163,7 @@ sudo apt update && sudo apt install -y nfs-common
 ![edit_exports](/images/2025-02-26-DistDGL_on_Docker_5/edit_exports.png)
 
 - nfs 모듈 로드
+
 ```
 sudo modprobe nfs && sudo modprobe nfsd
 ```
