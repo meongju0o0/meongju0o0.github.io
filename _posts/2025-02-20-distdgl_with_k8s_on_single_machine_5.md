@@ -40,6 +40,57 @@ cd distdgl-on-docker
 docker build -t distdgl-cpu .
 ```
 
+- 주어진 도커 파일은 아래와 같다
+
+```dockerfile
+# Base image: Python 3.11 (CPU 기반)
+FROM python:3.11.11-slim-bullseye
+
+# 작업 디렉토리 설정
+WORKDIR /workspace
+
+# 시스템 업데이트 및 필수 패키지 설치
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    libopenblas-dev \
+    libblas-dev \
+    liblapack-dev \
+    gfortran \
+    wget \
+    openssh-server \
+    openmpi-bin \
+    openmpi-common \
+    libopenmpi-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# pip 업그레이드 후, PyTorch, DGL (CPU 환경용), 그리고 추가 Python 패키지 설치
+RUN pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cpu \
+ && pip install --no-cache-dir dgl -f https://data.dgl.ai/wheels/torch-2.1/repo.html \
+ && pip install --no-cache-dir "numpy<2" scipy networkx tqdm mpi4py ogb
+
+# 현재 빌드 컨텍스트(프로젝트 전체)를 /workspace로 복사
+COPY . /workspace
+
+# SSH 서버 설정: root 암호 설정 및 SSH 접속 허용, SSH 관련 디렉토리 생성 및 권한 부여
+RUN mkdir -p /root/.ssh && \
+    ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -q -N "" && \
+    cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys && \
+    chmod 600 /root/.ssh/authorized_keys && \
+    echo "root:DistDGL" | chpasswd && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    mkdir -p /var/run/sshd && \
+    mkdir -p /run/sshd && chmod 0755 /run/sshd
+
+# 22번 포트 노출 (SSH)
+EXPOSE 22
+
+# 컨테이너 시작 시 SSH 데몬 실행
+CMD ["/usr/sbin/sshd", "-D"]
+```
+
 ![docker_build](/images/2025-02-26-DistDGL_on_Docker_5/docker_build.png)
 
 - 빌드된 이미지 실행
@@ -91,5 +142,48 @@ python launch.py --workspace /workspace/graphsage/ --num_trainers 1 --num_sample
 
 ![node_classification](/images/2025-02-26-DistDGL_on_Docker_5/node_classification.png)
 
-## 2. 멀티 노드 및 컨테이너에서의 DistDGL 학습
-### 2-1. NFS(Network File System) 서버 파드 생성
+## 2. NFS 서버 컨테이너 실행 테스트
+### 2-1. NFS 서버 컨테이너 실행(K8s-master)
+- nfs-common 패키지 설치
+```
+sudo apt update && sudo apt install -y nfs-common
+```
+
+![nfs_common_install](/images/2025-02-26-DistDGL_on_Docker_5/nfs_common_install.png)
+
+- exports 파일 작성
+
+```
+/exports *(rw,sync,no_subtree_check,no_root_squash,fsid=0)
+```
+
+![vi_exports](/images/2025-02-26-DistDGL_on_Docker_5/vi_exports.png)
+
+![edit_exports](/images/2025-02-26-DistDGL_on_Docker_5/edit_exports.png)
+
+- nfs 모듈 로드
+```
+sudo modprobe nfs && sudo modprobe nfsd
+```
+
+![modprobe_nfs_nfsd](/images/2025-02-26-DistDGL_on_Docker_5/modprobe_nfs_nfsd.png)
+
+### 2-2. NFS 클라이언트 접속 테스트(k8s-node1, k8s-node2)
+- k8s-node1 접속
+```powershell
+ssh vboxuser@192.168.137.1 -p 20122
+```
+
+- 폴더 마운트
+```
+cd /mnt
+sudo mkdir workspace
+sudo mount -t nfs -o nfsvers=4 10.0.2.100:/ /mnt/workspace
+```
+
+![mount_nfs_container](/images/2025-02-26-DistDGL_on_Docker_5/mount_nfs_container.png)
+
+## 3. NFS 서버 파드 생성
+### 3-1. yaml 파일 작성
+
+### 3-2. 파드 실행
