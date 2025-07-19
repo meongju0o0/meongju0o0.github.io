@@ -99,6 +99,7 @@ author_profile: true
 ![LaPael](/images/2025-07-20-LLM_RAG_KG_trends/그림3.png)
 - 기존 Transformer 구조에 Latent Paraphraser 레이어를 추가
 - Latent Paraphraser 레이어를 제안하는 KL Divergence Loss Function으로 잘 학습시키면 적은 양의 데이터로 fine-tuning이 가능하다는 것으로 유추됨
+- *Early Layer?? 논문을 다 읽어보진 않았으나.. 초반 Transformer Layer에만 Latent Paraphraser를 추가하는 방식??*
 
 ## ChatQA: Surpassing GPT-4 on Conversational QA and RAG
 
