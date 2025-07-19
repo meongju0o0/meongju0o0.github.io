@@ -10,9 +10,13 @@ author_profile: true
 
 # LLM, RAG, KG, RecSys 트렌드 리뷰
 - LLM: Large Language Model
+    - [https://ko.wikipedia.org/wiki/대형_언어_모델](https://ko.wikipedia.org/wiki/대형_언어_모델)
 - RAG: Retrieval-Augmented Generation
+    - [https://ko.wikipedia.org/wiki/검색증강생성](https://ko.wikipedia.org/wiki/검색증강생성)
 - KG: Knowledge Graph
+    - [https://ko.wikipedia.org/wiki/지식_그래프](https://ko.wikipedia.org/wiki/지식_그래프)
 - RecSys: Recommender System
+    - [https://ko.wikipedia.org/wiki/추천_시스템](https://ko.wikipedia.org/wiki/추천_시스템)
 
 ## Improving Multimodal Social Media Popularity Prediction via Selective Retrieval Knowledge Augmentation
 ### 논문 정보
