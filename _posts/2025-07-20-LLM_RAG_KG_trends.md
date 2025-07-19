@@ -73,6 +73,28 @@ author_profile: true
 ![MKGL](/images/2025-07-20-LLM_RAG_KG_trends/그림2.png)
 
 ## Latent Paraphrasing: Perturbation on Layers Improves Knowledge Injection in Language Models
+### 논문 정보
+- 출판년도: 2024
+- 저자: Minki Kang, Sung Ju Hwang, Gibbeum Lee, Jaewoong Cho
+- 38th Conference on Neural Information Processing Systems (NeurIPS 2024)
+
+### 문제 상황
+- LLM이 전문 분야에 널리 사용되면서, 지속적으로 변화하는 지식을 신속하고 정확하게 반영하는 것이 중요
+- 기존에는 패러프레이징(paraphrasing)된 데이터를 이용해 파인튜닝(fine-tuning)하는 방식이 일반적
+- 기존 방식으로는 아래 두 문제점이 존재
+    - 높은 계산 비용: 패러프레이징을 위해 외부 모델(예: 다른 LM, LLM)을 반복 사용
+    - 제한된 다양성: 생성된 문장 수가 적어 지식 일반화에 한계가 존재
+
+### 제안 기법: LaPael (Latent Paraphrasing on Early Layers)
+- 모델 내부에서 입력에 따라 초기 레이어에 노이즈를 가하는 방식으로 페러프레이징
+- 이는 잠재 표현(latent representation) 수준에서 동작. 이에 따라 아래의 장점이 존재
+    - 입력에 따른 다양하고 일관된 문장 표현 생성 가능
+    - 외부 모델 없이 내부에서 직접 패러프레이징
+    - 매번 지식이 업데이트 될 때마다 새로운 문장을 다시 만들 필요가 없음
+
+![LaPael](/images/2025-07-20-LLM_RAG_KG_trends/그림3.png)
+- 기존 Transformer 구조에 Latent Paraphraser 레이어를 추가
+- Latent Paraphraser 레이어를 제안하는 KL Divergence Loss Function으로 잘 학습시키면 적은 양의 데이터로 fine-tuning이 가능하다는 것으로 유추됨
 
 ## RankRAG: Unifying Context Ranking with Retrieval-Augmented Generation in LLMs
 
