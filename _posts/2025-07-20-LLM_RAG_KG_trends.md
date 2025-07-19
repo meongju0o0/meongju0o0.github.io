@@ -100,9 +100,9 @@ author_profile: true
 - 기존 Transformer 구조에 Latent Paraphraser 레이어를 추가
 - Latent Paraphraser 레이어를 제안하는 KL Divergence Loss Function으로 잘 학습시키면 적은 양의 데이터로 fine-tuning이 가능하다는 것으로 유추됨
 
-## RankRAG: Unifying Context Ranking with Retrieval-Augmented Generation in LLMs
-
 ## ChatQA: Surpassing GPT-4 on Conversational QA and RAG
+
+## RankRAG: Unifying Context Ranking with Retrieval-Augmented Generation in LLMs
 
 ## ChatQA2: Bridging the Gap to Propriety LLMs in Long Context and RAG Capabilities
 
