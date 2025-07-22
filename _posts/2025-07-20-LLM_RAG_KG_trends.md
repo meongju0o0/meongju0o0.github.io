@@ -101,11 +101,88 @@ author_profile: true
 - Latent Paraphraser 레이어를 제안하는 KL Divergence Loss Function으로 잘 학습시키면 적은 양의 데이터로 fine-tuning이 가능하다는 것으로 유추됨
 - *Early Layers?? 논문을 다 읽어보진 않았으나.. 초반 Transformer Layer에만 Latent Paraphraser를 추가하는 방식??*
 
-## ChatQA: Surpassing GPT-4 on Conversational QA and RAG
-
 ## RankRAG: Unifying Context Ranking with Retrieval-Augmented Generation in LLMs
+### 논문 정보
+- 출판년도: 2024
+- 저자: Yue Yu, Wei Ping, Zihan Liu, Boxin Wang, Jiaxuan You, Chao Zhang, Mohammad Shoeybi, Bryan Catanzaro
+- 38th Conference on Neural Information Processing Systems (NeurIPS 2024)
+
+### 서론
+- 대형 언어 모델(LLMs)이 RAG 시스템에서 문맥 순위 결정(context ranking)과 응답 생성(answer generation)을 동시에 수행할 수 있도록 학습시키는 새로운 방식 제안
+
+### 연구 배경
+- RAG(Retrieval-Augmented Generation)
+    - LLM이 검색기(retriever)를 통해 문맥(top-k 문서)를 가져오고, 그 문맥을 바탕으로 응답 생성을 수행하는 프레임워크
+- 기존 RAG는 문맥 랭킹(ranking)과 생성(generation)을 분리된 모델로 처리
+    - 문맥 랭킹은 별도의 모델(expert ranker)가 수행
+    - LLM은 응답 생성만 담당
+
+### 제안 모델: RankRAG
+- RankRAG는 **하나의 LLM이 문맥 순위 매기기와 응답 생성을 동시에 수행**하도록 instruction fine-tuning된 프레임워크
+- 랭킹과 생성 기능을 단일 LLM에 통합
+- 훈련 시, 일부 랭킹 데이터만 소량 포함하여도
+    - 기존의 랭킹 전용 모델보다 더 좋은 성능
+    - 동일 LLM에 랭킹 데이터만 대량 학습시킨 모델보다 우수
+- 별도의 랭커 모델 없이 RAG 성능 향상
+
+![RankRAG](/images/2025-07-20-LLM_RAG_KG_trends/그림4.png)
+
+## ChatQA: Surpassing GPT-4 on Conversational QA and RAG
+### 논문 정보
+- 출판년도: 2024
+- 저자: Zihan Liu, Wei Ping, Rajarshi Roy, Peng Xu, Chankyu Lee, Mohammad Shoeybi, Bryan Catanzaro
+- 38th Conference on Neural Information Processing Systems (NeurIPS 2024)
+
+### 서론
+- RankRAG와 동일한 NVIDIA 연구팀에서 개발, RankRAG가 더 우수한 모델
+- RankRAG의 주요 비교 모델
+    - ChatQA: 랭킹 정보 미반영
+    - RankRAG: 랭킹 정보 반영
+
+- NVIDIA RAG, LLMs 연구팀에서 개발한 RAG 모델 순서는 아래와 같음
+    - ChatQA, RankRAG -> ChatQA2
+
+### ChatQA와 RankRAG 성능 비교
+- 성능 비교 상의 주요 응답 차이는 아래 그림과 같음
+    - ChatQA의 경우, 랭크 정보를 반영하지 않은 채로 연관되지 않은 정보까지 retrieval -> 부정확한 응답 생성 가능
+    - RankRAG는 연관되지 않은 정보를 retrieval 하여도 랭크 정보를 반영하여 더욱 정교한 응답 생성 가능
+
+![ChatQA_vs_RankRAG](/images/2025-07-20-LLM_RAG_KG_trends/그림5.png)
+
+- 질의: "who hosted and won the inagural world cup?"
+- *참고: 1930년에 월드컵은 우루과이에서 처음 개최되었고 우루과이가 우승하였음*
+
+- ChatQA: "Germany" (Wrong!!)
+    - ChatQA는 질의에 대한 top-k 유사 문서를 랭킹 정보 없이 LLM에 투입
+    - 이에 따라, top-k 문서에 Uruguay, England, France, Germany, ... 등이 섞여서 LLM에 투입
+    - LLM은 부정확한 답변 생성
+- RankRAG: "Uruguay" (Correct!!)
+    - top-k 유사 문서에 대한 랭킹 정보를 반영하여 LLM에 투입
+    - 랭킹 정보를 반영하여 Uruguay라는 옳바른 답변 생성
 
 ## ChatQA2: Bridging the Gap to Propriety LLMs in Long Context and RAG Capabilities
+### 논문 정보
+- 출판년도: 2025
+- 저자: Peng Xu, Wei Ping, Xianchao Wu, Chejian Xu, Zihan Liu, Mohammad Shoeybi, Bryan Catanzaro
+- 13th International Conference on Learning Representations (ICLR 2025)
+
+### 문제 상황
+- 상용 모델(GPT-4-Turbo 등)은 128K 이상의 초장문(long context) 처리와 고성능 RAG에서 우수
+- 그러나, 오픈소스 모델들은 아직 그 수준에 도달하지 못함
+
+### 제안 모델: ChatQA 2
+- 기반: Llama 3.0 (70B)
+- 컨텍스트 윈도우: 8K -> 128K 확장
+- 목적: long context 처리 능력, RAG 능력 강화
+
+### 훈련 방식
+- 컨텍스트 확장 학습
+    - 기존 8K에서 128K까지 입력 길이 학습
+    - 초장문(long context)에서도 성능 저하 없이 작동하도록 설계
+- 3단계 Instruction Tuning
+    - 1단계: 일반적인 명령어 이해 및 수행 능력 강화
+    - 2단계: RAG 태스크에 특화된 학습
+    - 3단계: 초장문(long context) 이해 능력 강화
 
 ## The Elephant in the Room: Rethinking the Usage of Pre-trained Language Model in Sequential Recommendation
 
