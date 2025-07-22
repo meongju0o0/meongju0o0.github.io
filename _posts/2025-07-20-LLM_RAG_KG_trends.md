@@ -202,8 +202,6 @@ author_profile: true
     <img src="/images/2025-07-20-LLM_RAG_KG_trends/그림6.png" alt="elephant_in_room" width="500">
 </div>
 
-![elephant_in_room](/images/2025-07-20-LLM_RAG_KG_trends/그림6.png)
-
 ### 구체적 문제 상황
 - 기존 PLM 기반 SR(Sequence Recommendation) 모델은 PLM의 파라미터를 거의 그대로 사용하면서
 - 행동 시퀀스에 잘 맞도록 최적화도 부족
