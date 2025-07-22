@@ -185,9 +185,124 @@ author_profile: true
     - 3단계: 초장문(long context) 이해 능력 강화
 
 ## The Elephant in the Room: Rethinking the Usage of Pre-trained Language Model in Sequential Recommendation
+### 논문 정보
+- 출판년도: 2024
+- 저자: Zekai Qu, Ruobing Xie, Chaojun Xiao, Xingwu Sun, Zhanhui Kang
+- RecSys'24: Proceedings of the 18th ACM Conference on Recommender Systems
+
+### 문제 상황
+- Elephant in the Room
+- Pre-trained Language Model in Sequential Recommendation
+
+- 시퀀스 추천 시스템에 언어 모델 집어넣기 = 내 방에 코끼리 집어넣기
+- PLM(Pre-trained Language Model)을 시퀀스 추천 시스템에 사용하는 것은 비효율적
+- 소폭의 성능 향상, 연산량 대폭 증가
+
+![elephant_in_room](/images/2025-07-20-LLM_RAG_KG_trends/그림6.png)
+
+### 구체적 문제 상황
+- 기존 PLM 기반 SR(Sequence Recommendation) 모델은 PLM의 파라미터를 거의 그대로 사용하면서
+- 행동 시퀀스에 잘 맞도록 최적화도 부족
+- 모델 크기에 비해 성능 효율이 떨어짐
+
+- 즉, PLM이 가진 능력을 제대로 활용하지 못하면서 비효율적인 계산 자원만 낭비하는 경우가 다수
+
+### 제안 개선 방안
+- PLM으로는 아이템 임베딩만 초기화
+- 나머지는 기존 ID 기반 SR 모델을 그대로 사용하는 방식
+- 이를 통해 추론 시점에는 PLM이 개입하지 않아 추가적인 연산 비용이 없음
+
+- *Abstract만 읽고 개인적으로 생긴 의문점*
+    - *Inference 연산 시에 PLM은 작동시키지 않고 메모리나 디스크에 저장된 임베딩 벡터만 불러와서 사용한다는 것인데..*
+    - *PLM 임베딩 벡터 자체는 저장된 것을 사용한다 하여도, 추천 시스템 자체에서도 linear transformation이나 추가적인 attention 연산을 수행하는 것이 일반적인 상황일 것*
+    - *PLM에서 추출한 임베딩 자체도 이미 비대한 고차원 벡터인데, 이를 활용하는 것은 여전히 고비용 연산이지 않은가..?*
+    - *즉, 몇 천 차원 벡터를 추천시스템에 사용하겠다는 것은 여전히 합리적이지 않아 보이는 선택*
 
 ## Knowledge-based Multiple Adaptive Spaces for Recommendation
+### 논문 정보
+- 출판년도: 2023
+- 저자: Meng Yuan, Fuzhen Zhuang, Zhao Zhang, Deqing Wang, Jin Dong
+- RecSys'23: Proceedings of the 17th ACM Conference on Recommender Systems
+
+### 문제 상황
+- KG는 풍부한 의미적 정보를 제공하기 때문에 추천 시스템에서 활발히 사용되고 있음
+- 기존 대부분의 KG 기반 추천 모델은 유클리드 공간(Euclidean Space)만을 전제로 설계
+- 그러나 실제 그래프 데이터는 비유클리드 특성(Hyperbolic, Spherical 등)을 많이 가지고 있어 이러한 단일 공간 모델은 한계가 존재
+
+### 제안 기법: MCKG
+- 지식 그래프(KG)를 활용한 추천 시스템에서, 비유클리드 공간 구조를 고려하여 더 정교하고 효과적인 표현 학습을 수행하는 방법인 MCKG를 제안
+
+- MCKG: Multi-Curvature Knowledge Graph
+- 통합 임베딩 공간(Unified Embedding Space)
+    - 유클리드(Euclidean), 쌍곡(Hyperbolic), 구면(Spherical) 공간 모두를 고려할 수 있는 하이브리드 공간 설계
+- 멀티 공간 융합 (Multi-space Fusion)
+    - 각 공간에서 학습된 표현을 어텐션(attention) 기반으로 융합하여 정보 전파 품질 향상
+- 기하 기반 최적화(Geometry-aware Optimization) -> *convex optimization??*
+    - 하이퍼볼릭 및 스페리컬 공간의 기하 구조를 고려해 margin 크기를 위치에 따라 조절
+        - 중심에 가까운 영역: 작은 margin -> 유사한 아이템 구별 용이
+        - 외곽 영역: 큰 margin -> 오차 허용성 향상
+    - 이 방식은 Unified Space에서 정확도와 안정성 모두를 확보하는 데에 기여
+
+![MCKG](/images/2025-07-20-LLM_RAG_KG_trends/그림7.png)
 
 ## Heterogeneous Knowledge Fusion: A Novel Approach for Personalized Recommendation via LLM
+### 논문 정보
+- 출판년도: 2023
+- 저자: Bin Yin, Junjie Xie, Yu Qin, Zixiang Ding, Zhichao Feng, Xiang Li, Wei Lin
+- RecSys'23: Proceedings of the 17th ACM Conference on Recommender Systems
 
-## Going Beyond Local: Global Graph-Enhanced Personalized News Recommendations
+### 문제 상황
+- 사용자 행동은 단일한 형태가 아니라 heterogeneous하고 diverse함
+    - 예: 상품 클릭, 장바구니 담기, 구매, 리뷰 작성, 소셜 활동 등
+- 기존 추천 시스템은 이 다양한 행동 데이터를 그대로 모델에 입력 그로 인해 아래와 같은 문제가 발생
+    - 특징 희소성(feature sparsity)
+    - 지식 단편화(knowledge fragmentation)
+- 이는 결국 추천 품질 저하로 이어짐
+
+### 제안 기법: Heterogeneous Knowledge Fusion
+- 제안 방법
+    - Heterogeneous한 사용자 행동 데이터를 LLM을 통해 변환 및 통합(fusion)
+    - 이를 기반으로 개인화 추천 수행
+- 구성 요소
+    - Heterogeneous 행위 패턴에서 지식 추출
+        - 각 행동 유형을 언어화, LLM이 이해 가능한 형태로 표현
+        - 행위 패턴 마이닝 + 토크나이징 및 벡터화
+    - LLM 기반 지식 융합 (Heterogeneous Knowledge Fusion)
+        - 추출된 다양한 행동 데이터를 하나의 사용자 문맥(context)로 결합
+    - Instruction Tuning
+        - 위에서 생성한 행동 기반 사용자 문맥 + 추천 태스크 결합
+        - LLM에게 “이 사용자가 어떤 아이템을 좋아할까?”f는 지시 형태로 fine-tuning
+        - 즉, LLM을 개인화 추천 특화 모델로 미세조정
+
+![HKFR](/images/2025-07-20-LLM_RAG_KG_trends/그림8.png)
+
+## ✨Going Beyond Local: Global Graph-Enhanced Personalized News Recommendations
+### 논문 정보
+- 출판년도: 2023
+- 저자: Boming Yang, Dairui Liu, Toyotaro Suzumura, Ruihai Dong, Irene Li
+- RecSys'23: Proceedings of the 17th ACM Conference on Recommender Systems
+
+### 문제 상황 (기존 개인화 뉴스 추천 시스템의 한계)
+- 개인 사용자의 뉴스 클릭 이력만을 활용
+- 주로 텍스트 기반의 의미 추출(NLP)에 집중
+- 사용자의 숨은 동기나 전반적인 뉴스 트렌드를 반영하지 못함
+- 결과적으로, 추천 다양성 부족 및 예측 정확도가 저하
+
+### 제안 모델: GLORY(Global-LOcal news Recommendation sYstem)
+- 로컬 정보(local history)와 글로벌 정보(global graph-based behaviors)를 결합
+- 사용자와 뉴스 콘텐츠에 대한 풍부하고 다양성 높은 표현 학습
+
+![GLORY_graph](/images/2025-07-20-LLM_RAG_KG_trends/그림9.png)
+
+- 모델 구성
+    - Global-aware Historical News Encoder
+        - 전 세계 사용자들이 읽은 뉴스로부터 구축된 글로벌 뉴스 그래프 활용
+        - Gated Graph Neural Network (GGNN)으로 뉴스 간 관계 학습
+        - 사용자의 클릭 이력(local history)를 이 그래프에 매핑하여 더 풍부한 히스토리 표현 생성
+    - Global Candidate News Encoder
+        - 추천 후보 뉴스에 대해서도 글로벌 엔티티 그래프를 기반으로 표현 강화
+        - 글로벌 문맥을 반영하여 후보 뉴스 임베딩 생성
+    - Aggregator 모듈
+        - 위에서 얻은 히스토리 정보 + 후보 뉴스 정보를 통합하여 최종 추천 수행
+
+![GLORY_model](/images/2025-07-20-LLM_RAG_KG_trends/그림10.png)
