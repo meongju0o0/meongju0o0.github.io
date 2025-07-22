@@ -198,6 +198,10 @@ author_profile: true
 - PLM(Pre-trained Language Model)을 시퀀스 추천 시스템에 사용하는 것은 비효율적
 - 소폭의 성능 향상, 연산량 대폭 증가
 
+<div align="center">
+    <img src="/images/2025-07-20-LLM_RAG_KG_trends/그림6.png" alt="elephant_in_room" width="500">
+</div>
+
 ![elephant_in_room](/images/2025-07-20-LLM_RAG_KG_trends/그림6.png)
 
 ### 구체적 문제 상황
