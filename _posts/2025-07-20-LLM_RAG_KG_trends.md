@@ -81,7 +81,9 @@ author_profile: true
     - 그 부분 그래프는 노드의 개수가 3개 (clique, 삼각형) 이상인 완전 그래프이고
     - 주어진 그래프에서 노드의 개수가 가장 많은 완전 부분 그래프를 찾아내면 된다
 
-![maximum_clique](/images/2025-07-20-LLM_RAG_KG_trends/maximum_clique.jpg)
+<div align="center">
+    <img src="/images/2025-07-20-LLM_RAG_KG_trends/maximum_clique.png" alt="maximum_clique" width="300">
+</div>
 
 ### 성능 향상을 위한 시도
 - 아래 4가지 접근법 탐색
