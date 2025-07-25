@@ -42,6 +42,50 @@ author_profile: true
     - 최종적으로 선택된 콘텐츠 간의 관계를 그래프 형태로 학습
     - 이미지와 텍스트를 함께 처리하는 GNN을 통해 컨텍스트 정보 강화
 
+## GraphArena: Evaluating and Exploring Large Language Models on Graph Computation
+### 논문 정보
+- 출판년도: 2025
+- 저자: JianHeng Tang, Qifan Zhang, Yuhan Li, Nuo Chen, Jia Li
+- 기관: Hong Kong University of Science and Technology (Guangzhou)
+- The 30th International Conference on Learning Representations (ICLR)
+
+### 문제 상황
+- LLM들의 성능 경쟁이 치열해짐에 따라, 이들을 평가할 수 있는 벤치마크 도구 필요
+- 제안 논문은 현실 기반 그래프 계산 문제에서 LLM을 평가
+
+### 평가 대상 과제
+- 총 10개 과제 포함
+    - 4 Polynomial-time Problems
+        - Connected Component, Shortest Distance, Diameter, Common Neighbor
+    - 6 NP-Complete Problems
+        - Graph Edit Distance, Maximum Clique, Maximum Common Subgraph, Maximum Independent Set, Minimum Vertex Cover, Traveling Samlesman
+
+### 데이터셋
+- DBLP (협업), Social Network, DBpedia (KG), OpenFlights (공항), PubChem (화학 분자), 등의 현실 그래프 데이터 사용
+- Random Walk with Restart로 현실성 있는 서브그래프 추출
+- 최대 6,000 tokens -> long context 문제도 유도
+
+### 평가 지표
+- LLM의 출력은 아래 4가지 중 하나로 분류
+    - ✅ Correct: 정확하고 최적해
+        - e.g., 최대 클리크 문제에서 크기 4짜리 클리크를 정확히 찾음
+    - ⚠️ Suboptimal: 실행 가능하지만, 근사해
+        - e.g., 클리크는 맞지만 크기가 3으로 최적보다 작음
+    - ❌ Hallucinatory: 출력 형식만 맞고, 논리적으로 불가능
+        - e.g., 클리크로 출력한 노드와 에지 리스트가 실제 주어진 그래프로부터 도출 불가능
+    - 🚫 Missing: 출력 없음
+        - LLM이 멈추거나 "I'm not sure..."과 같은 대답
+
+### 성능 향상을 위한 시도
+- 아래 4가지 접근법 탐색
+    - Chain-of-thought prompting: 단계적 추론 유도
+    - Instruction tuning: 그래프 문제 해결 방식에 특화된 fine-tuning
+    - Code writing: LLM이 직접 코드를 생성해 문제 해결
+    - Scaling test-time compute: inference 시 더 많은 연산 자원 활용
+- 각자 고유한 장단점이 존재
+
+![GraphArena](/images/2025-07-20-LLM_RAG_KG_trends/GraphArena.png)
+
 ## DFA-RAG: Conversational Semantic Router for Large Language Model with Definite Finite Automaton
 ### 논문 정보
 - 출판년도: 2024
