@@ -148,7 +148,7 @@ author_profile: true
 
 ## Publications
 * **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](). Journal of Korea Software Congress, Pages -- .
-    * Implementation: [DIVERSI](https://github.com/meongju0o0/DIVERSI)
+    * Implementation: [UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
 
 ---
 
