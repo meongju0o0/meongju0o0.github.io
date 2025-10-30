@@ -195,4 +195,4 @@ author_profile: true
 * 2024.03 -- 2026.02: Lighthouse Volunteering Club
     * Accumulated Volunteer Hours: 74
 * 2025.03 -- 2026.02: Buddha-Dahrma Religion Club
-    * 2025.09 -- 2026.02: Club President
+    * 2025.09 -- 2026.02: Club Leader
