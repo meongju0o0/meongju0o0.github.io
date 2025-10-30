@@ -176,10 +176,10 @@ author_profile: true
     * Korea Software Congress, 2022
 
 ## Research Interests
-* Knowledge Graph / Recommender System / Retrieval-Augmented Generation
+* Knowledge Graph / Retrieval-Augmented Generation / Recommender System
 
 ## Study Interests
-* Vector Database / Graph Neural Network / Natural Language Processing
+* Vector Database / Graph Neural Networks / Natural Language Processing
 
 ## Participations
 ### Conference
