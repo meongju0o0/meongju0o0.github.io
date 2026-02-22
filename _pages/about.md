@@ -147,7 +147,7 @@ author_profile: true
     - C, Arduino, Serial, SPI, RFID, BlueTooth
 
 ## Publications
-* **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12577759). Journal of Korea Software Congress, Pages -- .
+* **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12577759). Journal of Korea Software Congress, Pages 1139 -- 1141.
     * Implementation: [UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
 
 ---
