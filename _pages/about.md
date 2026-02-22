@@ -190,7 +190,7 @@ author_profile: true
 * 2022 Korea Software Congress
 
 ### Club Activity
-* 2025.03 -- 2027.02: Buddha Dhamma Religion Club
+* 2025.03 -- 2027.02: Buddha-Dhamma Religion Club
     * 2025.08 -- 2026.01: Club Leader
 * 2024.03 -- 2026.02: Lighthouse Volunteering Club
     * Accumulated Volunteer Hours: 74
