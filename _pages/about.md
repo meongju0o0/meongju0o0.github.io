@@ -147,8 +147,8 @@ author_profile: true
     - C, Arduino, Serial, SPI, RFID, BlueTooth
 
 ## Publications
-* **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](). Journal of Korea Software Congress, Pages -- .
-    * Implementation: [🌈UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
+* **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12577759). Journal of Korea Software Congress, Pages -- .
+    * Implementation: [UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
 
 ---
 
@@ -168,6 +168,8 @@ author_profile: true
 ---
 
 ## Awards and Honors
+* Participation Award in Undergraduate Paper Contest
+    * Korea Software Congress, 2025
 * Excellence Student Award in Yong-In Studies Class
     * Yong-In Special City, 2023
 * Excellence Award in Undergraduate Paper Contest
@@ -176,10 +178,10 @@ author_profile: true
     * Korea Software Congress, 2022
 
 ## Research Interests
-* Knowledge Graph / Retrieval-Augmented Generation / Recommender System
+* Large Language Models / Retrieval-Augmented Generation / Knowledge Graph
 
 ## Study Interests
-* Vector Database / Graph Neural Networks / Natural Language Processing
+* Natural Language Processing / Vector Database / Graph Neural Networks
 
 ## Participations
 ### Conference
@@ -188,9 +190,11 @@ author_profile: true
 * 2022 Korea Software Congress
 
 ### Club Activity
-* 2019.03 -- 2026.02: RETURN Academic Club
-    * 2024.09 -- 2024.12: RETURN Algorithm Study, Study Leader
-* 2022.09 -- 2023.02: T.G.WinG Academic Club
-    * 2022.09 -- 2022.12: T.G.WinG Machine Learning Study, Study Leader
+* 2025.03 -- 2027.02: Buddha Dhamma Religion Club
+    * 2025.08 -- 2026.01: Club Leader
 * 2024.03 -- 2026.02: Lighthouse Volunteering Club
     * Accumulated Volunteer Hours: 74
+* 2022.09 -- 2023.02: T.G.WinG Academic Club
+    * 2022.09 -- 2022.12: T.G.WinG Machine Learning Study, Study Leader
+* 2019.03 -- 2026.02: RETURN Academic Club
+    * 2024.09 -- 2024.12: RETURN Algorithm Study, Study Leader
