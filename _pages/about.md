@@ -120,8 +120,8 @@ author_profile: true
 </html>
 
 ## Education
-* Department of Computer Science and Engineering, Kyung Hee University, Republic of Korea, Bachelor Candidate, 2019.03 -- 2026.02
-* Gumi High School Science Department, Republic of Korea, High School Diploma, 2016.03 -- 2019.02
+* Department of Artificial Intelligence, Kyung Hee University, Republic of Korea, Master Candidate, 2026.03 -- 2028.02
+* Department of Computer Science and Engineering, Kyung Hee University, Republic of Korea, Bachelor, 2019.03 -- 2026.02
 
 ## Work Experience
 * 2022.03 -- 2026.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Research Intern**
