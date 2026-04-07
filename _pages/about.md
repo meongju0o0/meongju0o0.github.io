@@ -124,7 +124,7 @@ author_profile: true
 * Department of Computer Science and Engineering, Kyung Hee University, Republic of Korea, Bachelor, 2019.03 -- 2026.02
 
 ## Work Experience
-* 2026.03 -- 2028.02: Data & Knowledge Engineering Labortory, Kyung Hee University, **Master Student**
+* 2026.03 -- 2028.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Master Student**
 * 2022.03 -- 2026.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Research Intern**
 
 ## Projects
