@@ -120,15 +120,16 @@ author_profile: true
 </html>
 
 ## Education
-* Department of Artificial Intelligence, Kyung Hee University, Republic of Korea, Master Candidate, 2026.03 -- 2028.02
+* Department of Artificial Intelligence, Kyung Hee University, Republic of Korea, Master, 2026.03 -- 2028.02
 * Department of Computer Science and Engineering, Kyung Hee University, Republic of Korea, Bachelor, 2019.03 -- 2026.02
 
 ## Work Experience
+* 2026.03 -- 2028.02: Data & Knowledge Engineering Labortory, Kyung Hee University, **Master Student**
 * 2022.03 -- 2026.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Research Intern**
 
 ## Projects
 ### Main Projects
-- **Development of Graph DBMS Technology for Intelligent High Speed Processing of Large Graphs**, 2021 - 2024
+- **Development of Graph DBMS Technology for Intelligent High Speed Processing of Large Graphs**, 2021 -- 2024
     - Supervision: Institute of Information & Communications Technology Planning & Evaluation
     - Role: Research Intern (2022 - 2024)
         - Investigate existing studies for large graph integration
@@ -141,14 +142,18 @@ author_profile: true
     - Python, bs4, selenium, node.js, crontab, MySQL, Hadoop, Spark, Github Flow, AWS EC2, AWS RDS
 - **Distributed GraphSAGE Training using DistDGL and K8s**, 2023
     - Ubuntu(WSL), NFS, Docker, K8s, Python, PyTorch, DGL
-- **Jekyll Minimal Mistakes Blog Customizing**, 2022 -
-    - Ruby, Jekyll, node.js, Firebase, GitHub
 - **IoT Doorlock with Elevator**, 2018
     - C, Arduino, Serial, SPI, RFID, BlueTooth
 
+### Currently Managing Projects
+- **KIISE Database Society of Korea Digital Library**, 2026 --
+    - React.js, Express.js, MySQL
+- **Jekyll Minimal Mistakes Blog Customizing**, 2022 --
+    - Ruby, Jekyll, node.js, Firebase, GitHub
+
 ## Publications
 * **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12577759). Journal of Korea Software Congress, Pages 1139 -- 1141.
-    * Implementation: [UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
+    * Implementation: [🌈UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
 
 ---
 
