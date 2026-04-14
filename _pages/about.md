@@ -128,12 +128,15 @@ author_profile: true
 * 2022.03 -- 2026.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Research Intern**
 
 ## Projects
-### Main Projects
+### Lab Projects
 - **Development of Graph DBMS Technology for Intelligent High Speed Processing of Large Graphs**, 2021 -- 2024
     - Supervision: Institute of Information & Communications Technology Planning & Evaluation
-    - Role: Research Intern (2022 - 2024)
+    - Role: Research Intern (2022 -- 2024)
         - Investigate existing studies for large graph integration
         - Supports large graph learning engine design
+- **POLARIS: 딥러닝 기반의 범용 절차적 SQL 최적화 시스템 기술 연구**, 2026 --
+    - Supervision: National Research Foundation(NRF) of Korea
+    - Role: Paricipation Researcher (2026 --)
 
 ### Toy Projects
 - **Emergency Room Comprehensive Situation Information Service**, 2025
