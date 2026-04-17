@@ -145,7 +145,65 @@ author_profile: true
     - Makes it harder to use as strong evidence for dataset usage
 
 ### 2-3. Radioactive Data
+#### 2-3-1. Radioactive Data, Introduction
+- Radioactive data is a method proposed to detect unauthorized usage of datasets by embedding identifiable patterns into training data
+- Similar to data poisoning, it requires a reference model trained on clean data.
+
+#### 2-3-2. How Radioactive Data Works
+- The method operates in latent space
+    - Estimate the latent representation using a reference model
+    - Slightly perturb training samples toward a predefined isotropic unit vector $u$ using adversarial techniques
+- After training
+    - A model trained on radioactive data shows
+        - Better performance on radioactive-marked test data
+        - Compated to performance on begin test data
+- Verification
+    - Detect unauthorized usage by comparing: 
+        - Performance on radioactive data vs. benign data
+
+#### 2-3-3. Notable Radioactive Data Method
+- Sablayrolles, et al., "Radioactive data: tracing through training", ICML, 2020.
+
+#### 2-3-4. Limitations of Radioactive Data
+- High computational cost
+    - Requires adversarial optimization to manipulate latent representations
+- Limited applicability in black-box setting
+    - Verification depends on: 
+        - Access to output logits or detailed prediction scores
+    - Not suitable when only final class predictions are available
+
 ### 2-4. Limitations of the Prior Works in Verification
+- Clean-labeled watermarking can be formulated as: 
+    - $\hat{x}=x+w$, ${\hat{y}}^x=y^x$
+        - $x$: original (benign) sample
+        - $w$: small watermark perturbation ($\Vert w \Vert < \epsilon$)
+        - $\hat{x}$: watermarked sample
+        - Label remains unchanged (clean-labeled setting)
+
+#### 2-4-1. Verification Strategy in Prior Works
+- Existing methods rely on intentional degradation of model behavior:
+    - Backdoor attacks
+        - Force misclassification of $x+w$
+    - Data poisoning
+        - Induce misclassification for selected samples
+    - Radioactive data
+        - Exploit performance gap: 
+            - $F(x+w)$ performs better than $F(x)$
+
+#### 2-4-2. Core Limitation: Unreliable Verification
+- Verification based on degradation is inherently unstable because: 
+    - The degradation probability depends on: 
+        - $1 - Acc(F(x), y^x)$
+    - Interpretation: 
+        - High accuracy model -> degradation is unlikely
+        - Low accuracy model -> degradation occurs more easily
+- Therefore: 
+    - The effectiveness of verification is dependent on baseline model performance -> Not robust across different models or settings
+
+#### 2-4-3. Additional Problem
+- Intentional degradation can: 
+    - Damage the original task performance
+    - Reduce the practical usability of the model
 
 ## 3. Motivation
 
