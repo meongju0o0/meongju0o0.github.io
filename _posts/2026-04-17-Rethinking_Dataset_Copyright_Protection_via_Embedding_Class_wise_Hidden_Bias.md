@@ -131,7 +131,13 @@ author_profile: true
     - The model's decision boundary shifts
     - The region around victim samples is classified as the adversarial class -> Victim samples are likely to be misclassified
 
-#### 2-2-2. Limitations of Data Poisoning
+#### 2-1-2. Notable Data Poisoning Methods
+- Aghakhani, et al., "Bullseye polytope: A scalable clean-label poisoning attack", EuroS&P, 2021.
+- Geiping, et al., "Witches’ brew: Industrial scale data poisoning via gradient matching", ICLR, 2021.
+- Huang, et al., "MetaPoison: Practical general-purpose clean-label data poisoning", NeurIPS, 2020.
+- Shafahi, et al., "Poison Frogs! Targeted clean-label poisoning attacks", NeurIPS, 2018.
+
+#### 2-2-3. Limitations of Data Poisoning
 - High computational cost
     - Requires iterative adversarial optimization -> computationally expensive
 - Limited verification power
