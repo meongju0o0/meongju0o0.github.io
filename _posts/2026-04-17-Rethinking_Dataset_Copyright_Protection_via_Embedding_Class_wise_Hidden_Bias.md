@@ -72,6 +72,10 @@ author_profile: true
 
 ## 2. Related Work
 - Many prior studies have focused on protecting intellectual property (IP) in machine learning, particularly in the context of training data and models
+    - Li, et al., "Untargeted backdoor watermark: Towards harmless and stealthy dataset copyright protection", NeurIPS, 2022.
+    - Liu, et al., "Your model trains on my data? protecting intellectual property of training data via membership fingerprint authentication", IEEE Transactions on Information Forensics and Security 17, 1024-1037, 2022.
+    - Sablayrolles, et al., "Radioactive data: tracing through training", ICML, 2020.
+    - Zhang, et al., "Model watermarking for image processing networks", AAAI, 2020.
 - Additionally, techniques originally developed as model attack methods (especially those involving data manipulation) can also berepurposed for dataset IP protection
     - badckdoor attacks
     - data poisoning
