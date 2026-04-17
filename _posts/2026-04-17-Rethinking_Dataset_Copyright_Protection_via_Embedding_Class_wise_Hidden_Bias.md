@@ -30,7 +30,6 @@ author_profile: true
 ### 4-3. Undercover Bias: Invisible Bias Embedding
 ### 4-4. Discussion
 
-
 ## 5. Experiments I: Comparison with Prior Works
 ### 5-1. Comparison in Fundamental Specifications
 ### 5-2. Comparison in Effectiveness of Watermark
