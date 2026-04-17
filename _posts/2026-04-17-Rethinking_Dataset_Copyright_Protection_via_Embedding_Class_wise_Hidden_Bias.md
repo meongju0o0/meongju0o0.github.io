@@ -174,26 +174,33 @@ author_profile: true
 
 ### 2-4. Limitations of the Prior Works in Verification
 - Clean-labeled watermarking can be formulated as: 
+    - $(x, y^x)$: 
+        - a benign sample and its corresponding ground truth
+        - sampled from $(X, Y^X)$
     - $\hat{x}=x+w$, ${\hat{y}}^x=y^x$
         - $x$: original (benign) sample
-        - $w$: small watermark perturbation ($\Vert w \Vert < \epsilon$)
+        - $w$: negligible watermark perturbation ($\Vert w \Vert < \epsilon$)
         - $\hat{x}$: watermarked sample
+        - ${\hat{y}}^x$: ground truth of $\hat{x}$, equal to $y^x$
         - Label remains unchanged (clean-labeled setting)
 
 #### 2-4-1. Verification Strategy in Prior Works
+- Let $\mathcal{F}$ denotes DNN model
+- and ${\theta}_{\mathcal{F}}$ denotes its weights
+
 - Existing methods rely on intentional degradation of model behavior:
     - Backdoor attacks
-        - Force misclassification of $x+w$
+        - Aim to induce misclassification in $\mathcal{F}(x+w, {\theta}_{\mathcal{F}})$
     - Data poisoning
-        - Induce misclassification for selected samples
+        - Selects a subset of clean data for intentional misclassifications
     - Radioactive data
         - Exploit performance gap: 
-            - $F(x+w)$ performs better than $F(x)$
+            - $F(x+w, {\theta}_{\mathcal{F}})$ performs better than $F(x, {\theta}_{\mathcal{F}})$
 
 #### 2-4-2. Core Limitation: Unreliable Verification
 - Verification based on degradation is inherently unstable because: 
     - The degradation probability depends on: 
-        - $1 - Acc(F(x), y^x)$
+        - $1 - Acc(F(x, {\theta}_{\mathcal{F}}), y^x)$
     - Interpretation: 
         - High accuracy model -> degradation is unlikely
         - Low accuracy model -> degradation occurs more easily
@@ -206,6 +213,47 @@ author_profile: true
     - Reduce the practical usability of the model
 
 ## 3. Motivation
+### 3-1. Observation: Dataset Bias
+- A biased dataset contains **unintended but consistent patterns**: 
+    - In CIFAR10: 
+        - *“ship”* images often include **sea backgrounds**
+        - *“airplane”* images often include **sky backgrounds**
+- As a result: 
+    - Models tend to learn not only object features but also **background cues** as class-discriminative features
+
+### 3-2. Empirical Evidence
+![Fig. 2: Synthetic background images and their Class Activation Maps (CAM)](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig2.png)
+- To validate this phenomenon: 
+    - Generated synthetic images using Stable Diffusion: 
+        - One set with **sea backgrounds only**
+        - Another set with **sky backgrounds only**
+        - (No actual ships or airplanes included)
+- Evaluation results (ResNet18 trained on CIFAR10): 
+    - **56.10%** of sea images → classified as *ship*
+    - **65.29%** of sky images → classified as *airplane*
+- CAM (Class Activation Map) analysis shows: 
+    - Model focuses on: 
+        - Sea horizon, waves
+        - Clouds, sky patterns
+    - → These are **not intrinsic object features**, but learned biases
+
+### 3-3. Key Insight
+- Even without target objects: 
+    - Models can classify inputs using **bias-only information**
+
+- If a model had learned only object features: 
+    - It should **randomly guess** on such synthetic images
+    - → But it does not
+
+### 3-4. Motivation for Proposed Method
+- Based on this observation: 
+    - Intentionally inject **class-wise hidden biases** into the dataset
+- Expected outcome: 
+    - A model trained on such data will: 
+        - Learn both task features and embedded biases
+- Key implication: 
+    - The model can **classify bias-only inputs**
+    - → This property can be used to **verify dataset usage**
 
 ## 4. Method
 ### 4-1. Noise Patch Placement: Class-wise Bias Embedding
