@@ -52,7 +52,7 @@ author_profile: true
     - Uses it as a dataset watermark
 
 ### Method Overview
-[Fig. 1: Illustration of the proposed undercover bias verification scheme](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig1.png)
+![Fig. 1: Illustration of the proposed undercover bias verification scheme](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig1.png)
 - Use an auxiliary dataset to generate:
     - Class-wise, undetectable hidden biases (watermarks)
 - Embed these into the target dataset
@@ -71,6 +71,12 @@ author_profile: true
 4. Strong generalization across datasets, architectures, and tasks
 
 ## 2. Related Work
+- Many prior studies have focused on protecting intellectual property (IP) in machine learning, particularly in the context of training data and models
+- Additionally, techniques originally developed as model attack methods (especially those involving data manipulation) can also berepurposed for dataset IP protection
+    - badckdoor attacks
+    - data poisoning
+    - radioactive data
+
 ### 2-1. Backdoor Attacks
 ### 2-2. Data Poisoning
 ### 2-3. Radioactive Data
