@@ -132,6 +132,11 @@ author_profile: true
     - The region around victim samples is classified as the adversarial class -> Victim samples are likely to be misclassified
 
 #### 2-2-2. Limitations of Data Poisoning
+- High computational cost
+    - Requires iterative adversarial optimization -> computationally expensive
+- Limited verification power
+    - Only affects a small number of selected samples
+    - Makes it harder to use as strong evidence for dataset usage
 
 ### 2-3. Radioactive Data
 ### 2-4. Limitations of the Prior Works in Verification
