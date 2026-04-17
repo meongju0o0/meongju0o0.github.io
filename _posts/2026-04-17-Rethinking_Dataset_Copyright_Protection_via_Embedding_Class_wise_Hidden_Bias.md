@@ -82,7 +82,43 @@ author_profile: true
     - radioactive data
 
 ### 2-1. Backdoor Attacks
+#### 2-1-1. Backdoor Attacks, Introduction
+- Backdoor attacks aim to make a model consistently miscalssify inputs containing a hidden trigger into a predefined target class, regardless of the original content
+- This is typically achieved by
+    - Injecting trigger patterns into training samples
+    - Modifying their labels (reffered to as the infection process)
+- A large body of work focuses on designing: 
+    - Less noticeable (stealthier) triggers
+    - More effective attack mechanisms
+- These techniques can be used not only for attacks but also for: 
+    - Protecting datasets from unauthorized usage (by embedding identifiable patterns)
+
+#### 2-1-2. Limitations of Backdoor Attacks
+- Detectability issue
+    - Traditional backdoor methods introduce label noise, making them detectable via visual inspection
+        - Chen, et al., "Targeted backdoor attacks on deep learning systems using data poisoning", arXiv:1712.05526, 2017.
+        - Gu, et al., "BadNets: Evaluating backdooring attacks on deep neural networks", IEEE Access, 2019.
+        - Wang, et al., "Invisible black-box backdoor attack through frequency domain", ECCV, 2022.
+- Clean-labeled backdoor approaches aim to avoid label noise: 
+    - Refool: uses reflection-based natural triggers (but limited in real-world applicability)
+        - Liu, et al., "Reflection backdoor: A natural backdoor attack on deep neural networks", ECCV, 2020.
+    - Hidden Trigger: works mainly when fine-tuning specific layers of a reference model
+        - Saha, et al., "Hidden trigger backdoor attacks", AAAI, 2020.
+- Generalization challenges
+    - Sleeper Agent: improves generalization via ensemble reference models and repeated retraining
+        - Souri, et al., "Sleeper agent: Scalable hidden trigger backdoors for neural networks trained from scratch", NeurIPS, 2022.
+    - Color Backdoor: uses color-space triggers instead of spatial patterns
+        - Jiang, et al., "Color backdoor: A robust poisoning attack in color space", CVPR, 2023.
+- Scalability limitation
+    - Many methods struggle when applied to multiple classes simultaneously
+
 ### 2-2. Data Poisoning
+- Data poisoning methods are designed to overcome the label noise issue present in traditional backdoor attacks.
+- Their goal is to make a model misclassify specific benign samples into a predefined adversarial class (targeted attack).
+
+#### 2-2-1. How Data Poisoning Works
+#### 2-2-2. Limitations of Data Poisoning
+
 ### 2-3. Radioactive Data
 ### 2-4. Limitations of the Prior Works in Verification
 
