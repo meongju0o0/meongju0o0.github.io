@@ -117,6 +117,20 @@ author_profile: true
 - Their goal is to make a model misclassify specific benign samples into a predefined adversarial class (targeted attack).
 
 #### 2-2-1. How Data Poisoning Works
+1. Train a reference model
+    - A model is first trained on a clean (benign) datset
+2. Select an adversarial target class
+    - Define which class the victim samples should be misclassified into
+3. Choose victim samples
+    - Identify specific inputs that the attacker wants to manipulate
+
+- The poisoning process: 
+    - Modify some training samples from the adversarial class
+    - Use adversarial attack techniques to move them close to victim samples in latent space
+- After fine-tuning: 
+    - The model's decision boundary shifts
+    - The region around victim samples is classified as the adversarial class -> Victim samples are likely to be misclassified
+
 #### 2-2-2. Limitations of Data Poisoning
 
 ### 2-3. Radioactive Data
