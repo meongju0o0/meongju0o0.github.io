@@ -195,7 +195,9 @@ author_profile: true
         - Selects a subset of clean data for intentional misclassifications
     - Radioactive data
         - Exploit performance gap: 
-            - $F(x+w, {\theta}_{\mathcal{F}})$ performs better than $F(x, {\theta}_{\mathcal{F}})$
+            - $F(x+w, {\theta}_{\mathcal{F}})$
+            performs better than
+            $F(x, {\theta}_{\mathcal{F}})$
 
 #### 2-4-2. Core Limitation: Unreliable Verification
 - Verification based on degradation is inherently unstable because: 
