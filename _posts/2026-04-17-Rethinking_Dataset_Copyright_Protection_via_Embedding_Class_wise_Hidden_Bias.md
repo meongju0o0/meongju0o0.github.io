@@ -195,7 +195,9 @@ author_profile: true
         - Selects a subset of clean data for intentional misclassifications
     - Radioactive data
         - Exploit performance gap: 
-            - $F(x+w, {\theta}_{\mathcal{F}})$ performs better than $F(x, {\theta}_{\mathcal{F}})$
+            - $F(x+w, {\theta}_{\mathcal{F}})$
+            - performs better than
+            - $F(x, {\theta}_{\mathcal{F}})$
 
 #### 2-4-2. Core Limitation: Unreliable Verification
 - Verification based on degradation is inherently unstable because: 
@@ -272,7 +274,10 @@ author_profile: true
 - The first approach introduces class-specific noise patches into the dataset to embed hidden bias
 
 #### 4-1-1. Method
-![Fig.3 Examples of noise patch placement](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig3.png)
+<div align="center">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig3.png" alt="fig3_examples_of_noise_patch_placement" width="600">
+</div>
+
 - For each class, a unique noise pattern is assigned and injected as: 
     - $\hat{x} = x + \lambda n$ $s.t.$ $y^x = y^n$
         - $x$: original image
@@ -294,7 +299,10 @@ author_profile: true
     - Tested on noise-only images
 
 #### 4-1-3. Key Findings
-![Table 1: Results of watermarks based on noise placement](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table1.png)
+<div align="center">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table1.png" alt="table1_results_of_watermarks_based_on_noise_placement" width="600">
+</div>
+
 - Hidden bias can be embedded (clean-labled)
     - Even though noise images are very different from original images: 
         - Model achieves high accuracy on noise-only inputs
