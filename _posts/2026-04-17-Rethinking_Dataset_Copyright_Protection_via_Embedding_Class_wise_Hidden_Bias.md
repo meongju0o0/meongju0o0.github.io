@@ -275,7 +275,7 @@ author_profile: true
 
 #### 4-1-1. Method
 <div align="center">
-    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig3.png" alt="fig3_examples_of_noise_patch_placement" width="600">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig3.png" alt="fig3_examples_of_noise_patch_placement" width="500">
 </div>
 
 - For each class, a unique noise pattern is assigned and injected as: 
@@ -300,7 +300,7 @@ author_profile: true
 
 #### 4-1-3. Key Findings
 <div align="center">
-    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table1.png" alt="table1_results_of_watermarks_based_on_noise_placement" width="600">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table1.png" alt="table1_results_of_watermarks_based_on_noise_placement" width="500">
 </div>
 
 - Hidden bias can be embedded (clean-labled)
@@ -361,7 +361,7 @@ author_profile: true
 
 #### 4-2-4. Key Findings
 <div align="center">
-    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table2.png" alt="table2_results_of_watermarks_based_on_data_overlay" width="600">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table2.png" alt="table2_results_of_watermarks_based_on_data_overlay" width="500">
 </div>
 
 1. Strong robustness to augmentation
@@ -376,7 +376,7 @@ author_profile: true
 
 #### 4-2-5. Limitations
 <div align="center">
-    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig4.png" alt="fig4_examples_of_overlaid_image" width="600">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig4.png" alt="fig4_examples_of_overlaid_image" width="500">
 </div>
 
 - **Highly visible watermark**
