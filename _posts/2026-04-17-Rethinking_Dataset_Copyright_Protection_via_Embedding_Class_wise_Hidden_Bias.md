@@ -295,14 +295,11 @@ author_profile: true
 
 #### 4-1-3. Key Findings
 ![Table 1: Results of watermarks based on noise placement](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table1.png)
-1. Hidden bias can be embedded (clean-labled)
+- Hidden bias can be embedded (clean-labled)
     - Even though noise images are very different from original images: 
         - Model achieves high accuracy on noise-only inputs
     - -> Confirms feasibility of watermark via noise placement
-
----
-
-2. Domain gap issue & solution
+- Domain gap issue & solution
     - Performance: 
         - $\lambda n$ alone -> lower accuracy
         - $\lambda n + \mu (\mathcal{X})$ -> higher accuracy
@@ -312,10 +309,7 @@ author_profile: true
     - Solution: 
         - Add dataset mean $\mu (\mathcal{X})$
         - -> Aligns distribution -> improves classification
-
----
-
-3. Sensitivity to spatial transformations
+- Sensitivity to spatial transformations
     - Performance drops significantly with data augmentation: 
         - No flip -> ~60% accuracy
         - Horizontal flip -> ~20%
