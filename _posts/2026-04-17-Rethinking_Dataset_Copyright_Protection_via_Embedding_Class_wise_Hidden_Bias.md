@@ -389,7 +389,71 @@ author_profile: true
     - Can be removed or filtered visually
 
 ### 4-3. Undercover Bias: Invisible Bias Embedding
+- Based on previous methods, an effective watermark must satisfy:
+    1. Robustness to spatial transformations
+    2. Near invisibility to human perception
+- To achieve this, the paper proposes an **invisible watermarking method** using: 
+    - **Image steganography**
+    - **Auxiliary dataset**
+
+#### 4-3-1. Overall Framework
+- Watermarked image generation: 
+    - $\hat{x}=DWN(x,z)$
+- Watermark definition
+    - $w = \hat{x} - x$
+    - $y^w = y^z$
+        - $x$: original image
+        - $z$: auxiliary image
+        - $\hat{x}$: watermarked image
+        - $w$: hidden watermark
+        - Label of watermark follows auxiliary data
+
+#### 4-3-2. Dataset Watermarking Network (DWN)
+- A neural network designed to: 
+    - **Hide auxiliary information inside the image**
+    - While keeping the image visually unchanged
+- Components
+    1. Hiding Network ($G_w$)
+        - Input: $x$, $z$
+        - Output: $\hat{x}$ (visually similar to $x$)
+    2. Reconstruction Network ($G_r$)
+        - Input: $\hat{x}$
+        - Output: 
+            - $x'$: reconstructed original image
+            - $z'$: reconstructed auxiliary signal
+                - $\hat{x}=G_w(x, z)$, $x',z'=G_r(\hat{x})$
+
+#### 4-3-3. Training Objective
+- Train all components jointly using: 
+    - **L1 loss (reconstruction)**
+    - **Cross-entropy loss (classification)**
+- Loss components: 
+    - Reconstruction constraints
+        - Preserve original image: $\vert x - \hat{x} \vert$, $\vert x - x' \vert$
+        - Preserved embedded signal: $\vert z - z' \vert$
+    - Perceptual (classification) constraints
+        - $H_x$: ensures original task performance
+            - $x$, $\hat{x}$, $x'$ all classified correctly
+        - $H_w$: ensures watermark encodes class-wise information
+            - Extracted watermark corresponds to $y^z$
+
+#### 4-3-4. Practical Design Choice
+- Instead of using many classifiers for model-agnostic training: 
+    - Use a **simple CNN with dropout**
+    - Includes: 
+        - Spatial dropout
+        - Standard dropout
+
+#### 4-3-5. Key Property
+- After training: 
+    - Watermarked images can be generated without retraining
+    - Watermarks are: 
+        - Invisible
+        - Robust
+        - Class-discriminative
+
 ### 4-4. Discussion
+
 
 ## 5. Experiments I: Comparison with Prior Works
 ### 5-1. Comparison in Fundamental Specifications
