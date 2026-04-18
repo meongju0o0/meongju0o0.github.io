@@ -174,7 +174,7 @@ author_profile: true
 
 ### 2-4. Limitations of the Prior Works in Verification
 - Clean-labeled watermarking can be formulated as: 
-    - $(x, y^x)$: 
+    - $(x, y^x)$
         - a benign sample and its corresponding ground truth
         - sampled from $(X, Y^X)$
     - $\hat{x}=x+w$, ${\hat{y}}^x=y^x$
@@ -332,6 +332,62 @@ author_profile: true
 - -> It leads to unstable verification
 
 ### 4-2. Overlaying Auxiliary Dataset: Robust Bias to Augmentation
+- To address the lack of robustness to spatial transformations in noise-based methods, a more stable bias pattern is required
+
+#### 4-2-1. Method
+- Instead of manually designing patterns, **the method uses an auxiliary dataset** to generate robust class-wise bias
+- Watermarking is performed as: 
+    - $\hat{x}=(1-\lambda) x + \lambda x$ $s.t.$ $y^x=y^z$
+        - $(z, y^z)$: auxiliary data and its label
+        - $x$: target dataset sample
+        - $z$: auxiliary dataset sample
+        - $\lambda$: mixing coefficient
+        - Labels are aligned (clean-labeld setting)
+
+#### 4-2-2. Label Alignment Strategy
+- Even if two datasets are semantically unrelated: 
+    - Only class indices are matched
+- Example: 
+    - select $x$ from CIFAR10: 'airplane' -> $y^x = $ 'Class 0'
+    - select $z$ from Fashion-MNIST: pullover -> $y^z = $ 'Class 0'
+    - -> corresponding $y^x$ and $y^z$ could both be denoted as 'Class 0'
+    - i.e., overlay both samples as same class
+
+#### 4-2-3. Experimental Setup
+- Target dataset: CIFAR10
+- Auxiliary dataset: Fashion-MNIST
+- Model: ResNet18
+- Training: same as noise patch experiment
+
+#### 4-2-4. Key Findings
+<div align="center">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table2.png" alt="table2_results_of_watermarks_based_on_data_overlay" width="600">
+</div>
+
+1. Strong robustness to augmentation
+    - Overlaid patterns are: 
+        - Distributed across the image
+        - Not tied to a specific location
+    - -> Robust to flip, rotation, etc.
+2. Effective hidden bias learning
+    - Model successfully learns: 
+        - Auxiliary dataset patterns as class-specific bias
+    - -> Works as a strong watermark signal
+
+#### 4-2-5. Limitations
+<div align="center">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig4.png" alt="fig4_examples_of_overlaid_image" width="600">
+</div>
+
+- **Highly visible watermark**
+    - Overlay significantly alters image appearance
+    - Easily detectable by human inspection
+- **Performance degradation**
+    - Large deviation from original data distribution
+    - -> Lower validation accuracy on benign task
+- **Practical vulnerability**
+    - Can be removed or filtered visually
+
 ### 4-3. Undercover Bias: Invisible Bias Embedding
 ### 4-4. Discussion
 
