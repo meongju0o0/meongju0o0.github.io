@@ -256,7 +256,75 @@ author_profile: true
     - → This property can be used to **verify dataset usage**
 
 ## 4. Method
+- Bias has traditionally been regarded as a negative factor in deep learning because it can:
+    - Degrade model performance
+    - Introduce ethical problems such as gender or race bias
+- For this reason, many previous studies have focused on debiasing techniques to remove such unwanted patterns
+- In contrast, this paper takes a fundamentally different perspective: 
+    - It intentionally embeds class-wise hidden biases into the dataset
+    - These hidden biases are used as a form of dataset watermark for copyright protection
+- This main idea is: 
+    - Instead of eliminating bias, **exploit it as a verifiable signal**
+    - A model **trained on the watermarked dataset** will learn these **hidden class-specific biases**
+    - This learned behavior can later be used **to verify whether the dataset was used during training**
+
 ### 4-1. Noise Patch Placement: Class-wise Bias Embedding
+- The first approach introduces class-specific noise patches into the dataset to embed hidden bias
+
+#### 4-1-1. Method
+![Fig.3 Examples of noise patch placement](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig3.png)
+- For each class, a unique noise pattern is assigned and injected as: 
+    - $\hat{x} = x + \lambda n$ $s.t.$ $y^x = y^n$
+        - $x$: original image
+        - $n$: class-specific noise (Gaussian $\mathcal{N}(0,I)$)
+        - $\lambda$: small scaling facotr (0.01)
+        - Label remains unchanged (clean-labeled)
+    - Note is: 
+        - Placed at predefined, class-specific spatial locations
+        - Applied to 50% of training data
+
+#### 4-1-2. Experimental Setup
+- Model: ResNet18
+- Dataset: CIFAR10
+- Training: 
+    - 100 epochs
+    - Adam optimizer + cosine decay
+    - Data augmentation applied
+- Evaluation: 
+    - Tested on noise-only images
+
+#### 4-1-3. Key Findings
+![Table 1: Results of watermarks based on noise placement](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table1.png)
+1. Hidden bias can be embedded (clean-labled)
+    - Even though noise images are very different from original images: 
+        - Model achieves high accuracy on noise-only inputs
+    - -> Confirms feasibility of watermark via noise placement
+---
+2. Domain gap issue & solution
+    - Performance: 
+        - $\lambda n$ alone -> lower accuracy
+        - $\lambda n + \mu (\mathcal{X})$ -> higher accuracy
+    - Reason: 
+        - $\lambda n$ has near-zero mean -> differs from real image distribution
+        - Model tends to ignore it
+    - Solution: 
+        - Add dataset mean $\mu (\mathcal{X})$
+        - -> Aligns distribution -> improves classification
+---
+3. Sensitivity to spatial transformations
+    - Performance drops significantly with data augmentation: 
+        - No flip -> ~60% accuracy
+        - Horizontal flip -> ~20%
+        - Horizontal + vertical flip -> ~12%
+    - Cause: 
+        - Noise patterns are location-dependent
+        - Flip/rotations distort pattern consistency
+
+#### 4-1-4. Limitation
+- Noise-based watermark is: 
+    - Not robust to spatial transformations (flip, rotation, translation)
+- -> It leads to unstable verification
+
 ### 4-2. Overlaying Auxiliary Dataset: Robust Bias to Augmentation
 ### 4-3. Undercover Bias: Invisible Bias Embedding
 ### 4-4. Discussion
