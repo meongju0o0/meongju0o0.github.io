@@ -301,7 +301,9 @@ author_profile: true
     - Even though noise images are very different from original images: 
         - Model achieves high accuracy on noise-only inputs
     - -> Confirms feasibility of watermark via noise placement
+
 ---
+
 2. Domain gap issue & solution
     - Performance: 
         - $\lambda n$ alone -> lower accuracy
@@ -312,7 +314,9 @@ author_profile: true
     - Solution: 
         - Add dataset mean $\mu (\mathcal{X})$
         - -> Aligns distribution -> improves classification
+
 ---
+
 3. Sensitivity to spatial transformations
     - Performance drops significantly with data augmentation: 
         - No flip -> ~60% accuracy
