@@ -914,5 +914,47 @@ author_profile: true
         - Ignores watermark signals
 
 ## 8. Conclusion & Limitations
-### 8-1. Conclusion
-### 8-2. Limitations
+- This paper proposes “undercover bias”, a novel dataset watermarking method:
+    - Embeds class-wise hidden bias into the dataset
+    - Enables detection of models trained on that dataset
+
+### 8-1. Core Idea
+- Models trained on watermarked data:
+    - Unintentionally learn hidden bias
+    - Respond to watermark signals
+- This behavior serves as evidence of dataset misuse (cheating)
+
+### 8-2. Key Contributions
+- Observed that:
+    - Models can classify background-only images
+    - → Indicates unintended bias learning
+- Developed two preliminary methods:
+    - Noise patch placement
+    - Dataset overlay
+- Identified key requirements:
+    - Robustness to spatial transformations
+    - Invisibility
+- Proposed final method:
+    - Undercover bias satisfying both requirements
+
+### 8-3. Effectiveness
+- Compared to prior methods:
+    - More reliable verification
+    - Less visible watermark
+    - Less impact on task performance
+- Additional validation:
+    - Ablation studies
+    - Visualization analysis
+
+### 8-4. Generalization
+- Successfully applied to:
+    - Fine-grained classification
+    - Image segmentation
+- Demonstrates:
+    - Broad applicability across tasks and settings
+
+### 8-5. Limitations
+- Not applicable to text data
+    - Small perturbations can drastically change meaning
+- Slight performance degradation
+    - Watermarked models perform marginally worse than clean models
