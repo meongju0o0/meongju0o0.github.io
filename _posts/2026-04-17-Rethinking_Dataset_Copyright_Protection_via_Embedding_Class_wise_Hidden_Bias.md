@@ -9,7 +9,7 @@ author_profile: true
 ---
 
 # Rethinking Data Bias: Dataset Copyright Protection via Embedding Class-wise Hidden Bias
-## 논문 정보
+## About Paper
 - Jinhyeok Jang, BungOk Han, Jaehong Kim, Chan-Hyun Youn
 - Computer Vision - ECCV 2024
 - ETRI (Electronics and Telecommunications Research Institute) / KAIST (Korea Advanced Institute of Science and Technology)
@@ -745,10 +745,105 @@ author_profile: true
         - Clean models vs. cheating models
 
 ### 6-2. Application to Fine-grained Classification
+#### 6-2-1. Purpose
+- Address a key limitation: 
+    - Auxiliary dataset is typically required to have equal or more classes than the target dataset
+- Solution:
+    - Use modulo operation to enable class matching even when: 
+        - Target dataset has more classes than auxiliary dataset
+
+#### 6-2-2. Experimental Setting
+- Datasets
+    - Tiny ImageNet (100 classes)
+    - ImageNet (1,000 classes)
+    - Auxiliary dataset: 
+        - Fashion-MNIST (10 classes)
+- Setup
+    - 50% of training data watermarked
+    - Model: MobileNetV2
+    - Training configurations:
+        1. Tiny ImageNet
+            - Trained from scratch
+            - SSIM: 0.9883
+        2. ImageNet
+            - Initialized from pre-trained ImageNet model
+            - SSIM: 0.9570
+
+#### 6-2-3. Results
+<div align="center">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table6.png" alt="table6_Validation_accuracy_of_MobileNetV2_on_Tiny_ImageNet_and_ImageNet" width="500">
+</div>
+
+- Based on multiple trials:
+    - Tiny ImageNet: 30 runs
+    - ImageNet: 5 runs
+- Harmlessness
+    - Slight decrease in validation accuracy on benign data
+- Verifiability
+    - Significant improvement in detecting watermark signals
+- Clean model behavior
+    - Performance on watermark inputs drops to near chance level
+
+#### 6-2-5. Implication
+- Even when target dataset has far more classes than auxiliary dataset -> The proposed method still works effectively
+
 ### 6-3. Application to Image Segmentation
+#### 6-3-1. Purpose
+- Extend the proposed watermarking method from image classification to image segmentation
+- Key challenge:
+    - Segmentation requires pixel-level predictions, not image-level labels
+
+#### 6-3-2. Method Adaptation
+- Introduce spatially varying watermarks: 
+    - Auxiliary data is: 
+        - Resized to small patches (e.g., 8x8 pixels)
+        - Repeatedly stitched onto image segments
+    - Each patch is aligned with: 
+        - The label of the corresponding segment
+- Applied to 50% of PASCAL VOC 2012 dataset
+
+#### 6-3-3. Model Adjustment
+- Modified DWN: 
+    - Replace classification heads with autoencoders + dropout
+- Backbone: 
+    - MobileNetV2
+- Training setup: 
+    - From scratch
+    - Adam optimizer (initial LR = 1e-3, with decay)
+    - Batch size = 60
+    - Data augmentation applied
+
+#### 6-3-4. Threshold Adjustment
+- In segmentation: 
+    - Important information lies in object shapes (silhouettes)
+- Therefore: 
+    - Requires a higher verification threshold than $\frac{2}{N_{cls}^w}$
+
+#### 6-3-5. Evaluation Metrics
+- Task performance
+    - Measured by mIoU (mean Intersection over Union)
+- Verification
+    - Measured by: 
+        - Mean class pixel accuracy
+        - On masked (watermark) regions
+
+#### 6-3-6. Results
+<div align="center">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig7.png" alt="fig7_Results_on_segmentation_and_an_example_with_emphasized_for_clarity" width="500">
+</div>
+
+- Harmlessness
+    - Minimal degradation in segmentation performance
+- Verifiability
+    - Watermark successfully learned in most trials
+- Performance comparison
+    - Clean models: accuracy < 0.2
+    - Cheating models: 79% of trials -> accuracy > 0.2
 
 ## 7. Ablation Studies
 ### 7-1. Histogram Analysis of mAcc on Watermark
 ### 7-2. Visualizations
 
-## 8. Conclusion
+## 8. Conclusion & Limitations
+### 8-1. Conclusion
+### 8-2. Limitations
