@@ -421,13 +421,16 @@ author_profile: true
         - Output: 
             - $x'$: reconstructed original image
             - $z'$: reconstructed auxiliary signal
-                - $\hat{x}=G_w(x, z)$, $x',z'=G_r(\hat{x})$
+                - $\hat{x}=G_w(x, z, \theta_{G_{w}})$
+                - $x',z'=G_r(\hat{x}, \theta_{G_{r}})$
+            - $\theta_{G_{w}}$: weight of the autoencoder $G_w$
+            - $\theta_{G_{r}}$: weight of the autoencoder $G_r$
 
 #### 4-3-3. Training Objective
 - Train all components jointly using: 
     - **L1 loss (reconstruction)**
     - **Cross-entropy loss (classification)**
-- Loss components: 
+- Loss components 
     - Reconstruction constraints
         - Preserve original image: $\vert x - \hat{x} \vert$, $\vert x - x' \vert$
         - Preserved embedded signal: $\vert z - z' \vert$
@@ -436,6 +439,26 @@ author_profile: true
             - $x$, $\hat{x}$, $x'$ all classified correctly
         - $H_w$: ensures watermark encodes class-wise information
             - Extracted watermark corresponds to $y^z$
+
+- Reconstruction loss
+    - $\lambda_1^G \vert x - \hat{x} \vert + \lambda_2^G \vert x - x' \vert + \lambda_3^G \vert z - z' \vert$
+        - $\vert x - \hat{x} \vert$: watermarked image should be close to the original (watermark invisibility)
+        - $\vert x - x' \vert$: reconstructed image $x'$ should match the original (prevent information loss)
+        - $\vert z - z' \vert$: embedded auxiliary information should be recoverable (ensures watermark is properly encoded)
+- Origianl task loss (for classify $y^x$)
+    - $\lambda_1^H \mathcal{L}_{CE}(H_x(x), y^x) + \lambda_2^H \mathcal{L}_{CE}(H_x(\hat{x}), y^x) + \lambda_3^H \mathcal{L}_{CE}(H_x(x'), y^x)$
+        - $H_x(x)$: ensures correct classification of the original image (baseline)
+        - $H_x(\hat{x})$: maintains performance even after watermark embedding (prevents degradation)
+        - $H_x(x')$: ensures reconstructed image is still meaningful and classifiable
+- Watermark training loss (for classify $y^z$)
+    - $\lambda_4^H \mathcal{L}_{CE}(H_w(x' - x + \mu(X)), y^z)$
+        - $x' - x + \mu(X)$
+        - $x' - x = w$, i.e., watermark $w$
+        - $\mu(X)$: mean image of the target dataset $X$
+        - This formulation enables classification of auxiliary labels using only the watermark
+
+- Final loss formulation
+    - $\lambda_1^G \vert x - \hat{x} \vert + \lambda_2^G \vert x - x' \vert + \lambda_3^G \vert z - z' \vert + \lambda_1^H \mathcal{L}_{CE}(H_x(x), y^x) + \lambda_2^H \mathcal{L}_{CE}(H_x(\hat{x}), y^x) + \lambda_3^H \mathcal{L}_{CE}(H_x(x'), y^x) + \lambda_4^H \mathcal{L}_{CE}(H_w(x' - x + \mu(X)), y^z)$
 
 #### 4-3-4. Practical Design Choice
 - Instead of using many classifiers for model-agnostic training: 
