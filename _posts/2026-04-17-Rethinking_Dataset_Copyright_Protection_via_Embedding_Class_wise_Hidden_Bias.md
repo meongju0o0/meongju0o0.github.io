@@ -842,6 +842,42 @@ author_profile: true
 
 ## 7. Ablation Studies
 ### 7-1. Histogram Analysis of mAcc on Watermark
+#### 7-1-1. Purpose
+- Validate the threshold criterion used for detecting cheating models
+- $\tau = \frac{2}{N_{cls}^w}$
+
+#### 7-1-2. Experimental Setting
+- Models:
+    - ResNet18 on CIFAR10
+    - DenseNet on CIFAR100
+- Training:
+    - With and without watermark
+    - From scratch
+    - Optimizer: Adam (learning rate = 1e-3)
+    - Epochs: 100
+- Scale:
+    - 300+ training runs per setting
+- Evaluation:
+    - Measure mAcc on watermark
+    - Analyze distribution via histograms
+
+#### 7-1-3. Results
+![fig.8: Histogram of mAcc on watermark of clean and cheating models](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig8.png)
+
+- mAcc values follow a Gaussian-like distribution
+
+- Observations
+    - Clean models rarely approach to $\frac{2}{N_{cls}^w}$
+    - Chaeting models all exceed $\frac{2}{N_{cls}^w}$
+    - No samples observed:
+        - At 0% mAcc
+        - At exactly $\frac{2}{N_{cls}^w}$
+
+#### 7-1-4. Statistical Interpretation
+- Threshold: $\frac{2}{N_{cls}^w}$
+- Corresponds to: ~7× and ~5× standard deviation from the mean
+- Clean model exceeding threshold probability: $< 3 \times 10^{-5}$
+
 ### 7-2. Visualizations
 
 ## 8. Conclusion & Limitations
