@@ -389,6 +389,7 @@ author_profile: true
     - Can be removed or filtered visually
 
 ### 4-3. Undercover Bias: Invisible Bias Embedding
+![Fig.5: Architecture of the proposed Dataset Watermarking Network](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig5.png)
 - Based on previous methods, an effective watermark must satisfy:
     1. Robustness to spatial transformations
     2. Near invisibility to human perception
@@ -476,14 +477,273 @@ author_profile: true
         - Class-discriminative
 
 ### 4-4. Discussion
+#### 4-4-1. Issue: Number of Classes
+- To ensure correct pairing: 
+    - $y^x = y^w$
+    - -> Target data and watermark must share the same label
+- Problem: 
+    - The auxiliary (watermark) dataset may have fewer or different number of classes than the target dataset
+    - Direct one-to-one class matching becomes difficult
+- Solution: Modulo Operation
+    - $y^x \equiv y^w (mod N_{cls}^w)$
+    - $N_{cls}^w$: number of classes in the watermark (auxiliary) dataset
+    - Enables: 
+        - Flexible class pairing even when class counts differ
+        - Reuse of watermark classes across multiple target classes
 
+#### 4-4-2. Verification Metric (Black-box Setting)
+- Assumption: 
+    - Only predicted class outputs are available (strict black-box)
+- Metric used: **Mean Class Accuracy (mAcc)**
+    - $\frac{1}{N_{cls}^w} \sum_{c=1}^{N_{cls}^w} \mathbb{P}\big(F(\mu(X) + w, \theta_F) = c \mid y^w = k \big) > \tau$
+- Key idea: 
+    - Evaluate model performance on watermark-only inputs: 
+        - $\mu(X) + w$
+
+- Interpretation
+    - Clean model
+        - Has not seen watermark -> performs poorly (near random)
+    - Cheating model
+        - Learned watermark -> achieves high mAcc
+    - Decision rule: 
+        - If mAcc $>$ threshold $\tau$ -> suspect dataset misues
+
+#### 4-4-3. Handling Different Class Sizes
+- If target and auxiliary datasets differ in class count: 
+    - $F(\mu(X) + w, \theta_F) \equiv k (mod N_{cls}^w)$
+- Ensures consistent evaluation under modulo mapping
+
+#### 4-4-4. Threshold Determination
+- Goal: 
+    - Define a threshold that clean models cannot reach by chance
+- Assumption
+    - mAcc of a clean model follows: 
+        - Approximately Gaussian-like distribution
+        - Centered at: {$\frac{1}{N_{cls}^w}$}
+
+#### 4-4-5. Trade-Off
+- More precise thresholds:
+    - Require estimating full distribution -> computationally expensive
+- Proposed solution: 
+    - Use $2/N_{cls}^{w}$ as a lightweight and practical heuristic
 
 ## 5. Experiments I: Comparison with Prior Works
+- This section compares the proposed method with: 
+    - Backdoor attacks
+    - Data poisoning
+    - Radioactive data
+- Evaluation aspects: 
+    - computational cost
+    - Invisibility
+    - Harmlessness (impact on original task)
+    - Verification ability
+- Dataset used: CIFAR 10
+
+#### 5-0-1. Experimental Setup
+- For all methods: 
+    - 50% of training data is watermarked/modified
+
+#### 5-0-2. Backdoor Attacks
+- Two types considered: 
+
+1. Label-noised backdoor
+    - Methods:
+        - BadNets (Gu, et al., "Badnets: Evaluating backdooring attacks on deep neural networks", IEEE Access 7, 2019.)
+        - Blended (Chen, et al., "Targeted backdoor attacks on deep learning systems using data poisoning", arXiv:1712.05526, 2017.)
+    - Used only for basic specification comparison
+2. Clean-labeled backdoor
+    - Methods:
+        - Hidden Trigger (Saha, et al., "Hidden trigger backdoor attacks", AAAI, vol. 34, 2020.)
+        - Sleeper Agent (Souri, et al., "Sleeper agent: Scalable hidden trigger backdoors for neural networks trained from scratch", NeurIPS, 2022.)
+    - Setup
+        - 10 distinct triggers
+        - One trigger assigned per class
+
+#### 5-0-3. Data Poisoning
+- Methods:
+    - Poison Frogs (Shafahi, et al., "Poison frogs! targeted clean-label poisoning attacks on neural networks", NeurIPS, 2018.)
+    - MetaPoison (Huang, et al., "Metapoison: Practical general purpose clean-label data poisoning", NeurIPS, 2020.)
+    - Bullseye (Aghakhani, et al., "Bullseye polytope: A scalable clean-label poisoning attack with improved tranferability", EuroS&P, 2021.)
+    - Gradient Matching (Geiping, et al., "Witches' brew: Industrial scale data poisoning via gradient matching". ICLR, 2021.)
+- Setup: 
+    - 1 verification image per class
+    - Total: 10 verification images
+    - Multi-target setting
+    - 5% poisoning budget per verification sample
+
+#### 5-0-4. Radioactive Data
+- Method: Radioactive Data (Sablayrolles, et al., "Radioactive data: tracing through training", ICML, 2020.)
+- Setup: 
+    - 50% of training data marked
+    - Entire test set also marked
+
+#### 5-0-5. Reference Model
+- Required for prior methods: 
+    - Used ResNet18 trained on clean CIFAR10
+- Implementation: 
+    - Below official codes were used
+        - (Geiping, et al., "Witches' brew: Industrial scale data poisoning via gradient matching", ICLR, 2021.)
+        - (Sablayrolles, et al., "Radioactive data: tracing through trainig", ICML, 2020.)
+        - (Souri, et al., "Sleeper agent: Scalable hidden trigger backdoors for neural networks trained from scratch", NeurIPS, 2022.)
+
+#### 5-0-6. Proposed Method
+- Approach
+    - Embed watermark using auxiliary dataset (Fashion-MNIST)
+- Architecture: 
+    - Pre-trained DWN (Dataset Watermarking Network)
+        - Autoencoder: U-Net (Ronneberger, et al., "U-net: Convolutional networks for biomedical image segmentation", MICCAI, 2015.)
+        - Classifiers: Vanilla CNN (4 conv layers + dropout)
+- Setup: 
+    - Watermark applied to 50% of training data
+
 ### 5-1. Comparison in Fundamental Specifications
+#### 5-1-1. Evaluation Criteria
+- Harmlessness
+    - Measured by validation accuracy on benign data
+    - Higher accuracy -> less impact on original task
+- Time Cost
+    - Measured as watermarking time per image
+    - Excludes: 
+        - DWN training time
+        - Reference model training time
+- Invisibility
+    - Measured using SSIM (Structural Similarity Index)
+    - Between: 
+        - Original image
+        - Watermarked image
+
+#### 5-1-2. Observations on Prior Methods
+- Label-noised backdoor attacks
+    - Easily detectable via visual inspection
+    - Due to incorrect labels
+- Clean-labeled backdoor, data poisoning, radioactive data
+    - Require reference models
+    - -> Model-dependent
+    - -> Computationally expensive
+    - Often produce visible artifacts
+- Data poisoning
+    - Limited to a small number of victim samples
+    - -> Weak scalability for verification
+
+#### 5-1-3. Advantages of Proposed Method
+- High invisibility
+    - Generate less perceptible watermarks
+- Model-agnostic
+    - Does not depend heavily on reference models
+- Efficient
+    - Faster watermarking process
+- Scalable verification
+    - No restriction on the number of watermark samples
+
 ### 5-2. Comparison in Effectiveness of Watermark
+#### 5-2-1. Purpose
+- Evaluate effectiveness of watermarking methods in terms of: 
+    - Harmlessness (impact on original task)
+    - Verifiability (ability to detect dataset usage)
+- Compared methods
+    - Backdoor attacks
+    - Data poisoning
+    - Radioactive data
+    - Proposed method
+
+#### 5-2-2. Experimental Setting
+- Dataset: CIFAR10
+- For all methods:
+    - 50% of training data randomly watermarked
+
+#### 5-2-3. Training Scenarios
+- Experiments conducted under three settings
+1. ResNet18 (from scratch)
+    - 100 epochs
+2. MobileNetV2 (from scratch)
+    - 300 epochs
+3. MobileNetV2 (ImageNet pre-trained)
+    - 100 epochs
+- Each scenario: 
+    - Repeated 10 times
+    - With data augmentation
+
+#### 5-2-4. Evaluation Metrics
+1. Harmlessness
+    - Measured using validation accuracy on benign dataset
+    - For data poisoning, excluded 10 verification images to ensure fair evaluation
+2. Verification Ability
+    - Backdoor attacks & Data poisoning
+        - ASR (Attack Success Rate)
+            - Measures success rate of intended misclassification
+    - Radioactive data
+        - Difference between: 
+            - Validation loss on benign data
+            - Validation loss on radioactive-marked data
+    - Proposed method
+        - Uses multiple metrics: 
+            - mAcc (mean class accuracy on watermark)
+            - ASR
+            - Loss difference
+
+### 5-3. Results
+![Fig.6: Comparisons of performance to recent works](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig6.png)
 
 ## 6. Experiments II: General Applicability
+- The previous experiments validated the method in limited settings (mainly CIFAR10)
+- This section evaluates whether the proposed method:
+    - Generalizes across datasets
+    - Works on different model architectures
+    - Remains effective under varied tasks
+
 ### 6-1. Application to Further Architectures and Datasets
+#### 6-1-1. Purpose
+- Extend evaluation beyond CIFAR10 and a few models
+- Verify robustness and general applicability of the method
+
+#### 6-1-2. Experimental Setting
+- Datsets
+    - CIFAR100 (100 classes)
+    - FER2013 (7 classes)
+    - Fashion-MNIST
+- Compared Methods
+    - Backdoor attack: Sleeper Agent (best-performing prior method)
+    - Data poisoning: Gradient Matching (best-performing prior method)
+- Models
+    - Reference models
+        - ResNet18
+        - Simple (benign) CNN
+    - Cheating models
+        - DenseNet-BC (trained from scratch)
+- Auxiliary Datasets
+    - CIFAR100: Fashion-MNIST + MNIST (each with 10 classes)
+    - FER2013: First 7 classes of MNIST
+- Additional Architecture Evaluation
+    - Test on CIFAR10 (target) + Fashion-MNIST (auxiliary) with: 
+        - EfficientNet
+        - PVTv2
+        - ResMLP
+        - PiT
+    - Training Setup: 
+        - ImageNet pre-trained initialization
+        - 35 epochs
+        - SGD optimizer
+        - Warmup + label smoothing
+        - Data augmentation: Spatial transformations, Mixup
+        - Multiple runs for robustness
+
+#### 6-1-3. Results
+![table4 applicability to various datasets, table5 applicability to various architectures](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table4_5.png)
+- The proposed method consistently demostrates
+    1. Harmlessness
+        - Minimal degradation in original task performance
+    2. Invisibility
+        - Watermarks remain imperceptible across datasets
+    3. Verifiability
+        - Strong performance in detecting dataset usage
+
+#### 6-1-4. Additional Findings
+- mAcc (watermark classification accuracy): 
+    - Consistently higher than prior methods across architectures
+- Threshold performance: 
+    - Achieved 100% accuracy in distinguishing: 
+        - Clean models vs. cheating models
+
 ### 6-2. Application to Fine-grained Classification
 ### 6-3. Application to Image Segmentation
 
