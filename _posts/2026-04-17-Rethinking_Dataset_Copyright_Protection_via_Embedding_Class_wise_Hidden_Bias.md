@@ -879,6 +879,39 @@ author_profile: true
 - Clean model exceeding threshold probability: $< 3 \times 10^{-5}$
 
 ### 7-2. Visualizations
+#### 7-2-1. Purpose
+- Analyze how the watermark is learned using:
+    - t-SNE (feature space visualization)
+    - CAM (Class Activation Map)
+- Goal:
+    - Understand whether models actually learn hidden bias (watermark)
+
+#### 7-2-2. Experimental Setting
+- Two models trained:
+    - Clean model: trained on benign CIFAR10
+    - Cheating model: trained on watermarked CIFAR10
+- Procedure:
+    - Extract last-layer latent features
+    - Visualize using:
+        - 2D t-SNE plots
+        - CAM heatmaps
+
+#### 7-2-3. Results
+![fig.9: Visualization results](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/fig9.png)
+- t-SNE Analysis
+    - Benign data
+        - Both clean and cheating models show clear and well-separated clusters
+        - -> Normal feature learning
+    - Watermark data
+        - Cheating model shows partial clustering
+        - Clean model shows no clustering structure
+    - Interpretation: Only the cheating model learns meaningful representations of watermark
+- CAM Analysis
+    - Cheating model
+        - Responds to benign images, watermarked images, watermark-only inputs
+    - Clean model
+        - Responds only to benign images
+        - Ignores watermark signals
 
 ## 8. Conclusion & Limitations
 ### 8-1. Conclusion
