@@ -118,7 +118,7 @@ author_profile: true
 
 #### 2-2-1. How Data Poisoning Works
 1. Train a reference model
-    - A model is first trained on a clean (benign) datset
+    - A model is first trained on a clean (benign) dataset
 2. Select an adversarial target class
     - Define which class the victim samples should be misclassified into
 3. Choose victim samples
@@ -697,7 +697,7 @@ author_profile: true
 - Verify robustness and general applicability of the method
 
 #### 6-1-2. Experimental Setting
-- Datsets
+- Datasets
     - CIFAR100 (100 classes)
     - FER2013 (7 classes)
     - Fashion-MNIST
