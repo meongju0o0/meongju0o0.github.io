@@ -303,7 +303,7 @@ author_profile: true
     <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table1.png" alt="table1_results_of_watermarks_based_on_noise_placement" width="500">
 </div>
 
-- Hidden bias can be embedded (clean-labled)
+- Hidden bias can be embedded (clean-labeled)
     - Even though noise images are very different from original images: 
         - Model achieves high accuracy on noise-only inputs
     - -> Confirms feasibility of watermark via noise placement
@@ -342,7 +342,7 @@ author_profile: true
         - $x$: target dataset sample
         - $z$: auxiliary dataset sample
         - $\lambda$: mixing coefficient
-        - Labels are aligned (clean-labeld setting)
+        - Labels are aligned (clean-labeled setting)
 
 #### 4-2-2. Label Alignment Strategy
 - Even if two datasets are semantically unrelated: 
@@ -612,6 +612,10 @@ author_profile: true
         - Original image
         - Watermarked image
 
+<div align="center">
+    <img src="/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table3.png" alt="table3_Basic_Specification_of_Various_Methods" width="500">
+</div>
+
 #### 5-1-2. Observations on Prior Methods
 - Label-noised backdoor attacks
     - Easily detectable via visual inspection
@@ -729,13 +733,10 @@ author_profile: true
 
 #### 6-1-3. Results
 ![table4 applicability to various datasets, table5 applicability to various architectures](/images/2026-04-17-Rethinking_Dataset_Copyright_Protection_via_Embedding_Class_wise_Hidden_Bias/table4_5.png)
-- The proposed method consistently demostrates
-    1. Harmlessness
-        - Minimal degradation in original task performance
-    2. Invisibility
-        - Watermarks remain imperceptible across datasets
-    3. Verifiability
-        - Strong performance in detecting dataset usage
+- The proposed method consistently demonstrates
+    1. Harmlessness: Minimal degradation in original task performance
+    2. Invisibility: Watermarks remain imperceptible across datasets
+    3. Verifiability: Strong performance in detecting dataset usage
 
 #### 6-1-4. Additional Findings
 - mAcc (watermark classification accuracy): 
@@ -749,8 +750,7 @@ author_profile: true
 - Address a key limitation: 
     - Auxiliary dataset is typically required to have equal or more classes than the target dataset
 - Solution:
-    - Use modulo operation to enable class matching even when: 
-        - Target dataset has more classes than auxiliary dataset
+    - Use modulo operation to enable class matching even when target dataset has more classes than auxiliary dataset
 
 #### 6-2-2. Experimental Setting
 - Datasets
@@ -777,12 +777,9 @@ author_profile: true
 - Based on multiple trials:
     - Tiny ImageNet: 30 runs
     - ImageNet: 5 runs
-- Harmlessness
-    - Slight decrease in validation accuracy on benign data
-- Verifiability
-    - Significant improvement in detecting watermark signals
-- Clean model behavior
-    - Performance on watermark inputs drops to near chance level
+- Harmlessness: Slight decrease in validation accuracy on benign data
+- Verifiability: Significant improvement in detecting watermark signals
+- Clean model behavior: Performance on watermark inputs drops to near chance level
 
 #### 6-2-5. Implication
 - Even when target dataset has far more classes than auxiliary dataset -> The proposed method still works effectively
