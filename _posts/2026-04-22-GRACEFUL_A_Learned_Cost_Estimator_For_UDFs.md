@@ -275,6 +275,10 @@ author_profile: true
 
 ## 2.1. Key Ideas of Cost Model
 ### 2.1.0. CFG Introduction
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/udf_to_cfg.png" alt="Generate Control Flow Graph" width="400">
+</div>
+
 #### 2.1.0.1. 그래프 구조로 추상화
 - 기존 DBMS의 cost model은 대체로 아래 정보를 고려
     - query plan operator 종류
@@ -311,6 +315,7 @@ author_profile: true
     return y
     ```
     - 위 코드를 CFG로 만들면 대략적으로 아래와 같은 형태가 됨
+
 <div align="center">
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg2.jpg" alt="Control Flow Graph (CFG)" width="300">
 </div>
@@ -336,17 +341,175 @@ author_profile: true
 - 어떤 statement가 어떤 데이터에 얼마나 자주 수행되는지가 중요하기 때문
 
 ### 2.1.1. Our UDF Representation
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/encode_cfg_annotate_branch_selectivity.png" alt="Encode CFG As Graph (DAG), Annotate Branch Selectivities" width="300">
+</div>
+
 - 제안 논문은 CFG에 추가적인 변형을 수행
     - exploit loop end 추가
     - single-statement CFG로 변환
 
 #### 2.1.1.1. exploit loop end 추가
+- 일반 CFG에서는 loop의 끝이나 반복 경계가 명시적으로 잘 드러나지 않을 수 있음
+- 그러나, runtime estimation에서는 loop가 매우 중요
+    - loop가 있는가?
+    - 몇 번 반복하는가?
+    - loop 내부 연산이 무엇인가?
+- 위와 같은 것들이 runtime에 직접적인 영향을 미침
+
+- loop end 구조를 명시적으로 드러내면
+- 모델이 반복 구조를 더 쉽게 학습할 수 있음
+
+- 즉, 원래 CFG보다 비용 추정에 유리한 형태로 구조를 정리
+
 #### 2.1.1.2. single-statement CFG
+- 기존 CFG는 하나의 node가 여러 줄의 code block일 수 있음
+- 예를 들어 한 basic block 내에 여러 statement가 들어갈 수 있음
+- 그러나, 이런 경우에 node 단위가 너무 뭉뜽그려져서
+    - 어느 연산이 비싼지
+    - 어느 statement가 branch 직전인지
+    - 어느 부분이 loop 안에 있는지
+- 를 세밀하게 관찰히가 어려움
+
+- GRACEFUL은 code block을 쪼개서
+- statement 하나당 node 하나 수준으로 더 fine-grained 하게 표현
+
+- 이를 통해 GNN이 더 세밀한 연산 구조를 학습할 수 있음
+- 즉, **프로그램 구조를 runtime prediction에 적합한 해상도로 분할**하는 것
+
 #### 2.1.1.3. data-flow annotation
+- CFG 만으로 runtime을 예측하는 것은 매우 어려움
+- 같은 코드이더라도 입력 데이터에 따라 실행 경로와 반복 횟수가 달라지기 때문
+
+- e.g., 
+    ```python
+    if salary > 10000:
+        expensive_func()
+    ```
+    - 위 코드의 실제 runtime은
+        - `salary > 10000`인 row가 몇 개인지
+        - expensive_func()가 얼마나 자주 호출되는지
+    - 에 따라 달라짐
+
+- 일반적인 실행 환경에서는 위 코드의 runtime을 예측하기 어려우나,
+- DBMS 환경에서는 기존 DBMS가 가진 통계 정보를 활용하여 위 UDF 함수의 cost estimation이 가능
+
 #### 2.1.1.4. cardinality
+- DBMS cost model에서 cardinality는 가장 핵심적인 정보
+- 연산 비용은 대체로 "몇 개의 tuple을 처리하느냐"에 크게 좌우되기 때문
+
+- 예를 들어 join이던 filter이든
+    - 입력 row의 수
+    - 출력 row의 수
+- 가 runtime에 매우 큰 영향을 줌
+
+- 논문은 이 점을 UDF 내부에도 확장
+    - query plan operator에도 cardinality가 필요
+    - UDF 내부 data flow에도 cardinality 비슷한 정보가 필요
+
+- 예를 들어 UDF 내부 if-branch가 존재하는 경우
+    - 몇 %의 row가 true branch로 갈 것인가?
+- 는 사실상 UDF branch 내부 연산에 대한 cardinality 정보
+
 #### 2.1.1.5. UDF 내부 cardinality와 hit-ratio estimator
+- DBMS는 일반적으로 query plan operator에 대해서는 cardinality estimate를 제시
+    - scan 결과 row 수
+    - join 결과 row 수
+    - filter 후 row 수
+- 그러나, UDF 내부에 대해서는 이러한 정보가 없음
+
+- 예를 들어, UDF 내부에
+    ```python
+    if col_a > 5:
+        # do inexpensive something
+        # ...
+    else:
+        # do expensive something
+        # ...
+    ```
+    - 기존 DBMS에서는 UDF에 
+        - 몇 개의 row가 if branch로 가는지
+        - 몇 개의 row가 else branch로 가는지
+    - 알려주지 않음
+- 이를 해결하기 위해 논문은 **hit-ratio estimator**를 제안
+    - hit ratio: 특정 branch 조건이 참이 될 비율
+        - `then` branch가 얼마나 자주 실행되는지
+        - `else` branch가 얼마나 자주 실행되는지
+    - 따라서, **hit-ratio estimator**를 통해 분기문 runtime에 대한 기대값을 계산할 수 있음
+
+- **hit-ratio**를 어떻게 **estimate**할 것인가?
+    - UDF 내부 branch 조건을 그냥 프로그램 조건으로 두지 않음
+    - 가능하면 SQL predicate 형태로 변형하여 DBMS cardinality estimator에 정보를 요청
+    - 예를 들어, UDF 내부 조건이 테이블 컬럼 기반이면
+        ```python
+        if a > 10 and b = 'x'
+        ```
+        - 이를 SQL WHERE clause처럼 바꾸어서
+        - DBMS의 기존 통계 기반 caridnality estimator를 활용
+    - 즉, 논문은 새로운 branch selectivity 모델을 완전히 새로 만드는 것이 아니라
+    - 기존 DBMS의 통계 기반 추정 기능을 재활용
 
 ### 2.1.2. Joint Query-UDF Representation
+- GRACEFUL이 단순 "UDF cost estimator"가 아니라
+- 정확히는 **query plan runtime estimator**라는 점을 보여줌
+- 실제 실행 시간은 UDF만으로 결정되지 않기 때문
+
+- runtime은 아래 조건이 모두 영향을 미침
+    - query plan 구조
+    - join order
+    - operator cardinality
+    - UDF가 plan의 어디에 위치하는지
+    - UDF 앞뒤 연산 결과 row 수
+    - UDF 내부 구조와 branch cost
+
+- 따라서 UDF 그래프만 따로 파악하면 안 되며
+- query graph와 joint embedding을 해야 함
+
+- 즉,
+    - query plan graph는 SQL 실행 구조를 표현
+    - UDF CFG는 함수 내부 실행 구조를 표현
+    - 둘을 연결하여 하나의 큰 그래프로 만들어 runtime을 찾음
+
+#### 2.1.2.1. query plan operator에도 cardinality annotation이 중요한 이유
+- DBMS에서 동일한 join operator이어도
+    - 입력이 100 rows 인지
+    - 입력이 100M rows 인지
+- 에 따라 비용이 완전 다름
+
+- 따라서, opeartor type 뿐 아니라 입출력 cardinality가 필요
+- GRACEFUL은 DBMS의 cost estimation 개념을 그대로 활용하되, UDF가 있는 경우 추가 난점이 존재한다고 주장
+
+#### 2.1.2.2. UDF filter가 있으면 output cardinality를 모름
+- 일반적으로 filter의 output cardianlity는 selectivity로 계싼
+    - e.g., 
+    - 입력 1,000,000 rows
+    - selectivity 0.1 → 출력 100,000 rows
+- 이때, filter predicate가 UDF인 경우 문제가 발생
+    - e.g.,
+        ```SQL
+        WHERE udf(col1, col2) <= 26026;
+        ```
+    - 위 경우, DBMS는 일반적으로
+        - UDF가 어떤 값 분포를 내는지
+        - 조건을 몇 %가 만족하는지 (i.e., selectivity)
+    - 를 모르기 때문에 output cardinality를 쉽게 계산할 수 없음
+    - 즉, plan graph에서 중요한 feature 하나가 비게 됨
+    - 이는 단순 cost prediction뿐 아니라 optimizer decision에도 문제를 발생시킴
+
+#### 2.1.2.3. 분포 예측, probabilistic approach
+- 기존 cost model은 보통 하나의 cost scalar를 예측
+- 그러나, UDF filter selectivity가 불확실하면
+- 하나의 값으로 도출하기 어려움
+
+- GRACEFUL's probabilistic approach: 
+    - UDF filter selectivity가 여러 값일 가능성을 염두
+    - 해당 경우들에 대해 비용을 계산/예측
+    - 단일 cost가 아니라 cost distribution을 생성
+
+- 즉, **UDF 때문에 불확실성이 생기면, 그냥 무시하지 말고 확률적 분포로 다룸**
+
+#### 2.1.2.4. 
+
 ### 2.1.3. Runtime Prediction
 
 ## 2.2. Discussion of Scope
