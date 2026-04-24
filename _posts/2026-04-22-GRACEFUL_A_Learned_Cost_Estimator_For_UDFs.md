@@ -508,7 +508,62 @@ author_profile: true
 
 - 즉, **UDF 때문에 불확실성이 생기면, 그냥 무시하지 말고 확률적 분포로 다룸**
 
-#### 2.1.2.4. 
+#### 2.1.2.4. UDF-filter selectivity가 문제인 이유
+- 일반적인 SQL filter는 예를 들어
+    ```SQL
+    WHERE age > 30
+    ```
+- 이러한 경우에 DBMS는 통계(histogram, NDV, min/max 등)을 활용해서
+    - 전체 row 중 몇 %가 살아남는지
+    - 즉, filter selectivity가 얼마인지
+- 를 추정할 수 있음
+
+- 예를 들어,
+    - 입력 1,000,000 rows
+    - selectivity 0.2
+- 이면 출력은 대략 200,000 rows
+- 이를 바탕으로 join, aggregation, sort 등의 비용을 계산할 수 있음
+
+- 그러나 UDF filter는 다름
+    ```SQL
+    WHERE udf(a, b, c) <= 26026
+    ```
+- 과 같은 경우 DBMS는 아래 사항들을 알지 못함
+    - udf 결과값 분포가 어떠한지
+    - 몇 %의 row가 조건을 통과하는지
+    - 해당 filter를 적용한 뒤 몇 개의 row가 남을지
+- 즉, UDF-filter selectivity가 unknown임
+
+- 그러나, optimizer는 이 값을 꼭 알아야함
+- selectivity가 달라지면 "push-down이 좋은지, pull-up이 좋은지"가 달라지기 때문
+
+#### 2.1.2.5. selectivity에 따라 달라지는 cost
+- 일반적인 cost model
+    - $\hat{C}=f(plan_features)$
+- 즉, 입력 plan에 따라 **cost 결과 하나**를 출력
+
+- 그러나, UDF filter가 있으면 plan의 핵심 변수가 추가되어야함
+    - $s=\text{UDF filter selectivity}$
+
+- 위 비용에 따라 전체 실행 계획 비용이 달라짐
+- 즉, cost model은 selectivity라는 종속 변수를 가지고 있음
+    - $C=C(s)$
+
+- 예를 들어, 
+    - $s=0.001$: 거의 다 걸러짐 → early push-down이 유리할 수 있음
+    - $s=0.9$: 거의 안 걸러짐 → expensive UDF를 늦게 적용하는 것이 유리할 수 있음
+
+#### 2.1.2.6. Iterate over the UDF-filter selectivity
+- UDF-filter selectivity가 정확히 무엇인지 모르는 상황에서
+- 가능한 여러 selectivity에 따른 cost estimation의 집합을 생성
+    - e.g., $s \in \{ 0.01, 0.05, 0.1, 0.2, 0.5, 0.8 \}$
+        1. 각 값에 대하여 출력 cardinality 계산
+        2. 그 cardinality가 후속 operator에 어떤 영향을 주는지 반영
+        3. 전체 query plan cost를 각각 예측
+    - 즉, 아래와 같은 형식
+    - $\{ C(0.01), C(0.05), C(0.1), C(0.2), C(0.5), C(0.8)\}$
+        - 위 여러 cost estimation의 집합이 cost distribution의 근사
+- **selectivity uncertainty를 discretize해서 여러 시나리오를 평가**
 
 ### 2.1.3. Runtime Prediction
 
