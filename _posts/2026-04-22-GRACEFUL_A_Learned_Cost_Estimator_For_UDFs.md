@@ -710,7 +710,7 @@ author_profile: true
 - 반면, database-independent feature (제안 논문)은 아래와 같음
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/table1.png" alt="table1_features_of_the_UDF_node_types" width="650">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/table1.png" alt="table1_features_of_the_UDF_node_types" width="700">
 </div>
 
 ## 2.2. Discussion of Scope
