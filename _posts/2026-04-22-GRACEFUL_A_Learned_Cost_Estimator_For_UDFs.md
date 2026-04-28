@@ -496,19 +496,7 @@ author_profile: true
     - 즉, plan graph에서 중요한 feature 하나가 비게 됨
     - 이는 단순 cost prediction뿐 아니라 optimizer decision에도 문제를 발생시킴
 
-#### 2.1.2.3. 분포 예측, probabilistic approach
-- 기존 cost model은 보통 하나의 cost scalar를 예측
-- 그러나, UDF filter selectivity가 불확실하면
-- 하나의 값으로 도출하기 어려움
-
-- GRACEFUL's probabilistic approach: 
-    - UDF filter selectivity가 여러 값일 가능성을 염두
-    - 해당 경우들에 대해 비용을 계산/예측
-    - 단일 cost가 아니라 cost distribution을 생성
-
-- 즉, **UDF 때문에 불확실성이 생기면, 그냥 무시하지 말고 확률적 분포로 다룸**
-
-#### 2.1.2.4. UDF-filter selectivity가 문제인 이유
+### 2.1.3. Point estimation of UDF-filter selectivity is unknown
 - 일반적인 SQL filter는 예를 들어
     ```SQL
     WHERE age > 30
@@ -537,7 +525,14 @@ author_profile: true
 - 그러나, optimizer는 이 값을 꼭 알아야함
 - selectivity가 달라지면 "push-down이 좋은지, pull-up이 좋은지"가 달라지기 때문
 
-#### 2.1.2.5. selectivity에 따라 달라지는 cost
+#### 2.1.3.1. Solution: 분포 예측, probabilistic approach
+- GRACEFUL's probabilistic approach: 
+    - UDF filter selectivity가 여러 값일 가능성을 염두
+    - 해당 경우들에 대해 비용을 계산/예측
+    - 단일 cost가 아니라 cost distribution을 생성
+- 즉, **UDF 때문에 불확실성이 생기면, 그냥 무시하지 말고 확률적 분포로 다룸**
+
+#### 2.1.3.2. selectivity에 따라 달라지는 cost
 - 일반적인 cost model
     - $\hat{C}=f(plan_features)$
 - 즉, 입력 plan에 따라 **cost 결과 하나**를 출력
@@ -553,7 +548,7 @@ author_profile: true
     - $s=0.001$: 거의 다 걸러짐 → early push-down이 유리할 수 있음
     - $s=0.9$: 거의 안 걸러짐 → expensive UDF를 늦게 적용하는 것이 유리할 수 있음
 
-#### 2.1.2.6. Iterate over the UDF-filter selectivity
+#### 2.1.3.3. Iterate over the UDF-filter selectivity
 - UDF-filter selectivity가 정확히 무엇인지 모르는 상황에서
 - 가능한 여러 selectivity에 따른 cost estimation의 집합을 생성
     - e.g., $s \in \{ 0.01, 0.05, 0.1, 0.2, 0.5, 0.8 \}$
@@ -565,7 +560,66 @@ author_profile: true
         - 위 여러 cost estimation의 집합이 cost distribution의 근사
 - **selectivity uncertainty를 discretize해서 여러 시나리오를 평가**
 
-### 2.1.3. Runtime Prediction
+#### 2.1.3.4. Cost Distribution
+- cost distribution이 꼭 엄밀한 확률밀도함수(pdf)를 의미하는 것은 아님
+    - UDF-filter selectivity가 불확실
+    - 가능한 여러 경우(다양한 selectivity)에 대해 cost를 예측
+    - 그 결과로 **cost가 어느 범위에 있을 법한지** 관찰
+
+- 예를 들어, 어떤 plan에 대해: 
+    - example A: 
+        | assumed selectivity | predicted cost |
+        | :-----------------: | :------------: |
+        | 0.01                |        2.1 sec |
+        | 0.05                |        2.5 sec |
+        | 0.10                |        3.2 sec |
+        | 0.20                |        4.8 sec |
+        | 0.50                |        9.7 sec |
+        | 0.80                |       14.1 sec |
+    - example B: 
+        | assumed selectivity | predicted cost |
+        | :-----------------: | :------------: |
+        | 0.01                |        6.3 sec |
+        | 0.05                |        6.4 sec |
+        | 0.10                |        6.5 sec |
+        | 0.20                |        6.7 sec |
+        | 0.50                |        7.0 sec |
+        | 0.80                |        7.2 sec |
+
+- 위 distribution을 활용하여 아래 정보를 구할 수 있음
+    - cost에 대한 기댓값 (기대 비용)
+    - 최악 비용 (maximum predicted cost)
+    - 분산/불확실성
+    - 특정 selectivity 구간에서의 취약성
+
+#### 2.1.3.5. pull-up / push-down decision using cost distribution
+- 2개의 후보 plan이 있다고 하자
+    - Plan A: UDF filter pull-up
+    - Plan B: UDF filter push-down
+
+- 만약 UDF-filter selectivity를 정확히 모르면, 두 plan 중 어느 것이 좋은지 단정할 수 없음
+- 예를 들어: 
+    - selectivity가 높으면 pull-up이 좋을 수 있음
+        - (비싼 UDF를 초반 대량 row에 적용하는 것이 손해)
+    - selectivity가 아주 낮으면 push-down이 좋을 수 있음
+        - (초반에 많이 걸러지므로 이후 연산이 줄어듬)
+
+- 따라서, plan 비교는 사실
+    - $C_A(s)$ vs. $C_B(s)$
+- 를 비교하는 문제
+
+- 즉, selectivity에 따라 우열이 바뀔 수 있음
+
+- UDF는 selectivity 하나를 확정(point estimation)이 불가능 하므로
+- Graceful은 두 plan의 cost distribution을 비교
+
+- 이에 따라: 
+    - 기대값 기준으로 더 나은 plan
+    - worst-case가 더 안전한 plan
+    - regret이 더 작은 plan
+- 등을 선택할 수 있음
+
+### 2.1.4. Runtime Prediction
 
 ## 2.2. Discussion of Scope
 ### 2.2.1. Scalar Python UDFs
