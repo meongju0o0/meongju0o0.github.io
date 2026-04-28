@@ -525,7 +525,7 @@ author_profile: true
 - 그러나, optimizer는 이 값을 꼭 알아야함
 - selectivity가 달라지면 "push-down이 좋은지, pull-up이 좋은지"가 달라지기 때문
 
-#### 2.1.3.1. Solution: 분포 예측, probabilistic approach
+#### 2.1.3.1. Solution: Predict a distribution of the costs
 - GRACEFUL's probabilistic approach: 
     - UDF filter selectivity가 여러 값일 가능성을 염두
     - 해당 경우들에 대해 비용을 계산/예측
@@ -620,6 +620,98 @@ author_profile: true
 - 등을 선택할 수 있음
 
 ### 2.1.4. Runtime Prediction
+- UDF CFG와 SQL query plan을 합친 그래프를 GNN에 입력
+- GNN이 생성한 graph embedding을 regression layer가 받아 query runtime을 예측
+- 모델은 특정 DB나 특정 UDF에 재학습하지 않아도 zero-shot으로 동작
+
+#### 2.1.4.1. Joined query-UDF graph
+1. Query graph
+    - SQL query plan을 그래프로 표현
+    - e.g., `scan`, `filter`, `join`, `aggregation`과 같은 operator가 node
+2. UDF graph
+    - UDF 코드를 CFG 형태로 표현
+    - e.g., `statement`, `branch`, `loop`, `function call` 등이 node
+
+- 예를 들어, SQL plan에 아래와 같은 filter가 있다고 하자
+    ```SQL
+    WHERE udf(a, b) < 100
+    ```
+- query graph의 `filter` node와 UDF CFG가 연결됨
+- 즉, 최종 입력은 SQL query plan graph와 UDF control-flow graph가 합쳐진 하나의 그래프
+- 이를 **joined query-UDF graph**라고 함
+
+#### 2.1.4.2. Runtime prediction via GNNs
+- joined query-UDF graph에는 아래 정보를 포함
+    - query operator 간 parent-child 관계
+    - UDF 내부 control-flow 관계
+    - branch 경로
+    - loop 구조
+    - UDF가 query plan 어디에 붙어 있는지
+    - opeartor cardinality
+    - UDF statement feature
+- 따라서 일반 MLP보다 GNN이 적합
+
+- GNN은 각 node가 주변 node와 message passing을 하면서
+- 전체 그래프 구조를 반영한 representation을 학습
+    - 이 UDF는 어떤 구조를 가지고 있으며
+    - 이 query plan 안에서 어디에 위치하며
+    - 어느 정도 row에 대해 실행되는가?
+- 를 GNN이 embedding으로 압축
+
+#### 2.1.4.3. Regression model as final layer
+- GNN이 생성한 hidden state vector를 regression model에 입력
+- regression model에서 최종 query runtime을 예측
+- 추가적으로, 학습 안정화를 위해 log runtime을 예측
+
+- 즉, pull-up / push-down classification이 아닌 run-time regression
+
+#### 2.1.4.4. Does this model predicts only UDF cost?
+- UDF가 포함된 query plan 전체 runtime을 예측
+- UDF 비용은 query context와 분리해서 생각하면 안되기 때문
+- 같은 UDF이어도
+    - 1,000 rows에 적용되는지
+    - 10,000,000 rows에 적용되는지
+    - join 전에 실행하는지
+    - join 후에 실행하는지
+    - branch가 어느 데이터에서 자주 hit 되는지
+- 에 따라 전체 비용이 달라짐
+
+- 따라서, GRACEFUL은 UDF 단독 비용이 아닌
+- query plan 내에서 UDF가 실행될 때의 전체 runtime을 예측
+
+#### 2.1.4.5. zero-shot manner
+- 새로운 데이터베이스, 새로운 UDF, 새로운 SQL query를 사전에 학습하지 않더라도 바로 runtime을 예측
+- 즉, 모델이 특정 UDF를 미리 실행하고 학습하는 방식이 아님
+
+- DBMS optimizer에 들어가려면 zero-shot이 매우 중요
+- 만약 어떤 새 UDF가 들어올 때마다
+    1. 그 UDF를 여러 query에 대해 실행
+    2. runtime 데이터 수집
+    3. 모델 재학습
+    4. optimizer가 정보 활용
+- 위 과정을 거치면 실용성이 매우 떨어짐
+
+- 실제 DBMS에서는 사용자가 임의의 UDF를 계속 만들 수 있음
+- 따라서 optimizer는 처음 보는 UDF에 대해서도 즉시 판단해야함
+- 즉, **기존에 본 적 없는 UDF structure, dataset, SQL query에 대해서도 코드 구조와 데이터 통계를 활용해 대략적인 비용을 예측**
+
+#### 2.1.4.6. database-independent featurization
+- feature가 특정 데이터베이스에 종속되지 않음
+- 나쁜 feature의 예시는 아래와 같음
+    ```
+    table_name = "movie_keyword"
+    column_name = "series_years"
+    udf_name = "my_udf_17"
+    database_name = "imdb"
+    ```
+    - 위와 같은 feature를 사용하면 모델이 특정 DB나 UDF를 외울 가능성이 큼
+    - 새로운 DB에서는 작동하기 어려움
+
+- 반면, database-independent feature (제안 논문)은 아래와 같음
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/table1.png" alt="table1_features_of_the_UDF_node_types" width="500">
+</div>
 
 ## 2.2. Discussion of Scope
 ### 2.2.1. Scalar Python UDFs
