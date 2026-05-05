@@ -579,7 +579,7 @@ author_profile: true
         | 0.80                |       14.1 sec |
 
     - example B: 
-    
+
         | assumed selectivity | predicted cost |
         | :-----------------: | :------------: |
         | 0.01                |        6.3 sec |
@@ -817,6 +817,7 @@ author_profile: true
 - aggregate SQL: 여러 row를 입력받아 하나의 결과 생성
 
 - **scalar vs. aggregate**
+
     | 구분      | scalar UDF       | aggregate UDF             |
     | -------- | ---------------- | ------------------------- |
     | 입력      | row 1개          | 여러 row                   |
