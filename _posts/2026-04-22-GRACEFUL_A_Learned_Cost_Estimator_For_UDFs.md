@@ -8,7 +8,7 @@ toc_sticky: true
 author_profile: true
 ---
 
-# Rethinking Data Bias: Dataset Copyright Protection via Embedding Class-wise Hidden Bias
+# GRACEFUL: A Learned Cost Estimator For UDFs
 ## About Paper
 - Johannes Wehrstein, Tiemo Bang, Roman Heinrich, Carsten Binnig
 - ICDE 2025: IEEE 41st International Conference on Data Engineering
@@ -568,6 +568,7 @@ author_profile: true
 
 - 예를 들어, 어떤 plan에 대해: 
     - example A: 
+
         | assumed selectivity | predicted cost |
         | :-----------------: | :------------: |
         | 0.01                |        2.1 sec |
@@ -576,7 +577,9 @@ author_profile: true
         | 0.20                |        4.8 sec |
         | 0.50                |        9.7 sec |
         | 0.80                |       14.1 sec |
+
     - example B: 
+    
         | assumed selectivity | predicted cost |
         | :-----------------: | :------------: |
         | 0.01                |        6.3 sec |
@@ -714,8 +717,127 @@ author_profile: true
 </div>
 
 ## 2.2. Discussion of Scope
+- UDF cost estimation은 범위가 꽤 넓은 문제 정의
+    - scalar UDF (row-by-row)
+    - aggreagate UDF (group 단위, groupby 연산)
+    - table-valued UDF (여러 row 변환)
+    - vectorized UDF
+    - procedural UDF 등
+- 이 문제들을 한 번에 다 다루면 복잡도가 폭증
+- 제안 논문은 **가장 기본적이면서도 중요한 케이스를 먼저 다룸**
+
 ### 2.2.1. Scalar Python UDFs
+- scalar UDF는 아래의 성질을 가짐
+    - 입력: 하나의 row (tuple)
+    - 출력: 하나의 값
+    - 처리 방식: row-by-row
+        ```python
+        def udf(x, y):
+            if x > 10:
+                return y * 2
+            else:
+                return y + 1
+        ```
+        ```SQL
+        SELECT udf(col1, col2) FROM my_table;
+        ```
+
+- scalar UDF는 DBMS에서 가장 흔하게 쓰이는 형태
+    - filter predicate
+    - projection
+    - computed column
+    - feature transformation
+- 특히, 이 논문에서 중요하게 생각하는 것은
+    - filter 내에 들어가는 UDF
+    - 이 경우 cost와 selectivity가 직접 연결되기 때문에 optimization 영향이 매우 큼
+
+#### 2.2.1.1. scalar UDF의 cost 구조
+- scalar UDF의 runtime: 
+    - $\text{total cost} = (\text{\# rows}) \times (\text{cost per row})$
+
+- 이때,
+    - $\text{\# rows}$ → query plan cardinality에 의해 결정
+    - $\text{cost per row}$ → UDF 내부 구조 (loop, branch 등)에 의해 결정
+
+- GRACEFUL은 위 두 요소를 같이 모델링
+    - query graph → $\text{\# rows}$ (i.e., cardinality)
+    - UDF CFG → $\text{cost per row}$
+- query graph와 UDF CFG를 결합하면 전체 runtime
+
+#### 2.2.1.2. UDF 내부에서 허용하는 연산 범위
+- **control flow**
+    - if/else
+    - nested branches
+    - loop (for, while)
+- **computation**
+    - arithmetic (덧셈, 곱셈 등)
+    - string operation (substring, format 등)
+- **external calls**
+    - `math`
+    - `numpy`
+    - 기타 라이브러리
+
+- GRACEFUL은 단순 expression이 아닌 실제 production 수준의 복잡한 UDF도 처리 가능
+- 이런 복잡성이 기존 cost model이 실패하는 이유
+
+#### 2.2.1.3. Why Python UDF
+1. Python UDF는 실제 DBMS 환경에서 많이 사용됨
+    - 특히, analytics, ML 파이프라인
+2. Python은 구조 분석이 비교적 쉬움
+    - AST → CFG 변환이 가능
+3. 다양한 연산 표현 가능
+    - realistic workload
+
+- **그러나, 제안 기법은 CFG 기반 표현**
+- **parsing 과정 및 실험 구현과 별개로, 언어에 독립적인 방법론**
+    - e.g., Python
+        ```python
+        if x > 10:
+            y *= 2
+        ```
+    - e.g., JAVA
+        ```java
+        if (x>10) {
+            y *= 2;
+        }
+        ```
+    - 위 두 코드는 언어는 다르지만 CFG는 거의 동일
+
+- 따라서, 
+    - parsing만 다르고
+    - CFG representation은 동일하게 생성할 수 있음
+
+#### 2.2.1.4. aggregate UDF로 확장 가능
+- aggregate 예시 SQL
+    ```SQL
+    SELECT my_udf_agg(col1)
+    FROM table
+    GROUP BY col2;
+    ```
+- aggregate SQL: 여러 row를 입력받아 하나의 결과 생성
+
+- **scalar vs. aggregate**
+    | 구분      | scalar UDF       | aggregate UDF             |
+    | -------- | ---------------- | ------------------------- |
+    | 입력      | row 1개          | 여러 row                   |
+    | 출력      | 값 1개           | 값 1개                     |
+    | 적용 방식   | row-by-row     | group-by 단위               |
+    | cost 구조 | N × per-row cost | group size + state update |
+
+- aggregate UDF가 더 어려운 이유
+    - 상태(state) 유지
+    - group size에 따라 cost가 다름
+    - partial aggregation, merge 단계 존재
+- 즉, 단순히 (per-row cost) × (# rows)가 아님
+
+- 제안 아이디어
+    - CFG에 aggregation operation을 명시
+        - aggregation state node
+        - update operation node
+        - merge operation node
+
 ### 2.2.2. Non-UDF Queries
+
 
 # 3. GRACEFUL Design
 ## 3.1. UDF Representation
@@ -732,14 +854,30 @@ author_profile: true
 
 ## 3.4. Model Architecture
 
+
 # 4. Pull-up / Push-down Advisor
 ## 4.1. Why this Problem?
 ## 4.2. Regret Optimization
 ## 4.3. Pull-up/Push-down Decision
 
+
 # 5. A novel UDF Benchmark
 ## 5.1. Benchmark Design
 ## 5.2. A Resource for UDF Cost Models
 
+
 # 6. Experimental Evaluation
+### 6.0.1. Set of Experiments
+### 6.0.2. Experimental Setup
+### 6.0.3. Accuracy on Non-UDF Queries
+### 6.0.4. Cardinality Annotation Methods
+### 6.0.5. Baselines
+
+## 6.1. Accuracy across Unseen Databases
+## 6.2. How robust are the estimates across different UDF complexities
+## 6.3. How does GRACEFUL compare with other UDF Cost Estimation Approaches?
+## 6.4. How do major design decisions of GRACEFUL affect the prediction accuracy?
+## 6.5. What speedups does our pull-up advisor achieve?
+
+
 # 7. Related Work
