@@ -150,13 +150,13 @@ author_profile: true
 
 ### Currently Managing Projects
 - **KIISE Database Society of Korea Digital Library**, 2026 --
+    - Nginx, MySQL, React.js, Express.js
     - Source Code: [kdbc-papers](https://github.com/meongju0o0/kdbc-papers)
     - [http://163.180.116.100:8080/](http://163.180.116.100:8080/)
-    - React.js, Express.js, MySQL
 - **Jekyll Minimal Mistakes Blog Customizing**, 2022 --
+    - Ruby, Jekyll, node.js, Firebase, GitHub
     - Source Code: [https://github.com/meongju0o0/meongju0o0.github.io](https://github.com/meongju0o0/meongju0o0.github.io)
     - [https://meongju0o0.github.io/](https://meongju0o0.github.io/)
-    - Ruby, Jekyll, node.js, Firebase, GitHub
 
 ## Publications
 * **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12577759). Journal of Korea Software Congress, Pages 1139 -- 1141.
