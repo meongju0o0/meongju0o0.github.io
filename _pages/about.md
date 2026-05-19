@@ -155,7 +155,7 @@ author_profile: true
     - [http://163.180.116.100:8080/](http://163.180.116.100:8080/)
 - **Jekyll Minimal Mistakes Blog Customizing**, 2022 --
     - Ruby, Jekyll, node.js, Firebase, GitHub
-    - Source Code: [https://github.com/meongju0o0/meongju0o0.github.io](https://github.com/meongju0o0/meongju0o0.github.io)
+    - Source Code: [meongju0o0.github.io](https://github.com/meongju0o0/meongju0o0.github.io)
     - [https://meongju0o0.github.io/](https://meongju0o0.github.io/)
 
 ## Publications
