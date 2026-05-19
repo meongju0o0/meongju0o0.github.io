@@ -808,15 +808,64 @@ author_profile: true
     - CFG representation은 동일하게 생성할 수 있음
 
 #### 2.2.1.4. aggregate UDF로 확장 가능
-- aggregate 예시 SQL
-    ```SQL
-    SELECT my_udf_agg(col1)
-    FROM table
-    GROUP BY col2;
-    ```
-- aggregate SQL: 여러 row를 입력받아 하나의 결과 생성
+- **예시 UDF SQL 코드**
+    - aggregate 예시 UDF
+        ```python
+        def avg_udf_init():
+            return (0, 0) # (sum, count)
+        
+        def avg_udf_update(state, x):
+            s, c = state
+            return (s + x, c + 1)
+        
+        def avg_udf_finalize(state):
+            s, c = state
+            return s / c
+        ```
+    - aggregate 예시 SQL
+        ```SQL
+        SELECT avg_udf(col)
+        FROM table
+        GROUP BY key;
+        ```
 
-- **scalar vs. aggregate**
+- **aggregate UDF의 실행 단계**
+    1. INIT (state 초기화)
+        ```
+        group A → state = (0, 0)
+        group B → state = (0, 0)
+        group C → state = (0, 0)
+        ```
+    2. UPDATE (핵심 반복 단계)
+        - 각 row를 읽으면서 state 갱신
+        - 예: 
+
+            | key | col |
+            | --- | --- |
+            | A   | 10  |
+            | A   | 20  |
+            | B   | 5   |
+        
+        - 처리 과정
+            ```
+            row (A,10): state_A = (0,0) → (10,1)
+            row (A,20): state_A = (10,1) → (30,2)
+            row (B,5):  state_B = (0,0) → (5,1)
+            ```
+        즉, $state \leftarrow f(state, row)$
+    3. FINALIZE (결과 생성)
+        - 모든 row를 처리한 뒤 state를 결과로 반환
+            ```
+            state_A = (30,2) → 15
+            state_B = (5,1) → 5
+            ```
+        
+- **aggregate 연산의 state 유지**
+    - scalar UDF: $\text{row} \rightarrow f(\text{row}) \rightarrow \text{output}$
+        - row 하나 처리
+    - aggregate UDF: $\text{state0} \rightarrow \text{update} \rightarrow \text{state1} \rightarrow \text{state2} \rightarrow \cdots \rightarrow \text{finalize}$
+        - 이전 계산 결과(state)가 다음 계산에 영향을 미침
+        - aggregate 연산은 본질적으로 "누적 계산"
 
     | 구분      | scalar UDF       | aggregate UDF             |
     | -------- | ---------------- | ------------------------- |
@@ -824,6 +873,12 @@ author_profile: true
     | 출력      | 값 1개           | 값 1개                     |
     | 적용 방식   | row-by-row     | group-by 단위               |
     | cost 구조 | N × per-row cost | group size + state update |
+
+- **group size가 cost에 미치는 영향**
+    - **scalar UDF cost**
+        - $\text{cost} \approx N \times c_{\text{per-row}}$
+    - **aggregate UDF cost**
+        - $\text{cost} \approx \sum_{group}(\text{group size}) \times c_{\text{update}} + c_{\text{finalize}}$
 
 - aggregate UDF가 더 어려운 이유
     - 상태(state) 유지
