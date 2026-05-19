@@ -196,7 +196,7 @@ author_profile: true
     * Korea Software Congress, 2022
 
 ## Research Interests
-* Large Language Models / Retrieval-Augmented Generation / Knowledge Graph
+* Database Management Systems / Large Language Models / Knowledge Graph
 
 ## Study Interests
 * Natural Language Processing / Vector Database / Graph Neural Networks
