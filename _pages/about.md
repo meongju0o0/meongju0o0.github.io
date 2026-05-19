@@ -130,12 +130,12 @@ author_profile: true
 ## Projects
 ### Lab Projects
 - **Development of Graph DBMS Technology for Intelligent High Speed Processing of Large Graphs**, 2021 -- 2024
-    - Supervision: Institute of Information & Communications Technology Planning & Evaluation
+    - Supervision: Institute of Information & Communications Technology Planning & Evaluation (IITP)
     - Role: Research Intern (2022 -- 2024)
         - Investigate existing studies for large graph integration
         - Supports large graph learning engine design
 - **POLARIS: 딥러닝 기반의 범용 절차적 SQL 최적화 시스템 기술 연구**, 2026 --
-    - Supervision: National Research Foundation(NRF) of Korea
+    - Supervision: National Research Foundation of Korea (NRF)
     - Role: Paricipation Researcher (2026 --)
 
 ### Toy Projects
@@ -160,7 +160,7 @@ author_profile: true
 
 ## Publications
 ### Domesitc Conference
-* **Juyeong Shin**, Young-Koo Lee. (2025). [Analysis of Learning-Based UDF Cost Estimation and Query Optimization Across Database Management Systems](). Journal of Korea Computer Congress, Pages -- .
+* **Juyeong Shin**, Young-Koo Lee. (2026). [Analysis of Learning-Based UDF Cost Estimation and Query Optimization Across Database Management Systems](). Journal of Korea Computer Congress, Pages -- .
     * Implementation: [](https://github.com/meongju0o0/)
 
 ---
