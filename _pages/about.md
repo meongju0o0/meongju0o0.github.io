@@ -160,7 +160,7 @@ author_profile: true
 
 ## Publications
 ### Domesitc Conference
-* **Juyeong Shin**, Young-Koo Lee. (2025). [Analysis of Learning-Based UDF Cost Estimation and Query Optimization Across Database Management Systems](). Journal of Korea Software Congress, Pages -- .
+* **Juyeong Shin**, Young-Koo Lee. (2025). [Analysis of Learning-Based UDF Cost Estimation and Query Optimization Across Database Management Systems](). Journal of Korea Computer Congress, Pages -- .
     * Implementation: [](https://github.com/meongju0o0/)
 
 ---
