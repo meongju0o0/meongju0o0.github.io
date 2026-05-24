@@ -107,7 +107,10 @@ file "docs/_docs/18-history.md" => "CHANGELOG.md" do |t|
     f.puts ""
     f.puts "{% raw %}"
     # Remove H1
-    changelog = File.read(t.prerequisites.first).gsub(/^# [^\n]*$/m, "").strip
+    changelog = File.read(t.prerequisites.first)
+      .gsub(/^# [^\n]*$/m, "")
+      .gsub(/\(#(\d+)\)$/m, "[#\\1](https://github.com/mmistakes/minimal-mistakes/issues/\\1)")
+      .strip
     f.write changelog
     f.puts ""
     f.puts "{% endraw %}"
@@ -117,6 +120,7 @@ end
 COPYRIGHT_LINES = [
   "Minimal Mistakes Jekyll Theme #{package_json["version"]} by Michael Rose",
   "Copyright 2013-#{Time.now.year} Michael Rose - mademistakes.com | @mmistakes",
+  "Copyright 2024-#{Time.now.year} iBug - ibugone.com | @iBug",
   "Free for personal and commercial use under the MIT license",
   "https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE",
 ]
@@ -201,4 +205,8 @@ file "docs/_pages/home.md" => "package.json" do |t|
   content = File.read(t.name)
   content = content.gsub(/(\breleases\/tag\/|Latest release v)[\d.]+/, '\1' + package_json["version"])
   File.write(t.name, content)
+end
+
+task :gem do
+  sh 'gem build minimal-mistakes-jekyll.gemspec'
 end

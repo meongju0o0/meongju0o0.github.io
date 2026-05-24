@@ -12,10 +12,11 @@
 
 # theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise", "catppuccin_latte", "catppuccin_mocha"
 
 # Site Settings
 locale                   : "ko-KR"
+direction                : # "ltr" (default), "rtl" # set the direction of the page
 title                    : "meongju0o0's blog"
 title_separator          : "|"
 subtitle                 : "Data & Knowledge Playground"
@@ -95,6 +96,7 @@ facebook:
   app_id                 :
   publisher              :
 og_image                 : # Open Graph/Twitter default site image
+og_image_alt             : # Alt text for Open Graph/Twitter default site image
 # For specifying social profiles
 # - https://developers.google.com/structured-data/customize/social-profiles
 social:
@@ -141,9 +143,12 @@ footer:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
       url: "mailto:bl4angel20@gmail.com"
+    - label: "Twitter"
+      icon: "fab fa-fw fa-square-x-twitter"
+      # url:
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/meong_ju0o0"
+      url: "https://instagram.com/meongju0o0"
     - label: "Facebook"
       icon: "fab fa-fw fa-facebook-square"
       url: "https://facebook.com/meongju0o0"
@@ -153,6 +158,7 @@ footer:
     - label: "DockerHub"
       icon: "fab fa-fw fa-docker"
       url: "https://hub.docker.com/u/meongju0o0"
+  since: "2013"
 
 
 # Reading Files
@@ -178,6 +184,7 @@ exclude:
   - gulpfile.js
   - LICENSE
   - log
+  - minimal-mistakes-jekyll.gemspec
   - node_modules
   - package.json
   - package-lock.json
@@ -217,6 +224,8 @@ kramdown:
 sass:
   sass_dir: _sass
   style: compressed # https://sass-lang.com/documentation/file.SASS_REFERENCE.html#output_style
+  quiet_deps: true
+  silence_deprecations: ['import']
 
 
 # Outputting
@@ -284,6 +293,7 @@ category_archive:
 tag_archive:
   type: liquid
   path: /tags/
+# show_taxonomy: false  # set to false to hide tag/category lists on posts
 # https://github.com/jekyll/jekyll-archives
 jekyll-archives:
   enabled:

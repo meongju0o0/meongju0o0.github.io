@@ -11,8 +11,10 @@ The English[^yaml-anchors] main keys in [`_data/ui-text.yml`](https://github.com
 
 - Arabic (عربي)
 - Brazilian Portuguese (Português brasileiro)
+- Bulgarian
 - Catalan
 - Chinese
+- Czech
 - Danish
 - Dutch
 - Finnish
@@ -49,6 +51,9 @@ If you're are interested in localizing them into other languages feel free to su
 Many of the label based keys like `meta_label`, `categories_label`, `tags_label`, `share_on_label`, and `follow_label` can be left blank if you'd like to omit them from view. It really depends on you and if you want an even more minimal look to your site.
 
 ![UI text labels]({{ "/assets/images/mm-ui-text-labels.jpg" | relative_url }})
+
+**Note:** Localization can also be overridden per page by specifying `locale` in the front matter.
+{: .notice--info}
 
 **Note:** The theme comes with localized text in English (`en`, `en-US`, `en-GB`). If you change `locale` in `_config.yml` to something else, most of the UI text will go blank. Be sure to add the corresponding locale key and translated text to `_data/ui-text.yml` to avoid this.
 {: .notice--warning}
