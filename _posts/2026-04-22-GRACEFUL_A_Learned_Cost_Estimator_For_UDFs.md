@@ -450,6 +450,10 @@ author_profile: true
     - 기존 DBMS의 통계 기반 추정 기능을 재활용
 
 ### 2.1.2. Joint Query-UDF Representation
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/joint_query_udf_representation.png" alt="Integrate UDF Graph Into Query Graph" width="300">
+</div>
+
 - GRACEFUL이 단순 "UDF cost estimator"가 아니라
 - 정확히는 **query plan runtime estimator**라는 점을 보여줌
 - 실제 실행 시간은 UDF만으로 결정되지 않기 때문
@@ -623,6 +627,10 @@ author_profile: true
 - 등을 선택할 수 있음
 
 ### 2.1.4. Runtime Prediction
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/runtime_prediction.png" alt="Message Passing & Runtime Prediction" width="300">
+</div>
+
 - UDF CFG와 SQL query plan을 합친 그래프를 GNN에 입력
 - GNN이 생성한 graph embedding을 regression layer가 받아 query runtime을 예측
 - 모델은 특정 DB나 특정 UDF에 재학습하지 않아도 zero-shot으로 동작
