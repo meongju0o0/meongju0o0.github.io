@@ -96,9 +96,9 @@ author_profile: true
         <div class="intro">
             <div class="image-intro">
                 <!-- <a href="../assets/images/hidden_image.jpg">
-                    <img class="large" src="../assets/images/profile_image.jpg">
-                    <img class="small" src="../assets/images/profile_image_small.jpg">
                 </a> -->
+                <img class="large" src="../assets/images/profile_image.jpg">
+                <img class="small" src="../assets/images/profile_image_small.jpg">
             </div>
             <div class="text-intro">
                 <h2 style="margin-top: 0.5em">Motto and Passion</h2>
