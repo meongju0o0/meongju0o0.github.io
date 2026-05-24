@@ -961,7 +961,17 @@ author_profile: true
     - DBMS 전체 optimizer로 활용하기 어려움
 
 # 3. GRACEFUL Design
+- 논문 구조
+    - 3.1. UDF Representation: UDF를 어떻게 graph로 표현할 것인가
+    - 3.2. branch/loop가 실제 데이터에서 얼마나 실행될지(hit-ratio, cardinality)를 어떻게 추정할 것인가
+    - 3.3. UDF graph와 query plan graph를 어떻게 합칠 것인가
+    - 3.4. GNN을 어떻게 학습하고 inference할 것인가
+
 ## 3.1. UDF Representation
+- query 내 UDF 코드를 어떻게 graph로 표현할 것인가
+- graph의 node type과 feature는 무엇인가
+- UDF featurization과 query plan information이 어떻게 통합되는가
+
 ### 3.1.1. Control-Flow Graph as Basis
 ### 3.1.2. Transforming the CFG
 ### 3.1.3. Handling Loops
