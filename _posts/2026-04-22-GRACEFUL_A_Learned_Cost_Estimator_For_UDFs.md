@@ -893,7 +893,64 @@ author_profile: true
         - merge operation node
 
 ### 2.2.2. Non-UDF Queries
+#### 2.2.2.1. 왜 Non-UDF Query가 중요한가
+- 현실 DBMS workload:
+    - 어떤 query는 UDF가 존재
+    - 어떤 query는 UDF 미존재
 
+- 예:
+    - 일반 SQL
+        ```sql
+        SELECT *
+        FROM orders
+        WHERE price > 100;
+        ```
+    - UDF 포함 SQL
+        ```sql
+        SELECT *
+        FROM orders
+        WHERE udf(price, discount) > 100;
+        ```
+
+- 실제 optimizer는 두개 모두 처리해야함
+- 만약 GRACEFUL이 UDF query만 잘 수행하고 일반 query에서는 성능이 나쁘다면
+- 실제 DBMS에 적용하기 어려움
+- 따라서, GRACEFUL은 일반 query도 최적화 가능하도록 설계
+
+#### 2.2.2.2. Non-UDF Query 최적화가 가능한 이유
+- GRACEFUL의 기본 입력: query plan graph
+- UDF가 포함된 경우 GRACEFUL의 입력: query plan graph + UDF CFG
+- 즉, UDF가 없는 경우에는 "UDF subgraph가 비어 있는 special case"
+- Query Operator Modeling은 아래 논문의 learned cost estimation 모델 사용
+    - B. Hilprecht and C. Binnig, “One model to rule them all: Towards zero-shot learning for databases,” CIDR 2022
+
+#### 2.2.2.3. Query Representation
+- 일반 query plan
+    ![query plan representation](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_plan_representation.jpeg)
+
+- GRACEFUL은 각 operator를 graph node로 표현
+    | operator    | feature           |
+    | ----------- | ----------------- |
+    | Scan        | estimated rows    |
+    | Filter      | selectivity       |
+    | Join        | join type         |
+    | Aggregation | group cardinality |
+- 즉, 일반 query optimization용 learned model 구조를 그대로 활용
+
+- 그러나, GRACEFUL은 여기에 UDF internal structure를 CFG로 표현하여 추가
+    - branch
+    - loop
+    - arithmetic
+    - string op
+    - library call
+    - hit-ratio
+- 위와 같은 UDF semantics를 grpah로 넣음
+- 즉, GRACEUFL의 입력 graph는 (query plan graph + UDF CFG)
+- 또한, GRACEFUL은 non-UDF 또한 high accuracy를 달성
+    - 만약 UDF를 지원하기 위해
+        - 일반 query 성능이 나빠지거나
+        - inference가 지나치게 느려지면
+    - DBMS 전체 optimizer로 활용하기 어려움
 
 # 3. GRACEFUL Design
 ## 3.1. UDF Representation
@@ -907,7 +964,6 @@ author_profile: true
 ### 3.2.1. Hit-Ratios Estimation / Branch Prediction
 
 ## 3.3. Joint Query-UDF Representation
-
 ## 3.4. Model Architecture
 
 
