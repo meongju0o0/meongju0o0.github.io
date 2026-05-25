@@ -276,7 +276,7 @@ author_profile: true
 ## 2.1. Key Ideas of Cost Model
 ### 2.1.0. CFG Introduction
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/udf_to_cfg.png" alt="Generate Control Flow Graph" width="400">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/udf_to_cfg.png" alt="Generate Control Flow Graph" width="500">
 </div>
 
 #### 2.1.0.1. 그래프 구조로 추상화
@@ -451,7 +451,7 @@ author_profile: true
 
 ### 2.1.2. Joint Query-UDF Representation
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/joint_query_udf_representation.png" alt="Integrate UDF Graph Into Query Graph" width="300">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/joint_query_udf_representation.png" alt="Integrate UDF Graph Into Query Graph" width="350">
 </div>
 
 - GRACEFUL이 단순 "UDF cost estimator"가 아니라
