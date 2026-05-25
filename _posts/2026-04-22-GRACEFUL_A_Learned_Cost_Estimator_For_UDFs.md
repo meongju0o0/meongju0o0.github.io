@@ -934,15 +934,18 @@ author_profile: true
 
 #### 2.2.2.3. Query Representation
 - 일반 query plan
+
     ![query plan representation](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_plan_representation.jpeg)
 
 - GRACEFUL은 각 operator를 graph node로 표현
+
     | operator    | feature           |
     | ----------- | ----------------- |
     | Scan        | estimated rows    |
     | Filter      | selectivity       |
     | Join        | join type         |
     | Aggregation | group cardinality |
+
 - 즉, 일반 query optimization용 learned model 구조를 그대로 활용
 
 - 그러나, GRACEFUL은 여기에 UDF internal structure를 CFG로 표현하여 추가
