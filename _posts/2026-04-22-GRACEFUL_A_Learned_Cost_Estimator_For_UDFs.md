@@ -14,9 +14,9 @@ author_profile: true
 - ICDE 2025: IEEE 41st International Conference on Data Engineering
 - Technical University of Darmstadt / Microsoft - Gray Systems Lab / DFKI
 
-# 1. Introduction
-## 1.1. Abstract
-### 1.1.1. User-Defined-Functions (UDFs) are a pivotal feature in modern DBMS...
+## 1. Introduction
+### 1.1. Abstract
+#### 1.1.1. User-Defined-Functions (UDFs) are a pivotal feature in modern DBMS...
 > UDF는 중요하지만 최적화가 어렵다
 
 - SQL만으로는 표현하기 어려운 사용자/비즈니스 로직을 함수로 생성 가능
@@ -29,7 +29,7 @@ author_profile: true
 - 그러나, UDF는 DBMS optimizer 관점에서 다루기 어려운 주제
 - UDF 실행에 필요한 cost estimation이 어렵기 때문
 
-### 1.1.2. 기존 cost model의 한계
+#### 1.1.2. 기존 cost model의 한계
 - 기존 cost model은 보통 아래 연산들에 대해서는 꽤 잘 작동
     - scan, filter, join, sort, aggregation
 - 이러한 연산들은 DBMS가 오래 전부터 잘 연구해 온 연산
@@ -42,7 +42,7 @@ author_profile: true
     - 아예 제대로 반영하지 못함
 - 그 결과 suboptimal plan, 즉 비효율적인 실행 계획을 선택
 
-### 1.1.3. GRACEFUL의 제안
+#### 1.1.3. GRACEFUL의 제안
 - 따라서, GRACEFUL은 learned cost model을 제안
 - 사람이 손으로 UDF 비용 공식을 구하는 대신, 데이터와 실행 결과를 바탕으로 모델이 비용을 학습
 
@@ -55,7 +55,7 @@ author_profile: true
 
 - 위 예측을 바탕으로 optimizer가 더 좋은 결정을 할 수 있음
 
-### 1.1.4 대표적인 효과: filter pull-up / push-down
+#### 1.1.4 대표적인 효과: filter pull-up / push-down
 - 일반적으로 DBMS에서는 filter push-down이 좋은 최적화
     - 가능한 빨리 filter를 적용하여서 row 수를 줄이면 이후 연산이 빨라짐
 
@@ -71,14 +71,14 @@ author_profile: true
 - pull-up (UDF filter 먼저 적용) / push-down (UDF filter를 나중에 적용) 중 결정
 - 그 결과, 약 50배의 속도 개선을 달성
 
-### 1.1.5 데이터셋 공개
+#### 1.1.5 데이터셋 공개
 - UDF 쿼리 최적화는 데이터셋이 부족한 분야
 - 해당 논문에서 9만 개 이상의 synthetic UDF query benchmark를 공개
 
 - 즉, 후속 연구가 쉽게 재현되고 비교 가능한 기반을 제공
 
-## 1.2. Introduction
-### 1.2.1. "Modern Databases Increasingly Face UDFs"
+### 1.2. Introduction
+#### 1.2.1. "Modern Databases Increasingly Face UDFs"
 - 데이터 규모가 계속 증가
 - 처리 요구도 점점 복잡해짐
 - 따라서, 계산을 DB 바깥으로 빼기 보다는 데이터 가까이서 처리하는 것이 중요
@@ -90,7 +90,7 @@ author_profile: true
 - 또한, 저자들은 UDF가 데이터센터에서 매일 수십억 번 실행된다는 것을 언급
 - 따라서, UDF 최적화가 실제 시스템 성능에 매운 큰 영향을 미칠 수 있음
 
-### 1.2.2. UDF Optimizations are Crucial
+#### 1.2.2. UDF Optimizations are Crucial
 - DBMS의 핵심은 단순히 SQL을 실행시키는 것이 아닌, 효율적인 실행 계획을 고르는 것
 - 그러나, UDF는 이 과정에서 문제를 일으킴
 - SQL optimizer는 보통 아래를 기준으로 판단
@@ -102,7 +102,7 @@ author_profile: true
 - 그러나, UDF가 개입하면 cost estimation이 불명확해져서 optimizer가 잘못된 선택을 할 수 있음
 - 특히, UDF에서는 predicate push-down이 항상 좋은 것이 아님
 
-### 1.2.3. Limited UDF Support in DBMS Cost Estimators
+#### 1.2.3. Limited UDF Support in DBMS Cost Estimators
 - 사실 UDF를 고려한 query optimization은 오래된 문제
 - 과거에도 complex predicate 최적화 문제가 논의됨
 - 하지만 보지 못한 UDF의 비용을 일반화해서 예측하는 문제는 아직 해결되지 않았음
@@ -110,7 +110,7 @@ author_profile: true
 - 즉, 기존 연구가 UDF를 빠르게 실행하는 방법이나 특정 상황 최적화는 수행하였더라도
 - optimizer가 새로운 UDF를 처음 봤을 때에도 비용을 잘 예측할 수 잇는지에 대한 해법이 부족
 
-### 1.2.4. The impact of pull-up optimization an a SQL query with a UDF
+#### 1.2.4. The impact of pull-up optimization an a SQL query with a UDF
 <div align="center">
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/fig1.png" alt="Fig_1_The_impact_of_pull-up_optimization_an_a_SQL_query_with_a_UDF" width="500">
 </div>
@@ -145,7 +145,7 @@ author_profile: true
     2. 따라서 UDF 비용을 아는 것이 매우 중요
     3. 정확한 cost estimator만 있으면 엄청난 성능 개선이 가능
 
-### 1.2.5. Our Proposal: Learned Cost Estimator for UDFs
+#### 1.2.5. Our Proposal: Learned Cost Estimator for UDFs
 - 논문은 최근 ML 기반 cost estimation이 좋은 성과를 내고 있음을 언급
 - 전통적인 hand-crafted optimizer 대신 학습 기반 방법이 database 분야에서 점점 주목을 받음
 
@@ -165,7 +165,7 @@ author_profile: true
 
 - 그래서 GRACEFUL은 query plan + UDF control flow를 함께 보는 모델을 제안
 
-### 1.2.6. Runtime prediction is hard works
+#### 1.2.6. Runtime prediction is hard works
 - 프로그램 비용 예측은 원래 어려운 문제
 - 일반화해서 생각하면, 이는 Turing의 Halting Problem과 유사해 본질적으로 어려움
 
@@ -183,7 +183,7 @@ author_profile: true
 - GRACEFUL은 단순히 코드 만을 바탕으로 최적화 하는 것이 아니라 (Compiler Optimization)
 - 데이터 특성까지 반영하여 비용을 예측 (GRACEFUL)
 
-### 1.2.7. The Need to Generalize to Unseen UDFs
+#### 1.2.7. The Need to Generalize to Unseen UDFs
 - UDF는 종류가 매우 다양
 - DL 모델 훈련 시점에 본 UDF만 잘 맞추는 모델로는 쓸모가 없음
     - 처음 보는 UDF
@@ -196,8 +196,8 @@ author_profile: true
     2. unseen SQL workloads: 훈련 때와 다른 질의 패턴
     3. unseen datasets: 훈련 때 없던 데이터셋
 
-### 1.2.8. 핵심 기술: CFG + GNN + 데이터 통계
-#### 1.2.8.1. UDF를 Control Flow Graph (CFG)로 표현
+#### 1.2.8. 핵심 기술: CFG + GNN + 데이터 통계
+##### 1.2.8.1. UDF를 Control Flow Graph (CFG)로 표현
 - UDF를 단순 텍스트 코드로 부지 않고
 - 프로그램의 구조를 나타내는 Control Flow Graph (CFG)로 표현
 
@@ -212,7 +212,7 @@ author_profile: true
     - operation 유형
 - 즉, UDF를 작은 프로그램 그래프로 보는 것
 
-#### 1.2.8.2. Query Plan과 UDF를 joint representation으로 결합
+##### 1.2.8.2. Query Plan과 UDF를 joint representation으로 결합
 - UDF는 query 바깥에 따로 존재하는 것이 아니라
 - query plan 안 특정 위치에서 실행
 
@@ -223,12 +223,12 @@ author_profile: true
     - 입력 cardinality
 - 를 함께 표현해야함
 
-#### 1.2.8.3. GNN으로 비용 예측
+##### 1.2.8.3. GNN으로 비용 예측
 - 그래프 구조 데이터이기 때문에 GNN(Grpah Neural Network)를 사용
 - GNN은 query plan graph와 CFG 같은 구조적 정보를 반영하기 적합
 - 논문은 이를 통해 UDF와 query plan의 joint embedding을 만들고 runtime을 예측
 
-### 1.2.9. Pull-up advisor
+#### 1.2.9. Pull-up advisor
 - GNN을 통한 비용 예측 정확도를 통해
 - 실제 optimizer task의 pull-up advisor를 구축
 
@@ -240,7 +240,7 @@ author_profile: true
 - 이를 통해 단순 예측 정확도 뿐 아니라
 - 실제 optimizer decision에 연결했을 때 end-to-end 성능 이득이 크다는 것을 입증
 
-### 1.2.10. Adaptive Execution is Not to be Preferred
+#### 1.2.10. Adaptive Execution is Not to be Preferred
 - adaptive execution으로 실행 중간에 plan을 바꾸면
     - adaptive execution은 DBMS에 넣기 복잡
     - execution paradign 자체가 달라질 수 있음
@@ -249,7 +249,7 @@ author_profile: true
 - 즉, 현실 시스템 관점에서는
 - 기존 optimizer 구조에 자연스럽게 들어가는 cost model 방식이 더 실용적
 
-### 1.2.11. Contributions
+#### 1.2.11. Contributions
 1. GRACEFUL 제안
     - UDF가 포함된 query plan의 runtime을 예측할 수 있는
     - GNN 기반 cost estimator를 제안
@@ -262,7 +262,7 @@ author_profile: true
 4. 코드와 benchmark 공개
     - 9만 개 이상의 query, 20개 데이터베이스에 걸친 benchmark 공개
 
-# 2. Overview of GRACEFUL
+## 2. Overview of GRACEFUL
 ![Fig. 2: Cost Estimation Overview for a SQL Query](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/fig2.png)
 
 - GRACEFUL의 핵심 구성 4가지
@@ -273,13 +273,13 @@ author_profile: true
 - 즉, 단순히 SQL plan만 보는 것도 아니고, UDF 코드만 보는 것도 아님
 - **Query, UDF, 데이터 통계**를 함께 모델링
 
-## 2.1. Key Ideas of Cost Model
-### 2.1.0. CFG Introduction
+### 2.1. Key Ideas of Cost Model
+#### 2.1.0. CFG Introduction
 <div align="center">
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/udf_to_cfg.png" alt="Generate Control Flow Graph" width="500">
 </div>
 
-#### 2.1.0.1. 그래프 구조로 추상화
+##### 2.1.0.1. 그래프 구조로 추상화
 - 기존 DBMS의 cost model은 대체로 아래 정보를 고려
     - query plan operator 종류
     - cardinality
@@ -301,7 +301,7 @@ author_profile: true
 - 즉, 단순한 벡터 feature 몇 개가 아니라
 - 구조적 정보(structure)를 가진 그래프로 관찰
 
-#### 2.1.0.2. UDF를 CFG로 표현하는 이유
+##### 2.1.0.2. UDF를 CFG로 표현하는 이유
 - CFG(Control Flow Graph)는 프로그램의 실행 흐름을 그래프로 나타낸 것
     - node: 코드 블록 또는 statement
     - edge: 실행 흐름 또는 제어 경로
@@ -321,7 +321,7 @@ author_profile: true
 
 - 이를 활용해 CFG는 프로그램의 branch, loop, 실행 순서를 자연스럽게 담을 수 있음
 
-#### 2.1.0.3. 왜 UDF를 CFG로 보는가?
+##### 2.1.0.3. 왜 UDF를 CFG로 보는가?
 - UDF는 결국 작은 프로그램
 - 따라서 runtime은 다음에 의해 결정됨
     - 어떤 연산이 있는가
@@ -334,12 +334,12 @@ author_profile: true
 
 - 즉, UDF는 opque black-box가 아니라, 구조를 가진 code graph로 보자는 제안
 
-#### 2.1.0.4. naive CFG 만으로는 부족하다
+##### 2.1.0.4. naive CFG 만으로는 부족하다
 - CFG는 코드 블록과 control edge만 표현
 - 대용량 데이터를 다루는 DBMS에서는 CFG 만으로 cost estimation이 충분하지 않음
 - 어떤 statement가 어떤 데이터에 얼마나 자주 수행되는지가 중요하기 때문
 
-### 2.1.1. Our UDF Representation
+#### 2.1.1. Our UDF Representation
 <div align="center">
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/encode_cfg_annotate_branch_selectivity.png" alt="Encode CFG As Graph (DAG), Annotate Branch Selectivities" width="300">
 </div>
@@ -348,7 +348,7 @@ author_profile: true
     - exploit loop end 추가
     - single-statement CFG로 변환
 
-#### 2.1.1.1. exploit loop end 추가
+##### 2.1.1.1. exploit loop end 추가
 - 일반 CFG에서는 loop의 끝이나 반복 경계가 명시적으로 잘 드러나지 않을 수 있음
 - 그러나, runtime estimation에서는 loop가 매우 중요
     - loop가 있는가?
@@ -361,7 +361,7 @@ author_profile: true
 
 - 즉, 원래 CFG보다 비용 추정에 유리한 형태로 구조를 정리
 
-#### 2.1.1.2. single-statement CFG
+##### 2.1.1.2. single-statement CFG
 - 기존 CFG는 하나의 node가 여러 줄의 code block일 수 있음
 - 예를 들어 한 basic block 내에 여러 statement가 들어갈 수 있음
 - 그러나, 이런 경우에 node 단위가 너무 뭉뜽그려져서
@@ -376,7 +376,7 @@ author_profile: true
 - 이를 통해 GNN이 더 세밀한 연산 구조를 학습할 수 있음
 - 즉, **프로그램 구조를 runtime prediction에 적합한 해상도로 분할**하는 것
 
-#### 2.1.1.3. data-flow annotation
+##### 2.1.1.3. data-flow annotation
 - CFG 만으로 runtime을 예측하는 것은 매우 어려움
 - 같은 코드이더라도 입력 데이터에 따라 실행 경로와 반복 횟수가 달라지기 때문
 
@@ -393,7 +393,7 @@ author_profile: true
 - 일반적인 실행 환경에서는 위 코드의 runtime을 예측하기 어려우나,
 - DBMS 환경에서는 기존 DBMS가 가진 통계 정보를 활용하여 위 UDF 함수의 cost estimation이 가능
 
-#### 2.1.1.4. cardinality
+##### 2.1.1.4. cardinality
 - DBMS cost model에서 cardinality는 가장 핵심적인 정보
 - 연산 비용은 대체로 "몇 개의 tuple을 처리하느냐"에 크게 좌우되기 때문
 
@@ -410,7 +410,7 @@ author_profile: true
     - 몇 %의 row가 true branch로 갈 것인가?
 - 는 사실상 UDF branch 내부 연산에 대한 cardinality 정보
 
-#### 2.1.1.5. UDF 내부 cardinality와 hit-ratio estimator
+##### 2.1.1.5. UDF 내부 cardinality와 hit-ratio estimator
 - DBMS는 일반적으로 query plan operator에 대해서는 cardinality estimate를 제시
     - scan 결과 row 수
     - join 결과 row 수
@@ -448,7 +448,7 @@ author_profile: true
     - 즉, 논문은 새로운 branch selectivity 모델을 완전히 새로 만드는 것이 아니라
     - 기존 DBMS의 통계 기반 추정 기능을 재활용
 
-### 2.1.2. Joint Query-UDF Representation
+#### 2.1.2. Joint Query-UDF Representation
 <div align="center">
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/joint_query_udf_representation.png" alt="Integrate UDF Graph Into Query Graph" width="350">
 </div>
@@ -473,7 +473,7 @@ author_profile: true
     - UDF CFG는 함수 내부 실행 구조를 표현
     - 둘을 연결하여 하나의 큰 그래프로 만들어 runtime을 찾음
 
-#### 2.1.2.1. query plan operator에도 cardinality annotation이 중요한 이유
+##### 2.1.2.1. query plan operator에도 cardinality annotation이 중요한 이유
 - DBMS에서 동일한 join operator이어도
     - 입력이 100 rows 인지
     - 입력이 100M rows 인지
@@ -482,7 +482,7 @@ author_profile: true
 - 따라서, opeartor type 뿐 아니라 입출력 cardinality가 필요
 - GRACEFUL은 DBMS의 cost estimation 개념을 그대로 활용하되, UDF가 있는 경우 추가 난점이 존재한다고 주장
 
-#### 2.1.2.2. UDF filter가 있으면 output cardinality를 모름
+##### 2.1.2.2. UDF filter가 있으면 output cardinality를 모름
 - 일반적으로 filter의 output cardianlity는 selectivity로 계싼
     - e.g., 
     - 입력 1,000,000 rows
@@ -499,7 +499,7 @@ author_profile: true
     - 즉, plan graph에서 중요한 feature 하나가 비게 됨
     - 이는 단순 cost prediction뿐 아니라 optimizer decision에도 문제를 발생시킴
 
-### 2.1.3. Point estimation of UDF-filter selectivity is unknown
+#### 2.1.3. Point estimation of UDF-filter selectivity is unknown
 - 일반적인 SQL filter는 예를 들어
     ```SQL
     WHERE age > 30
@@ -528,14 +528,14 @@ author_profile: true
 - 그러나, optimizer는 이 값을 꼭 알아야함
 - selectivity가 달라지면 "push-down이 좋은지, pull-up이 좋은지"가 달라지기 때문
 
-#### 2.1.3.1. Solution: Predict a distribution of the costs
+##### 2.1.3.1. Solution: Predict a distribution of the costs
 - GRACEFUL's probabilistic approach: 
     - UDF filter selectivity가 여러 값일 가능성을 염두
     - 해당 경우들에 대해 비용을 계산/예측
     - 단일 cost가 아니라 cost distribution을 생성
 - 즉, **UDF 때문에 불확실성이 생기면, 그냥 무시하지 말고 확률적 분포로 다룸**
 
-#### 2.1.3.2. selectivity에 따라 달라지는 cost
+##### 2.1.3.2. selectivity에 따라 달라지는 cost
 - 일반적인 cost model
     - $\hat{C}=f(plan_features)$
 - 즉, 입력 plan에 따라 **cost 결과 하나**를 출력
@@ -551,7 +551,7 @@ author_profile: true
     - $s=0.001$: 거의 다 걸러짐 → early push-down이 유리할 수 있음
     - $s=0.9$: 거의 안 걸러짐 → expensive UDF를 늦게 적용하는 것이 유리할 수 있음
 
-#### 2.1.3.3. Iterate over the UDF-filter selectivity
+##### 2.1.3.3. Iterate over the UDF-filter selectivity
 - UDF-filter selectivity가 정확히 무엇인지 모르는 상황에서
 - 가능한 여러 selectivity에 따른 cost estimation의 집합을 생성
     - e.g., $s \in \{ 0.01, 0.05, 0.1, 0.2, 0.5, 0.8 \}$
@@ -563,7 +563,7 @@ author_profile: true
         - 위 여러 cost estimation의 집합이 cost distribution의 근사
 - **selectivity uncertainty를 discretize해서 여러 시나리오를 평가**
 
-#### 2.1.3.4. Cost Distribution
+##### 2.1.3.4. Cost Distribution
 - cost distribution이 꼭 엄밀한 확률밀도함수(pdf)를 의미하는 것은 아님
     - UDF-filter selectivity가 불확실
     - 가능한 여러 경우(다양한 selectivity)에 대해 cost를 예측
@@ -598,7 +598,7 @@ author_profile: true
     - 분산/불확실성
     - 특정 selectivity 구간에서의 취약성
 
-#### 2.1.3.5. pull-up / push-down decision using cost distribution
+##### 2.1.3.5. pull-up / push-down decision using cost distribution
 - 2개의 후보 plan이 있다고 하자
     - Plan A: UDF filter pull-up
     - Plan B: UDF filter push-down
@@ -625,7 +625,7 @@ author_profile: true
     - regret이 더 작은 plan
 - 등을 선택할 수 있음
 
-### 2.1.4. Runtime Prediction
+#### 2.1.4. Runtime Prediction
 <div align="center">
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/runtime_prediction.png" alt="Message Passing & Runtime Prediction" width="300">
 </div>
@@ -634,7 +634,7 @@ author_profile: true
 - GNN이 생성한 graph embedding을 regression layer가 받아 query runtime을 예측
 - 모델은 특정 DB나 특정 UDF에 재학습하지 않아도 zero-shot으로 동작
 
-#### 2.1.4.1. Joined query-UDF graph
+##### 2.1.4.1. Joined query-UDF graph
 1. Query graph
     - SQL query plan을 그래프로 표현
     - e.g., `scan`, `filter`, `join`, `aggregation`과 같은 operator가 node
@@ -650,7 +650,7 @@ author_profile: true
 - 즉, 최종 입력은 SQL query plan graph와 UDF control-flow graph가 합쳐진 하나의 그래프
 - 이를 **joined query-UDF graph**라고 함
 
-#### 2.1.4.2. Runtime prediction via GNNs
+##### 2.1.4.2. Runtime prediction via GNNs
 - joined query-UDF graph에는 아래 정보를 포함
     - query operator 간 parent-child 관계
     - UDF 내부 control-flow 관계
@@ -668,14 +668,14 @@ author_profile: true
     - 어느 정도 row에 대해 실행되는가?
 - 를 GNN이 embedding으로 압축
 
-#### 2.1.4.3. Regression model as final layer
+##### 2.1.4.3. Regression model as final layer
 - GNN이 생성한 hidden state vector를 regression model에 입력
 - regression model에서 최종 query runtime을 예측
 - 추가적으로, 학습 안정화를 위해 log runtime을 예측
 
 - 즉, pull-up / push-down classification이 아닌 run-time regression
 
-#### 2.1.4.4. Does this model predicts only UDF cost?
+##### 2.1.4.4. Does this model predicts only UDF cost?
 - UDF가 포함된 query plan 전체 runtime을 예측
 - UDF 비용은 query context와 분리해서 생각하면 안되기 때문
 - 같은 UDF이어도
@@ -689,7 +689,7 @@ author_profile: true
 - 따라서, GRACEFUL은 UDF 단독 비용이 아닌
 - query plan 내에서 UDF가 실행될 때의 전체 runtime을 예측
 
-#### 2.1.4.5. zero-shot manner
+##### 2.1.4.5. zero-shot manner
 - 새로운 데이터베이스, 새로운 UDF, 새로운 SQL query를 사전에 학습하지 않더라도 바로 runtime을 예측
 - 즉, 모델이 특정 UDF를 미리 실행하고 학습하는 방식이 아님
 
@@ -705,7 +705,7 @@ author_profile: true
 - 따라서 optimizer는 처음 보는 UDF에 대해서도 즉시 판단해야함
 - 즉, **기존에 본 적 없는 UDF structure, dataset, SQL query에 대해서도 코드 구조와 데이터 통계를 활용해 대략적인 비용을 예측**
 
-#### 2.1.4.6. database-independent featurization
+##### 2.1.4.6. database-independent featurization
 - feature가 특정 데이터베이스에 종속되지 않음
 - 나쁜 feature의 예시는 아래와 같음
     ```
@@ -723,7 +723,7 @@ author_profile: true
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/table1.png" alt="table1_features_of_the_UDF_node_types" width="700">
 </div>
 
-## 2.2. Discussion of Scope
+### 2.2. Discussion of Scope
 - UDF cost estimation은 범위가 꽤 넓은 문제 정의
     - scalar UDF (row-by-row)
     - aggreagate UDF (group 단위, groupby 연산)
@@ -733,7 +733,7 @@ author_profile: true
 - 이 문제들을 한 번에 다 다루면 복잡도가 폭증
 - 제안 논문은 **가장 기본적이면서도 중요한 케이스를 먼저 다룸**
 
-### 2.2.1. Scalar Python UDFs
+#### 2.2.1. Scalar Python UDFs
 - scalar UDF는 아래의 성질을 가짐
     - 입력: 하나의 row (tuple)
     - 출력: 하나의 값
@@ -758,7 +758,7 @@ author_profile: true
     - filter 내에 들어가는 UDF
     - 이 경우 cost와 selectivity가 직접 연결되기 때문에 optimization 영향이 매우 큼
 
-#### 2.2.1.1. scalar UDF의 cost 구조
+##### 2.2.1.1. scalar UDF의 cost 구조
 - scalar UDF의 runtime: 
     - $\text{total cost} = (\text{\# rows}) \times (\text{cost per row})$
 
@@ -771,7 +771,7 @@ author_profile: true
     - UDF CFG → $\text{cost per row}$
 - query graph와 UDF CFG를 결합하면 전체 runtime
 
-#### 2.2.1.2. UDF 내부에서 허용하는 연산 범위
+##### 2.2.1.2. UDF 내부에서 허용하는 연산 범위
 - **control flow**
     - if/else
     - nested branches
@@ -787,7 +787,7 @@ author_profile: true
 - GRACEFUL은 단순 expression이 아닌 실제 production 수준의 복잡한 UDF도 처리 가능
 - 이런 복잡성이 기존 cost model이 실패하는 이유
 
-#### 2.2.1.3. Why Python UDF
+##### 2.2.1.3. Why Python UDF
 1. Python UDF는 실제 DBMS 환경에서 많이 사용됨
     - 특히, analytics, ML 파이프라인
 2. Python은 구조 분석이 비교적 쉬움
@@ -814,7 +814,7 @@ author_profile: true
     - parsing만 다르고
     - CFG representation은 동일하게 생성할 수 있음
 
-#### 2.2.1.4. aggregate UDF로 확장 가능
+##### 2.2.1.4. aggregate UDF로 확장 가능
 - **예시 UDF SQL 코드**
     - aggregate 예시 UDF
         ```python
@@ -899,8 +899,8 @@ author_profile: true
         - update operation node
         - merge operation node
 
-### 2.2.2. Non-UDF Queries
-#### 2.2.2.1. 왜 Non-UDF Query가 중요한가
+#### 2.2.2. Non-UDF Queries
+##### 2.2.2.1. 왜 Non-UDF Query가 중요한가
 - 현실 DBMS workload:
     - 어떤 query는 UDF가 존재
     - 어떤 query는 UDF 미존재
@@ -924,14 +924,14 @@ author_profile: true
 - 실제 DBMS에 적용하기 어려움
 - 따라서, GRACEFUL은 일반 query도 최적화 가능하도록 설계
 
-#### 2.2.2.2. Non-UDF Query 최적화가 가능한 이유
+##### 2.2.2.2. Non-UDF Query 최적화가 가능한 이유
 - GRACEFUL의 기본 입력: query plan graph
 - UDF가 포함된 경우 GRACEFUL의 입력: query plan graph + UDF CFG
 - 즉, UDF가 없는 경우에는 "UDF subgraph가 비어 있는 special case"
 - Query Operator Modeling은 아래 논문의 learned cost estimation 모델 사용
     - B. Hilprecht and C. Binnig, “One model to rule them all: Towards zero-shot learning for databases,” CIDR 2022
 
-#### 2.2.2.3. Query Representation
+##### 2.2.2.3. Query Representation
 - 일반 query plan
 
     ![query plan representation](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_plan_representation.jpeg)
@@ -962,19 +962,19 @@ author_profile: true
         - inference가 지나치게 느려지면
     - DBMS 전체 optimizer로 활용하기 어려움
 
-# 3. GRACEFUL Design
+## 3. GRACEFUL Design
 - 논문 구조
     - 3.1. UDF Representation: UDF를 어떻게 graph로 표현할 것인가
     - 3.2. branch/loop가 실제 데이터에서 얼마나 실행될지(hit-ratio, cardinality)를 어떻게 추정할 것인가
     - 3.3. UDF graph와 query plan graph를 어떻게 합칠 것인가
     - 3.4. GNN을 어떻게 학습하고 inference할 것인가
 
-## 3.1. UDF Representation
+### 3.1. UDF Representation
 - query 내 UDF 코드를 어떻게 graph로 표현할 것인가
 - graph의 node type과 feature는 무엇인가
 - UDF featurization과 query plan information이 어떻게 통합되는가
 
-### 3.1.1. Control-Flow Graph as Basis
+#### 3.1.1. Control-Flow Graph as Basis
 - GRACEFUL의 UDF 표현의 핵심 구조(backbone): CFG(Control Flow Graph)
 
 - CFG
@@ -1091,42 +1091,60 @@ author_profile: true
     - 이를 위해 column node를 추가
         - column node: UDF의 입력으로 사용되는 컬럼에 대한 정보를 표현
 
+- Main Contribution
+    - 기존 방식: UDF = black box
+    - GRACEFUL: query plan + input data + code structure
+        - 즉, (query graph, column statistics, UDF CFG)를 함께 모델링
 
-### 3.1.2. Transforming the CFG
-### 3.1.3. Handling Loops
-### 3.1.4. Various UDF Node Types
-### 3.1.5. Transferable Featurization
+- 일반적인 프로그램의 runtime prediction보다 DBMS runtime prediction이 할 수 있는 것이 더 많은 이유
+    - 일반적인 프로그램: 입력 데이터의 분포를 모름
+    - UDF: DBMS의 Statistics를 활용할 수 있음
+        - histogram
+        - cardinality
+        - selectivity
+        - ...
+- 또한, 최적화 관점에서도 DBMS에서 할 수 있는 것이 더 많음
+    - 일반적인 프로그램: Imperative Language
+        - Imperative: 작업을 어떻게 수행할지 상세히 명세
+        - 중간 결과를 함부로 수정하기 힘듦
+    - SQL: Declarative Language
+        - Declarative: 무엇을 원하는지 명세
+        - 최종 결과가 동일하게 나오는 보장 하에 query plan 변경이 더 용이
 
-## 3.2. UDF Selectivity Annotation
-### 3.2.1. Hit-Ratios Estimation / Branch Prediction
+#### 3.1.2. Transforming the CFG
+#### 3.1.3. Handling Loops
+#### 3.1.4. Various UDF Node Types
+#### 3.1.5. Transferable Featurization
 
-## 3.3. Joint Query-UDF Representation
-## 3.4. Model Architecture
+### 3.2. UDF Selectivity Annotation
+#### 3.2.1. Hit-Ratios Estimation / Branch Prediction
 
-
-# 4. Pull-up / Push-down Advisor
-## 4.1. Why this Problem?
-## 4.2. Regret Optimization
-## 4.3. Pull-up/Push-down Decision
-
-
-# 5. A novel UDF Benchmark
-## 5.1. Benchmark Design
-## 5.2. A Resource for UDF Cost Models
-
-
-# 6. Experimental Evaluation
-### 6.0.1. Set of Experiments
-### 6.0.2. Experimental Setup
-### 6.0.3. Accuracy on Non-UDF Queries
-### 6.0.4. Cardinality Annotation Methods
-### 6.0.5. Baselines
-
-## 6.1. Accuracy across Unseen Databases
-## 6.2. How robust are the estimates across different UDF complexities
-## 6.3. How does GRACEFUL compare with other UDF Cost Estimation Approaches?
-## 6.4. How do major design decisions of GRACEFUL affect the prediction accuracy?
-## 6.5. What speedups does our pull-up advisor achieve?
+### 3.3. Joint Query-UDF Representation
+### 3.4. Model Architecture
 
 
-# 7. Related Work
+## 4. Pull-up / Push-down Advisor
+### 4.1. Why this Problem?
+### 4.2. Regret Optimization
+### 4.3. Pull-up/Push-down Decision
+
+
+## 5. A novel UDF Benchmark
+### 5.1. Benchmark Design
+### 5.2. A Resource for UDF Cost Models
+
+
+## 6. Experimental Evaluation
+#### 6.0.1. Set of Experiments
+#### 6.0.2. Experimental Setup
+#### 6.0.3. Accuracy on Non-UDF Queries
+#### 6.0.4. Cardinality Annotation Methods
+#### 6.0.5. Baselines
+
+### 6.1. Accuracy across Unseen Databases
+### 6.2. How robust are the estimates across different UDF complexities
+### 6.3. How does GRACEFUL compare with other UDF Cost Estimation Approaches?
+### 6.4. How do major design decisions of GRACEFUL affect the prediction accuracy?
+### 6.5. What speedups does our pull-up advisor achieve?
+
+## 7. Related Work
