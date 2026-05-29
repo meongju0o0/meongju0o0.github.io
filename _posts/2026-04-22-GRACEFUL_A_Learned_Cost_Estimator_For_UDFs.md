@@ -205,7 +205,7 @@ author_profile: true
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg1.svg" alt="Control Flow Graph (CFG)" width="300">
 </div>
 
-- CFG Representation은 아래를 반여하기에 좋음
+- CFG Representation은 아래를 반영하기에 좋음
     - branch 구조
     - loop 구조
     - execution path
@@ -308,16 +308,15 @@ author_profile: true
 
 - e.g., 
     ```python
-    if x > 10:
-        y += 1
-    else:
-        y *= 2
-    return y
+    def my_func(i, numbers):
+        if i < len(numbers):
+            return numbers[i] % 2 == 0
+        return None
     ```
-    - 위 코드를 CFG로 만들면 대략적으로 아래와 같은 형태가 됨
+    - 위 코드를 CFG로 만들면 아래와 같은 형태가 됨
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg2.jpg" alt="Control Flow Graph (CFG)" width="300">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg1.svg" alt="Control Flow Graph (CFG)" width="300">
 </div>
 
 - 이를 활용해 CFG는 프로그램의 branch, loop, 실행 순서를 자연스럽게 담을 수 있음
@@ -976,6 +975,123 @@ author_profile: true
 - UDF featurization과 query plan information이 어떻게 통합되는가
 
 ### 3.1.1. Control-Flow Graph as Basis
+- GRACEFUL의 UDF 표현의 핵심 구조(backbone): CFG(Control Flow Graph)
+
+- CFG
+    ```python
+    def my_func(i, numbers):
+        if i < len(numbers):
+            return numbers[i] % 2 == 0
+        return None
+    ```
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg1.svg" alt="Control Flow Graph (CFG)" width="300">
+</div>
+
+- 즉, 
+    - node: 코드 블록(statement/block)
+    - edge: 실행 흐름
+
+- 왜 CFG를 사용하는가?
+    - runtime은 단순히 코드 길이로 결정되는 것이 아님
+    - e.g., 
+        ```python
+        def my_func(in_col):
+            for i in range(20):
+                # do something
+                for j in range(300):
+                    # do something
+                    if (condition1):
+                        # do something
+                    else:
+                        # do something
+                    # do something
+            while (condition2):
+                while (condition3):
+                    # do something
+        ```
+    - 위와 같은 control flow 구조를 그래프로 표현하면 전체 코드 구조를 파악하기에 용이
+    - 따라서, 전체 runtime을 예측하기에 용이
+        - e.g., if branches, loop condition, nested loops, ...
+    - 즉, $\text{runtime} \sim \text{execution path}$
+
+- CFG는 어떻게 생성?
+    - 기존 Python CFG 생성 도구(`python_graphs`)를 활용하여서
+    - standard CFG를 우선 생성
+
+- CFG node types
+    - **computation node**
+        ```python
+        x = y + z
+        ```
+        - 와 같은 계산 코드
+    - **control-flow node**
+        ```python
+        if
+        else
+        for
+        while
+        return
+        try
+        except
+        ```
+        - 와 같은 실행 흐름 제어 코드
+
+- basic block
+    - 중간에 branch 없이 연속 실행되는 코드 묶음
+    - e.g., 
+        ```python
+        a = x + y
+        b = a * 2
+        c = b - 1
+        ```
+    - 위와 같은 예시는 하나의 basic blcok
+        - 중간에 jump 없음
+        - 조건 분기 없음
+
+- edge
+    - 가능한 모든 실행 경로
+    - 즉, 다음에 실행 가능한 코드
+    - e.g., 
+        ```python
+            if x > 10:
+                A
+            else:
+                B
+        ```
+    - 실행 **가능한** 모든 경로이기 때문에 각 branch마다 edge 존재
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg2.png" alt="Control Flow Graph (CFG)" width="150">
+</div>
+
+- CFG extension in GRACEFUL
+    - GRACEFUL은 standard CFG에서 extension을 수행
+    - 단순 코드 흐름 뿐 아니라
+    - 데이터 흐름(data flow)도 graph에 포함
+    - UDF runtime은 코드만으로 결정되는 것이 아니기 때문
+    - e.g., 
+        ```python
+        def udf(price):
+            if price > 1000:
+                # do expensive things
+            else:
+                return price
+        ```
+        - 즉, if가 얼마나 얼마나 자주 true인지
+        - price distribution이 어떠한지
+        - 에 따라 udf cost가 달라짐
+    - 따라서, $\text{runtime\_estimator}(\text{code\_structure})$ 만으로는 충분하지 않음
+    - $\text{runtime\_estimator}(\text{code\_structure}, \text{input\_data\_distribution})$ 두 입력이 필요
+
+- connect UDF nodes with column nodes
+    - query plan 내의 column 정보를 UDF graph와 연결
+    - 이를 통해 input column의 distribution 정보를 UDF CFG에 주입
+    - 이를 위해 column node를 추가
+        - column node: UDF의 입력으로 사용되는 컬럼에 대한 정보를 표현
+
+
 ### 3.1.2. Transforming the CFG
 ### 3.1.3. Handling Loops
 ### 3.1.4. Various UDF Node Types
