@@ -1112,7 +1112,8 @@ author_profile: true
         - 최종 결과가 동일하게 나오는 보장 하에 query plan 변경이 더 용이
 
 #### 3.1.2. Transforming the CFG
-- Loop를 DAG로 변환
+##### 3.1.2.1. Transform Loop to DAG(Directed Acyclic Graph)
+- 일반적인 CFG
     - 일반 CFG에서 loop는 cycle을 생성
     - e.g.,
         ```python
@@ -1121,10 +1122,75 @@ author_profile: true
             x += i
         ```
     - 일반적인 CFG는 아래 처럼 다시 loop condition으로 돌아가는 cycle이 존재
-        ![cfg3](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg3.png)
-    - 그러나, GRACEFUL은 이를
-        ![graceful_dag1](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag1.png)
-    - 으로 변경
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg3.png" alt="Control Flow Graph (CFG)" width="150">
+</div>
+
+- GRACEFUL: CFG를 DAG로 변환
+    - 그러나, GRACEFUL은 이를 아래와 같이 변환
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="175">
+</div>
+
+- 즉,
+    - 실제 반복 구조(cycle) 제거
+    - LOOP node와 LOOP_END node 추가
+    - 반복 횟수는 feature로 저장
+- 이를 통해 그래프를 DAG로 변환하면 GNN 학습이 용이함
+
+##### 3.1.2.2. Basic Block을 세분화 하여 Single-Statement CFG 생성
+- 일반 CFG에는 여러 연산이 하나의 basic block에 들어갈 수 있음
+    ```python
+    x = math.sin(a+b) * c
+    ```
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg_basic_block.png" alt="CFG basic block" width="175">
+</div>
+
+- GRACEFUL은 이를 더 세밀하게 나눔
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/single_statement_cfg.png" alt="Single-statement CFG" width="150">
+</div>
+
+##### 3.1.2.3. Basic Block을 세분화 하는 이유
+- 아래 두 UDF를 생각해보자
+    ```python
+    x = a + b
+    ```
+    ```python
+    x = np.linalg.inv(A)
+    ```
+- 두 코드 모두 CFG에서는 단순 computation node일 수 있음
+- 하지만 실제 비용 차이는 상당함
+- 따라서, `computation` 노드 하나로 구분하지 않고
+- `+`, `np.linalg.inv`, `math.sin`, `string concat`과 같은 연산을 분리하여 표현해야 GNN이 비용 차이를 학습할 수 있음
+
+##### 3.1.2.4. 그러나, 모든 연산을 다 분해하지는 않는다
+- 예를 들어,
+    ```python
+    x = a + b * c - d
+    ```
+- 를 완전히 분리하면
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/too_large_cfg.png" alt="too large CFG" width="150">
+</div>
+
+- 처럼 노드 수가 계속 증가
+- UDF가 길어질 수록 그래프의 크기가 급증
+- 따라서 제안 논문은 같은 코드 라인 내의 단순 arithmetic 연산은 하나의 노드로 유지
+- 즉, `a + b * c - d`와 같은 arithmetic 연산은 하나의 computation node로 유지
+
+- 반면,
+    ```python
+    np.sin(...)
+    math.log(...)
+    ```
+- 같은 nested function call은 별도 node로 분리
 
 #### 3.1.3. Handling Loops
 #### 3.1.4. Various UDF Node Types
