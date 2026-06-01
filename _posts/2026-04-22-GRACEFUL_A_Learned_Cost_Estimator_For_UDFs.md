@@ -1091,8 +1091,21 @@ author_profile: true
     - 이를 위해 column node를 추가
         - column node: UDF의 입력으로 사용되는 컬럼에 대한 정보를 표현
 
-
 ### 3.1.2. Transforming the CFG
+- Loop를 DAG로 변환
+    - 일반 CFG에서 loop는 cycle을 생성
+    - e.g.,
+        ```python
+        x = 0
+        for i in range(10):
+            x += i
+        ```
+    - 일반적인 CFG는 아래 처럼 다시 loop condition으로 돌아가는 cycle이 존재
+        ![cfg3](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg3.png)
+    - 그러나, GRACEFUL은 이를
+        ![graceful_dag1](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag1.png)
+    - 으로 변경
+
 ### 3.1.3. Handling Loops
 ### 3.1.4. Various UDF Node Types
 ### 3.1.5. Transferable Featurization
@@ -1103,17 +1116,14 @@ author_profile: true
 ## 3.3. Joint Query-UDF Representation
 ## 3.4. Model Architecture
 
-
 # 4. Pull-up / Push-down Advisor
 ## 4.1. Why this Problem?
 ## 4.2. Regret Optimization
 ## 4.3. Pull-up/Push-down Decision
 
-
 # 5. A novel UDF Benchmark
 ## 5.1. Benchmark Design
 ## 5.2. A Resource for UDF Cost Models
-
 
 # 6. Experimental Evaluation
 ### 6.0.1. Set of Experiments
