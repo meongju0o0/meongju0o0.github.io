@@ -1127,11 +1127,10 @@ author_profile: true
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg3.png" alt="Control Flow Graph (CFG)" width="150">
 </div>
 
-- GRACEFUL: CFG를 DAG로 변환
-    - 그러나, GRACEFUL은 이를 아래와 같이 변환
+- 그러나, GRACEFUL은 CFG를 DAG로 변환
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="175">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag1.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="175">
 </div>
 
 - 즉,
