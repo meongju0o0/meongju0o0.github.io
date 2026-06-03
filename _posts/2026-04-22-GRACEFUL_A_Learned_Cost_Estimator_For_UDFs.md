@@ -1231,7 +1231,7 @@ author_profile: true
     ```
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag2.png" alt="GRACEFUL's Directed Acyclic Graph (DAG) w/ loop_flag" width="250">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag2.png" alt="GRACEFUL's Directed Acyclic Graph (DAG) w/ loop_flag" width="350">
 </div>
 
 - 즉, loop 내 node에는 `loop_part = True' flag를 삽입
@@ -1251,7 +1251,7 @@ author_profile: true
 - 위 상황에서 `LOOP_END` 노드와 `shortcut edge` 없이 생성되는 그래프는 아래와 같음
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag_w_o_LOOP_END.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="250">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag_w_o_LOOP_END.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="275">
 </div>
 
 - GNN은 위 그래프에서 message passing을 수행
@@ -1265,7 +1265,7 @@ author_profile: true
     - loop 전체를 하나의 영역으로 명시적으로 표현하기 위함
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag_w_o_shortcut_edge.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="250">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag_w_o_shortcut_edge.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="275">
 </div>
 
 - 그러나 여전히 `LOOP`와 `LOOP_END` 사이 거리가 멀음
@@ -1286,7 +1286,7 @@ author_profile: true
     - 정보를 동시에 가짐
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag3.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="250">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag3.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="300">
 </div>
 
 ##### 3.1.2.6. Fusing of loop-related information
