@@ -1135,7 +1135,7 @@ author_profile: true
 
 - 즉,
     - 실제 반복 구조(cycle) 제거
-    - LOOP node와 LOOP_END node 추가
+    - `LOOP` node와 `LOOP_END` node 추가
     - 반복 횟수는 feature로 저장
 - 이를 통해 그래프를 DAG로 변환하면 GNN 학습이 용이함
 
@@ -1152,7 +1152,7 @@ author_profile: true
 - GRACEFUL은 이를 더 세밀하게 나눔
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/single_statement_cfg.png" alt="Single-statement CFG" width="250">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/single_statement_cfg.png" alt="Single-statement CFG" width="200">
 </div>
 
 ##### 3.1.2.3. Basic Block을 세분화 하는 이유
@@ -1192,6 +1192,108 @@ author_profile: true
 - 같은 nested function call은 별도 node로 분리
 
 #### 3.1.3. Handling Loops
+##### 3.1.3.1. 기본 아이디어: loop를 DAG로 표현
+- 일반적인 CFG
+    - 일반 CFG에서 loop는 cycle을 생성
+    - e.g.,
+        ```python
+        x = 0
+        for i in range(10):
+            x += i
+        ```
+    - 일반적인 CFG는 아래 처럼 다시 loop condition으로 돌아가는 cycle이 존재
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg3.png" alt="Control Flow Graph (CFG)" width="175">
+</div>
+
+- 그러나, GRACEFUL은 CFG를 DAG로 변환
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag1.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="175">
+</div>
+
+- 즉,
+    - 실제 반복 구조(cycle) 제거
+    - `LOOP` node와 `LOOP_END` node 추가
+    - 반복 횟수는 feature로 저장
+- 이를 통해 그래프를 DAG로 변환하면 GNN 학습이 용이함
+
+##### 3.1.3.2. loop_part flag
+- loop 내 모든 operator에 `loop_part` flag를 설정
+- 예를 들어, 
+    ```python
+    a = 0
+    b = 1
+    for i in range(n)
+        a += i
+        b *= 2
+    ```
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag2.png" alt="GRACEFUL's Directed Acyclic Graph (DAG) w/ loop_flag" width="250">
+</div>
+
+- 즉, loop 내 node에는 `loop_part = True' flag를 삽입
+- GNN이 반복 수행되는 연산을 인식하도록 하는 것
+
+##### 3.1.2.3. Problem Situation 1: propagation of loop information diminish
+- 예를 들어, 아래와 같은 코드가 있다고 하자
+    ```python
+    for i in range(1000):
+        temp = func1(my_input)
+        temp = func2(temp)
+        temp = func3(temp)
+        temp = func4(temp)
+        # ...
+        temp = func5(temp)
+    ```
+- 위 상황에서 `LOOP_END` 노드와 `shortcut edge` 없이 생성되는 그래프는 아래와 같음
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag_w_o_LOOP_END.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="250">
+</div>
+
+- GNN은 위 그래프에서 message passing을 수행
+- 이때, `LOOP` 노드에서 op100까지의 거리가 너무 멀어짐
+- 따라서, `LOOP`의 정보가 op100까지 잘 전달되지 않음
+    - 즉, loop 관련 정보가 희석됨
+
+##### 3.1.2.4. Proposing Solution 1: LOOP_END node
+- 일반적인 CFG에는 `LOOP_END`와 같은 노드가 없음
+- 그러나 GRACEFUL은 의도적으로 생성
+    - loop 전체를 하나의 영역으로 명시적으로 표현하기 위함
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag_w_o_shortcut_edge.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="250">
+</div>
+
+- 그러나 여전히 `LOOP`와 `LOOP_END` 사이 거리가 멀음
+
+##### 3.1.2.5. Proposing Solution 2: shortcut edge
+- 따라서, shortcut edge를 추가
+    - GNN 관점에서 원래는: `LOOP -> func1 -> func2 -> ... -> func100 -> LOOP_END`로
+    - message passing을 100번 해야함
+- 그러나, shortcut edge 추가 후에는
+    - `LOOP -> LOOP_END`로 한 번에 전달됨
+
+- 즉, `LOOP_END`는
+    - loop 내부 정보: 
+        - func1 ~ func100
+    - loop 자체 정보: 
+        - loop type
+        - interation count
+    - 정보를 동시에 가짐
+
+##### 3.1.2.6. Fusing of loop-related information
+- UDF의 root node('RETURN' node)에 모든 정보를 모아서 embedding을 생성하는 것이 중요
+- 아래 두 정보를 fusing
+    - **loop-related information**
+        - type of the loop
+        - code execution inside the loop
+    - **pre-loop computation**
+- 이때, `LOOP_END` 노드가 해당 loop의 요약본 역할을 하여 `RETURN` 노드에 최종 정보를 요약하는데 도움
+
 #### 3.1.4. Various UDF Node Types
 #### 3.1.5. Transferable Featurization
 
