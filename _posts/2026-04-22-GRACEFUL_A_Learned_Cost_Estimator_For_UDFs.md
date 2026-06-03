@@ -1124,7 +1124,7 @@ author_profile: true
     - 일반적인 CFG는 아래 처럼 다시 loop condition으로 돌아가는 cycle이 존재
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg3.png" alt="Control Flow Graph (CFG)" width="150">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg3.png" alt="Control Flow Graph (CFG)" width="175">
 </div>
 
 - 그러나, GRACEFUL은 CFG를 DAG로 변환
