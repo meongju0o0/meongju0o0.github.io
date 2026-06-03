@@ -1146,7 +1146,7 @@ author_profile: true
     ```
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg_basic_block.png" alt="CFG basic block" width="200">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg_basic_block.png" alt="CFG basic block" width="250">
 </div>
 
 - GRACEFUL은 이를 더 세밀하게 나눔
@@ -1231,7 +1231,7 @@ author_profile: true
     ```
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag2.png" alt="GRACEFUL's Directed Acyclic Graph (DAG) w/ loop_flag" width="350">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag2.png" alt="GRACEFUL's Directed Acyclic Graph (DAG) w/ loop_flag" width="400">
 </div>
 
 - 즉, loop 내 node에는 `loop_part = True' flag를 삽입
@@ -1290,7 +1290,7 @@ author_profile: true
 </div>
 
 ##### 3.1.2.6. Fusing of loop-related information
-- UDF의 root node('RETURN' node)에 모든 정보를 모아서 embedding을 생성하는 것이 중요
+- UDF의 root node(`RETURN` node)에 모든 정보를 모아서 embedding을 생성하는 것이 중요
 - 아래 두 정보를 fusing
     - **loop-related information**
         - type of the loop
@@ -1299,6 +1299,20 @@ author_profile: true
 - 이때, `LOOP_END` 노드가 해당 loop의 요약본 역할을 하여 `RETURN` 노드에 최종 정보를 요약하는데 도움
 
 #### 3.1.4. Various UDF Node Types
+- GRACEFUL은 모든 코드를 그대로 노드로 만들지 않음
+- 실행 비용(runtime)에 영향을 주는 요소들만 추상화하여 5개의 노드 타입으로 표현
+    1. **COMP (Computation)**
+    2. **BRANCH**
+    3. **LOOP**
+    4. **INV**
+    5. **RET (Return)**
+
+##### 3.1.4.1. COMP (Computation) node
+##### 3.1.4.2. BRANCH node
+##### 3.1.4.3. LOOP node
+##### 3.1.4.4. INV node
+##### 3.1.4.5. RET node
+
 #### 3.1.5. Transferable Featurization
 
 ### 3.2. UDF Selectivity Annotation
