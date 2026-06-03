@@ -1146,13 +1146,13 @@ author_profile: true
     ```
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg_basic_block.png" alt="CFG basic block" width="175">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg_basic_block.png" alt="CFG basic block" width="200">
 </div>
 
 - GRACEFUL은 이를 더 세밀하게 나눔
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/single_statement_cfg.png" alt="Single-statement CFG" width="150">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/single_statement_cfg.png" alt="Single-statement CFG" width="175">
 </div>
 
 ##### 3.1.2.3. Basic Block을 세분화 하는 이유
