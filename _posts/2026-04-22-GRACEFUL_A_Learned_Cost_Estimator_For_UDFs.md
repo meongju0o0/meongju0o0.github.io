@@ -1285,6 +1285,10 @@ author_profile: true
         - interation count
     - 정보를 동시에 가짐
 
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag3.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="250">
+</div>
+
 ##### 3.1.2.6. Fusing of loop-related information
 - UDF의 root node('RETURN' node)에 모든 정보를 모아서 embedding을 생성하는 것이 중요
 - 아래 두 정보를 fusing
