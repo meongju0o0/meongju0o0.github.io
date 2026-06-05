@@ -934,7 +934,9 @@ author_profile: true
 ##### 2.2.2.3. Query Representation
 - 일반 query plan
 
-    ![query plan representation](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_plan_representation.jpeg)
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_plan_representation.jpeg" alt="query plan" width="300">
+</div>
 
 - GRACEFUL은 각 operator를 graph node로 표현
 
@@ -1063,7 +1065,7 @@ author_profile: true
     - 실행 **가능한** 모든 경로이기 때문에 각 branch마다 edge 존재
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg2.png" alt="Control Flow Graph (CFG)" width="150">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cfg2.png" alt="Control Flow Graph (CFG)" width="300">
 </div>
 
 - CFG extension in GRACEFUL
@@ -1176,7 +1178,7 @@ author_profile: true
 - 를 완전히 분리하면
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/too_large_cfg.png" alt="too large CFG" width="175">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/too_large_cfg.png" alt="too large CFG" width="150">
 </div>
 
 - 처럼 노드 수가 계속 증가
@@ -1237,7 +1239,7 @@ author_profile: true
 - 즉, loop 내 node에는 `loop_part = True' flag를 삽입
 - GNN이 반복 수행되는 연산을 인식하도록 하는 것
 
-##### 3.1.2.3. Problem Situation 1: propagation of loop information diminish
+##### 3.1.3.3. Problem Situation 1: propagation of loop information diminish
 - 예를 들어, 아래와 같은 코드가 있다고 하자
     ```python
     for i in range(1000):
@@ -1259,7 +1261,7 @@ author_profile: true
 - 따라서, `LOOP`의 정보가 op100까지 잘 전달되지 않음
     - 즉, loop 관련 정보가 희석됨
 
-##### 3.1.2.4. Proposing Solution 1: LOOP_END node
+##### 3.1.3.4. Proposing Solution 1: LOOP_END node
 - 일반적인 CFG에는 `LOOP_END`와 같은 노드가 없음
 - 그러나 GRACEFUL은 의도적으로 생성
     - loop 전체를 하나의 영역으로 명시적으로 표현하기 위함
@@ -1270,7 +1272,7 @@ author_profile: true
 
 - 그러나 여전히 `LOOP`와 `LOOP_END` 사이 거리가 멀음
 
-##### 3.1.2.5. Proposing Solution 2: shortcut edge
+##### 3.1.3.5. Proposing Solution 2: shortcut edge
 - 따라서, shortcut edge를 추가
     - GNN 관점에서 원래는: `LOOP -> func1 -> func2 -> ... -> func100 -> LOOP_END`로
     - message passing을 100번 해야함
@@ -1289,7 +1291,7 @@ author_profile: true
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_dag3.png" alt="GRACEFUL's Directed Acyclic Graph (DAG)" width="300">
 </div>
 
-##### 3.1.2.6. Fusing of loop-related information
+##### 3.1.3.6. Fusing of loop-related information
 - UDF의 root node(`RETURN` node)에 모든 정보를 모아서 embedding을 생성하는 것이 중요
 - 아래 두 정보를 fusing
     - **loop-related information**
@@ -1308,6 +1310,18 @@ author_profile: true
     5. **RET (Return)**
 
 ##### 3.1.4.1. COMP (Computation) node
+- 계산 연산을 나타내는 노드
+- e.g.,
+    ```python
+    x + y
+    x * y
+    np.sin(x)
+    math.log(x)
+    ```
+- 위와 같은 연산들을 표현
+
+- 예를 들어, `a = b + c` 이면 `COMP(+)` 노드를 생성
+
 ##### 3.1.4.2. BRANCH node
 ##### 3.1.4.3. LOOP node
 ##### 3.1.4.4. INV node
