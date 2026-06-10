@@ -1316,16 +1316,98 @@ author_profile: true
     x + y
     x * y
     np.sin(x)
-    math.log(x)
+    mat
+    h.log(x)
     ```
 - 위와 같은 연산들을 표현
 
 - 예를 들어, `a = b + c` 이면 `COMP(+)` 노드를 생성
 
+- 아래 node feature를 가짐
+    - **in_rows**: number of incoming rows, (integer)
+    - **lib**: library call used, (categorical)
+    - **ops**: arithmetic operators used, (categorical)
+    - **loop_part**: Is this node part of a loop, (boolean)
+
 ##### 3.1.4.2. BRANCH node
-##### 3.1.4.3. LOOP node
+- 조건 분기를 표현
+- e.g.,
+    ```python
+    if x > 10:
+        # do something
+    ```
+
+- 그래프에서는 `BRANCH(>)` 처럼 표현
+
+- 아래 node feature를 가짐
+    - **in_rows**: number of incoming rows, (integer)
+        - DeepDB cardinality estimator 활용
+    - **cmops**: comparison operators in branch condition, (categorical)
+    - **loop_part**: Is this node part of a loop, (boolean)
+
+##### 3.1.4.3. LOOP / LOOP_END node
+- 반복문을 표현
+- e.g., 
+    ```python
+    for i in range(10):
+        # do something
+    ```
+    ```python
+    while x > 10:
+    ```
+
+- 그래프에서는 `LOOP`로 표현
+
+- 아래 node feature를 가짐
+    - **in_rows**: number of incoming rows, (integer)
+    - **loop_type**: used loop type, i.e., for/while, (categorical)
+    - **nr_iter**: number of loop iterations, (integer)
+    - **loop_part**: Is this node part of a loop, (boolean)
+
 ##### 3.1.4.4. INV node
+- UDF 호출을 표현
+- e.g., 
+    ```SQL
+    SELECT udf(t1.col1)
+    FROM mytable AS t1;
+    ```
+
+- 이는 아래의 호출 과정을 거침
+    1. for each row:
+        1. DB engine extracts each parameter's column value
+        2. Switch context to python runtime
+        3. Execute python scalar-UDF
+        4. Return to DB engine
+
+- 이때, 
+    - 함수 호출
+    - 함수 인자 전달
+    - type conversion
+- 등의 비용이 발생
+- 이를 INV node로 표현
+
 ##### 3.1.4.5. RET node
+- UDF 결과 반환을 표현
+- e.g., 
+    ```python
+    return x
+    ```
+
+- 이는 아래의 연산 과정이 필요
+    1. Convert python return value type to DBMS type
+    2. Save UDF result to DBMS temporary table
+
+- 이때, 
+    - e.g., 1)
+        ```python
+        return 1
+        ```
+    - e.g., 2)
+        ```python
+        return large_string
+        ```
+    - 1)보다 2)가 더 비쌀 수 있음
+- 이를 RET node로 표현
 
 #### 3.1.5. Transferable Featurization
 
