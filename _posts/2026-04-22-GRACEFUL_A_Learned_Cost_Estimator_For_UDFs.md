@@ -1341,7 +1341,7 @@ author_profile: true
 
 - 아래 node feature를 가짐
     - **in_rows**: number of incoming rows, (integer)
-        - DeepDB cardinality estimator 활용
+        - cardinality estimator 활용
     - **cmops**: comparison operators in branch condition, (categorical)
     - **loop_part**: Is this node part of a loop, (boolean)
 
@@ -1410,6 +1410,222 @@ author_profile: true
 - 이를 RET node로 표현
 
 #### 3.1.5. Transferable Featurization
+##### 3.1.5.1. 왜 Transferable Featurization이 필요한가?
+- 논문이 지적하는 문제점: "거의 모든 UDF는 서로 다르다"
+- e.g., 
+    ```python
+    def udf1(x):
+        return x + 1
+    ```
+    ```python
+    def udf2(price):
+        return np.log(price)
+    ```
+    ```python
+    def udf3(name):
+        return name.upper()
+    ```
+    ```python
+    def udf4(a,b):
+        if a > b:
+            return a
+        return b
+    ```
+- 일반적인 ML 관점에서 생각하면
+    ```
+    Training:
+        UDF1
+        UDF2
+        UDF3
+        ...
+
+    Inference:
+        UDF99999
+    ```
+- 와 같은 상황
+- 즉, "훈련 때 본 적 없는 코드"(unseen code)를 처리할 수 있어야 함
+
+##### 3.1.5.2. 무엇을 학습하는가?
+- 논문의 핵심 아이디어:
+    - 코드 자체 -> X
+    - 코드의 복잡도 특성 포착 -> O
+
+- e.g.,
+    ```python
+    x + y
+    ```
+    ```python
+    a + b
+    ```
+- 위 두 연산은
+    - 변수 명은 다르지만
+    - 덧셈 연산이라는 특징은 동일
+
+- GRACEFUL은 이런
+    - 연산 종류
+    - 분기 종류
+    - 반복 구조
+    - 데이터 타입
+    - 입력 행 수
+- 을 input feature로 사용
+
+##### 3.1.5.3. 가장 중요한 feature: in_rows
+- `in_rows`는 거의 모든 node가 갖는 feature
+
+- e.g.,
+    ```SQL
+    SELECT *
+    FROM mytable as t1
+    WHERE udf(t1.col1) < 100000;
+    ```
+
+- 만약 100 rows에 대해 UDF를 실행하면
+    - UDF는 100번 호출
+- 만약 10,000,000 rows에 대해 UDF를 실행하면
+    - UDF는 10M번 호출
+
+- 즉, $\text{runtime} \propto \text{\# rows}$ 인 경우가 많음
+
+- 특히, loop의 경우
+    ```python
+    for i in range(100):
+        expensive_func()
+    ```
+    - 와 같은 반복문이 있다면
+        - 100 rows -> `expensive_func()`를 총 10,000번 호출
+        - 10,000,000 rows -> `expensive_func()`를 총 1,000,000,000번 호출
+    - 두 실행 간에는 비용 차이가 큼
+- 또한, branch의 경우
+    ```python
+    if price > 100:
+        ret_val = expensive_func()
+        return ret_val
+    else:
+        return price
+    ```
+    - 위와 같은 상황에서는 몇 개의 row가
+        - if branch를 통과하는지
+        - else branch를 통과하는지
+    - 중요함
+- 따라서 이를 cardinaltiy estimator를 활용하여 추정한 후
+- node feature(`in_rows`)에 삽입
+
+##### 3.1.5.4. Arithmetic / String Operation Encoding
+- Operator 종류를 one-hot vector로 표현
+- e.g.,
+    - `a + b`: `ADD` -> [1, 0, 0, 0]
+    - `a * b`: `MUL` -> [0, 1, 0, 0]
+    - `a / b`: `DIV` -> [0, 0, 1, 0]
+    - `name.upper`: `STRING_OP` -> [0, 0, 0, 1]
+
+##### 3.1.5.5. Encoding Library Call
+- Library Call 또한 one-hot encoding
+- e.g.,
+    - lib = math
+        ```python
+        math.sin(x)
+        ```
+    - lib = numpy
+        ```python
+        np.log(x)
+        ```
+    - lib = string
+        ```python
+        str.upper(x)
+        ```
+- 위와 같은 예씨를 one-hot vector로 표현
+
+##### 3.1.5.6. if-else branch prediction using cardinality estimator
+- concrete literal은 사용하지 않음
+- e.g., 
+    ```python
+    if age > 30:
+    ```
+    - 이때, `30`은 feature로 사용하지 않음
+- 다른 DB에서는
+    ```python
+    if salary > 30000:
+    ```
+    - 일 수도 있음
+
+- 즉, `30`, `30000`, `5000`과 같은 숫자는 일반화가 어려움
+
+- GRACEFUL은 비교연산자와 cardinality를 node feature로 사용
+    - **비교 연산자**: `<`, `>`, `==`, `!=`
+    - **cardinality**: 몇 개의 row가 branch를 통과하는가
+
+- e.g., 
+    ```python
+    if age > 30:
+        # do something
+    ```
+- 을 아래 SQL로 변환
+    ```SQL
+    SELECT COUNT(*)
+    FROM mytable as t
+    WHERE t.age > 30;
+    ```
+- 이후 cardinality estimator를 활용하여 몇 개의 row가 branch를 통과하는지 추정
+
+- 이를 통해, `age > 30`과 `salary > 100000` 모두 80% rows가 branch를 통과한다는 selectivity 정보를 얻을 수 있음
+
+##### 3.1.5.7. INV node feature
+- input argument의 변수명은 무시
+- 대신, 인자 개수와 데이터 타입을 node feature로 저장
+
+- e.g.,
+    ```python
+    def udf(price, quantity):
+        return None
+    ```
+- 변수명 `price`와 `quantity`는 무시
+- 대신, 인자 개수와 데이터 타입을 node feature로 저장
+    - 인자 개수: `nr_params = 2`
+    - 데이터 타입: `int, int`
+
+- UDF 호출 비용은
+    - argument 개수
+    - argument datatype
+- 에 영향을 받기 때문에 위 정보를 저장
+
+##### 3.1.5.8. RET node feature
+- 반환형도 마찬가지
+
+- e.g.,
+    ```python
+    return 123
+    ```
+    ```
+    out_dts = int
+    ```
+- e.g.,
+    ```python
+    return "very long string"
+    ```
+    ```
+    out_dts = string
+    ```
+
+- 이유는 Python datatype에서 DB datatype으로의 변환 비용이 datatype에 따라 달라지기 때문
+
+#### 3.1.5.9. Summary about transferable featurization
+- **SQL+UDF**에서 
+    - 변수명
+    - 함수명
+    - literal 값
+- 과 같은 UDF마다 달라지는 정보는 삭제
+
+- 아래와 같은 비용 관련 특성만 feature로 사용
+    - 연산 종류
+    - 분기 종류
+    - 반복 구조
+    - 입력 row 수
+    - datatype
+    - library call
+
+- 따라서, GRACEFUL은
+    - **unseen SQL+UDF**에서도 비용 추정을 수행할 수 있음
+- 즉, 이 부분이 **zero-shot generalization**의 핵심 부분
 
 ### 3.2. UDF Selectivity Annotation
 #### 3.2.1. Hit-Ratios Estimation / Branch Prediction
