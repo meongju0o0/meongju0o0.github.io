@@ -1629,6 +1629,135 @@ author_profile: true
 
 ### 3.2. UDF Selectivity Annotation
 #### 3.2.1. Hit-Ratios Estimation / Branch Prediction
+##### 3.2.1.1. Problem Situation
+- 문제 상황: 같은 UDF라도 tuple마다 비용이 다를 수 있다
+- e.g.,
+    ```python
+    def udf(x):
+        ret_val = x
+        if x < 10:
+            ret_val += 1
+        else:
+            for i in range(1000):
+                ret_val += i
+        return ret_val
+    ```
+    - 입력이 `x = 1`이면 `+` 한 번만 수행
+    - 입력이 `x = 42`이면 1000번 loop를 반복 수행
+    - i.e., **같은 UDF**이어도 **tuple별 비용이 다름**
+- 따라서 runtime은 단순히 `UDF 구조` 만으로는 알 수 없음
+
+##### 3.2.1.2. The things we need to know: Hit-Ratios (Seletivities)
+- if branch는 몇 개의 row가 통과하고 else branch는 몇 개의 row가 통과하는가?
+- e.g.,
+    ```python
+    if age > 30:
+    ```
+    - 위 조건이 전체 100만 rows 중, 80만 rows가 조건을 만족한다면
+    - `hit-ratio = 0.8`
+
+    - 반대로, 20만 rows가 조건을 만족한다면
+    - `hit-ratio = 0.2`
+
+- i.e., $\text{hit ratio} = \frac{\text{# rows that satisfies if condition}}{\text{# total rows}}$
+
+- GRACEFUL은 hit-ratio를 추정하기 위해 우선 UDF branch 조건을 SQL WHERE-clause로 변환
+    ```SQL
+    SELECT *
+    FROM mytable
+    WHERE age > 30;
+    ```
+- 이후, `ANALYZE` 질의롤 통해 `histogram`, `MCV`, `cardinality statistics` 정보를 획득
+- 마지막으로 DBMS cardinality estimator를 활용하여 
+    - 해당 조건을 만족하는 row가 몇 개 존재하는지 파악
+
+- 이때, GRACEFUL은 가능한 모든 경로에 대해 조건들을 검사
+- e.g.,
+    1. **주어진 소스 코드**
+    ```python
+    if age > 30:
+        # do something
+        if salary > 100000:
+            # do something
+        else:
+            # do something
+    else:
+        # do something
+    ```
+    2. **모든 가능한 경로를 추적**
+    - 가능한 **경로**는 아래와 같음
+    - **Path 1**
+        ```
+        age > 30 & salary > 100000
+        ```
+    - **Path 2**
+        ```
+        age > 30 & salary <= 100000
+        ```
+    - **Path 3**
+        ```
+        age <= 30
+        ```
+    3. **이후 모든 경로에 대해 SQL로 변환**
+    - **Path 1**
+        ```SQL
+        SELECT *
+        FROM employee
+        WHERE age > 30 AND salary > 100000;
+        ```
+    - **Path 2**
+        ```SQL
+        SELECT *
+        FROM employee
+        WHERE age > 30 AND salary <= 100000;
+        ```
+    - **Path 3**
+        ```SQL
+        SELECT *
+        FROM employee
+        WHERE age <= 30;
+        ```
+    4. **Cardinality Estimator를 활용하여 Hit-Ratio 추정**
+        1. WHERE-clause filter를 적용하지 않았을 때의 해당 table의 전체 row 측정
+        2. 각 경로에 대해 변환된 SQL을 활용하여 Cardinaltiy 추정
+        3. $\text{hit-ratio}=\frac{\text{estimated cardinality}}{\text{total row}}$
+
+- 또한, joins before UDF도 포함
+- e.g., 
+    ```SQL
+    SELECT *
+    FROM A
+    JOIN B ON col1
+    WHERE A.x > 10 AND udf(B.y) <= 100000;
+    ```
+    ```python
+    if B.y > 100:
+        # do something
+    ```
+- 이때, 해당 execution plan에서 `JOIN B on col1`과 `WHERE A.x > 10` clause가 먼저 실행된다면
+    - Cardinality Estimation(Hit-Ratio Estimation)을 위한 SQL은 아래와 같음
+        ```SQL
+        SELECT *
+        FROM A
+        JOIN B ON col1
+        WHERE A.x > 10 AND B.y > 100;
+        ```
+- 그렇지 않고 `udf(B.y) <= 100000`이 먼저 실행된다면
+    - Cardinality Estimation(Hit-Ratio Estimation)을 위한 SQL은 아래와 같음
+        ```SQL
+        SELECT *
+        FROM B
+        WHERE B.y > 100;
+        ```
+
+##### 3.2.1.3. DAG가 중요한 이유
+- CFG의 loop cycle이 그대로 있으면
+- 가능한 path 수가 무한대가 될 수 있음 (path enumeration)
+
+- GRACEFUL은 CFG를 DAG로 변환
+- 따라서, 가능한 execution path 수가 유한해짐
+    - 모든 path에 대해
+    - hit-ratio를 계산할 수 있음
 
 ### 3.3. Joint Query-UDF Representation
 ### 3.4. Model Architecture
