@@ -116,7 +116,7 @@ author_profile: true
 </div>
 
 - Given Query
-    ```SQL
+    ```sql
     SELECT * FROM movie_keyword as mk JOIN title as t ON mk.movie_id = t.id
     JOIN movie_info_idx as mi_idx ON t.id = mi_idx.movie_id
     WHERE t.series_years = '1987-1997'
@@ -489,7 +489,7 @@ author_profile: true
     - selectivity 0.1 → 출력 100,000 rows
 - 이때, filter predicate가 UDF인 경우 문제가 발생
     - e.g.,
-        ```SQL
+        ```sql
         WHERE udf(col1, col2) <= 26026;
         ```
     - 위 경우, DBMS는 일반적으로
@@ -501,7 +501,7 @@ author_profile: true
 
 #### 2.1.3. Point estimation of UDF-filter selectivity is unknown
 - 일반적인 SQL filter는 예를 들어
-    ```SQL
+    ```sql
     WHERE age > 30
     ```
 - 이러한 경우에 DBMS는 통계(histogram, NDV, min/max 등)을 활용해서
@@ -516,7 +516,7 @@ author_profile: true
 - 이를 바탕으로 join, aggregation, sort 등의 비용을 계산할 수 있음
 
 - 그러나 UDF filter는 다름
-    ```SQL
+    ```sql
     WHERE udf(a, b, c) <= 26026
     ```
 - 과 같은 경우 DBMS는 아래 사항들을 알지 못함
@@ -643,7 +643,7 @@ author_profile: true
     - e.g., `statement`, `branch`, `loop`, `function call` 등이 node
 
 - 예를 들어, SQL plan에 아래와 같은 filter가 있다고 하자
-    ```SQL
+    ```sql
     WHERE udf(a, b) < 100
     ```
 - query graph의 `filter` node와 UDF CFG가 연결됨
@@ -745,8 +745,9 @@ author_profile: true
             else:
                 return y + 1
         ```
-        ```SQL
-        SELECT udf(col1, col2) FROM my_table;
+        ```sql
+        SELECT udf(col1, col2)
+        FROM my_table;
         ```
 
 - scalar UDF는 DBMS에서 가장 흔하게 쓰이는 형태
@@ -830,7 +831,7 @@ author_profile: true
             return s / c
         ```
     - aggregate 예시 SQL
-        ```SQL
+        ```sql
         SELECT avg_udf(col)
         FROM table
         GROUP BY key;
@@ -1367,7 +1368,7 @@ author_profile: true
 ##### 3.1.4.4. INV node
 - UDF 호출을 표현
 - e.g., 
-    ```SQL
+    ```sql
     SELECT udf(t1.col1)
     FROM mytable AS t1;
     ```
@@ -1473,7 +1474,7 @@ author_profile: true
 - `in_rows`는 거의 모든 node가 갖는 feature
 
 - e.g.,
-    ```SQL
+    ```sql
     SELECT *
     FROM mytable as t1
     WHERE udf(t1.col1) < 100000;
@@ -1560,7 +1561,7 @@ author_profile: true
         # do something
     ```
 - 을 아래 SQL로 변환
-    ```SQL
+    ```sql
     SELECT COUNT(*)
     FROM mytable as t
     WHERE t.age > 30;
@@ -1662,7 +1663,7 @@ author_profile: true
 - i.e., $\text{hit ratio} = \frac{\text{# rows that satisfies if condition}}{\text{# total rows}}$
 
 - GRACEFUL은 hit-ratio를 추정하기 위해 우선 UDF branch 조건을 SQL WHERE-clause로 변환
-    ```SQL
+    ```sql
     SELECT *
     FROM mytable
     WHERE age > 30;
@@ -1700,19 +1701,19 @@ author_profile: true
         ```
     3. **이후 모든 경로에 대해 SQL로 변환**
     - **Path 1**
-        ```SQL
+        ```sql
         SELECT *
         FROM employee
         WHERE age > 30 AND salary > 100000;
         ```
     - **Path 2**
-        ```SQL
+        ```sql
         SELECT *
         FROM employee
         WHERE age > 30 AND salary <= 100000;
         ```
     - **Path 3**
-        ```SQL
+        ```sql
         SELECT *
         FROM employee
         WHERE age <= 30;
@@ -1724,7 +1725,7 @@ author_profile: true
 
 - 또한, joins before UDF도 포함
 - e.g., 
-    ```SQL
+    ```sql
     SELECT *
     FROM A
     JOIN B ON col1
@@ -1736,7 +1737,7 @@ author_profile: true
     ```
 - 이때, 해당 execution plan에서 `JOIN B on col1`과 `WHERE A.x > 10` clause가 먼저 실행된다면
     - Cardinality Estimation(Hit-Ratio Estimation)을 위한 SQL은 아래와 같음
-        ```SQL
+        ```sql
         SELECT *
         FROM A
         JOIN B ON col1
@@ -1744,7 +1745,7 @@ author_profile: true
         ```
 - 그렇지 않고 `udf(B.y) <= 100000`이 먼저 실행된다면
     - Cardinality Estimation(Hit-Ratio Estimation)을 위한 SQL은 아래와 같음
-        ```SQL
+        ```sql
         SELECT *
         FROM B
         WHERE B.y > 100;
