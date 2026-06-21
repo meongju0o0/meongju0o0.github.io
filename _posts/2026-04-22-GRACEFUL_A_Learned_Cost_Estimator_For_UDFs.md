@@ -1743,7 +1743,7 @@ author_profile: true
         JOIN B ON col1
         WHERE A.x > 10 AND B.y > 100;
         ```
-- 그렇지 않고 `udf(B.y) <= 100000`이 먼저 실행된다면
+- 그렇지 않고 `udf(B.y) <= 100000`이 가장 먼저 실행된다면
     - Cardinality Estimation(Hit-Ratio Estimation)을 위한 SQL은 아래와 같음
         ```sql
         SELECT *
@@ -1761,8 +1761,24 @@ author_profile: true
     - hit-ratio를 계산할 수 있음
 
 ### 3.3. Joint Query-UDF Representation
-### 3.4. Model Architecture
+- GRACEFUL은 `Query Plan Graph`와 `UDF Graph`를 하나로 합쳐서 표현
+    - SQL UDF 비용은 UDF 코드만으로 결정되지 않기 때문
 
+- **Joint Query-UDF Representation**
+    - SQL Query Plan Graph
+    - UDF CFG Graph
+- 위 두 Graph를 합쳐서 **Joint Query-UDF Representation** 생성
+
+#### 3.3.1. 왜 UDF만 표현하면 안되는가?
+#### 3.3.2. COLUMN → INV 연결
+#### 3.3.3. COLUMN → COMP 연결
+#### 3.3.4. RET → Query Plan 연결
+#### 3.3.5. Projection의 경우
+#### 3.3.6. Aggregation의 겨웅
+#### 3.3.7. on-UDF Features
+#### 3.3.8. 최종 그래프 (Joint-Query UDF Representation)
+
+### 3.4. Model Architecture
 
 ## 4. Pull-up / Push-down Advisor
 ### 4.1. Why this Problem?
