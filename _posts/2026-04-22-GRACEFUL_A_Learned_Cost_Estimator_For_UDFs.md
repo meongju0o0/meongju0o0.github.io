@@ -1850,13 +1850,82 @@ author_profile: true
 - 노드 타입 별로 별도의 encoder MLP를 설정
     - Query side node types: `column`, `table`, `output_column`, `filter_column`, `plan`, `logical_pred`
     - UDF side: `INV`, `COMP`, `BRANCH`, `LOOP`, `LOOPEND`, `RET`
+
 - Feature 종류별 처리 방법
-    - **Numeric**: 스칼라 값 그대로 (e.g., cardinality, column statistics)
-    - **Categorical**: 
+    - **Numeric**
+        - 스칼라 값 그대로
+        - e.g., cardinality, column statistics
+    - **Categorical**
+        - unique category가 32개 이하이면 one-hot
+        - 초과하는 경우 학습 가능한 embedding
+    - **Multi-label categorical**
+        - 각 라벨 임베딩
+        - 이후 각 임베딩을 bag-of-embeddings로 표현
+        - 남는 차원은 padding
+    - **Vector**
+        - 고정 길이 벡터 그대로 통과
+- 각 노드 마다 해당 feature 인코딩 결과들을
+    1. concatenation
+    2. per-node-type MLP Layer
+    3. output hidden state: $h_v^{\text{(0)}}$
 
 #### 3.4.3. Topological Message Passing (GNN)
+0. **Notations**
+- $G = (V,E)$: UDF+plan을 나타내는 Joint Query-UDF Graph (DAG)
+- $\tau = (s,e,t)$: canonical edge type
+    - $s$: source node type
+    - $e$: edge label
+    - $t$: destination node type
+    - $E_{\tau} \in E$: 타입이 $\tau$인 edge의 집합
+- $\delta$: $E \rightarrow \mathbb{Z}_{\geq 0}$: edge depth
+- $h_v^\text{(d)} \in \mathbb{R}^H$
+    - depth $d$ 시점에서 노드 $v$ 의 $\text{hidden state}$
+- $\text{MLP}_\tau$
+    - edge type $\tau$ 전용 combine MLP
+    - 파라미터는 $\tau$ 마다 독립
+
+1. **위상 순서 부여**
+- Kahn's algorithm으로 그래프르 topological sort
+- 각 edge에 그 source 노드의 위상 라벨을 `depth`로 기록 (leaf = 0)
+- 이를 통해 "모든 predecessor가 확정된 후에만 노드를 갱신"하는 bottom-up 순서 보장
+- depth 단위 노드 병렬 처리
+
+2. **Depth별 전파**
+    1. 특정 canonical edge type $\tau = (s, e, t)$에 대해, 이번 depth에 해당하는 edge 부분집합을 추출
+        $$E_{\tau}^{(d)} = \{ (u,v) \in E_{\tau} : \delta(u,v) = d \}$$
+    2. source 노드 $u$ 의 hidden state $h_{u}^{(d)}$ 를 메시지로 복사
+        $$m_{u \rightarrow v} = h_{u}^{(d)}, (u,v) \in E_{\tau}^{(d)}$$
+    3. destination 노드 $v$ 로 들어오는 메시지 합산
+        $$\text{ft}_v = \sum_{u : (u,v) \in E_{\tau}^{(d)}} m_{u \rightarrow v} = \sum_{u : (u,v) \in E_{\tau}^{(d)}} h_{u}^{(d)}$$
+    4. destination 노드 $v$ 의 hidden state $h_{v}^{(d)}$ 와 합산된 메시지 $\text{ft}_v$ 병합
+        $$h_{v}^{(d+1)} = \text{MLP}_{\tau}([h_{v}^{(d)} \parallel \text{ft}_v]), \text{MLP}_{\tau} : \mathbb{R}^{2H} \rightarrow \mathbb{R}^{H}$$
+
 #### 3.4.4. Graph Embedding
+- 별도의 global pooling / readout layer 미존재
+- Bottom-up topological MP가 끝나면 DAG의 루트 노드가 그래프 전체 정보를 누적
+- 이 루트(`plan0` 노드)의 최종 hidden state를 joint graph representation으로 사용
+
 #### 3.4.5. Runtime Prediction (MLP Regression)
+- 최종 regression head가 스칼라 runtime 예측 ($\mathbb{R}^{H} \rightarrow \mathbb{R}^1$)
+
+#### 3.4.6. Loss Function: Q-Error 기반 QLoss
+- penalty mask (음수·과소 판별)
+    - 과소 threshold: $\tau$
+    - $\text{penalty}_i = 1[\hat{y}_i < \tau]$
+    - $\text{valid}_i = 1[\hat{y}_i \geq \tau] = 1 - \text{penalty}_i$
+- penalty term
+    - penalty value: $C = 10^5$
+    - $p_i = (1 - \hat{y}_i) \cdot \text{penalty}_i \cdot C$
+- valid term
+    - $q_i = \max(\frac{\hat{y}_i \cdot \text{valid}_i}{y_i}, \frac{y_i \cdot \text{valid}_i}{\hat{y}_i})$
+- 최종 per-instance loss와 batch loss
+    $$\ell_i = p_i + q_i = 
+    \begin{cases} 
+    (1 - \hat{y}_i) \cdot C & \text{if } \hat{y}_i < \tau \\ 
+    \max \left( \frac{\hat{y}_i}{y_i}, \frac{y_i}{\hat{y}_i} \right) & \text{if } \hat{y}_i \geq \tau 
+    \end{cases}$$
+
+    $$L = \frac{1}{N} \sum_{i=1}^{N} l_i$$
 
 ## 4. Pull-up / Push-down Advisor
 ### 4.1. Why this Problem?
