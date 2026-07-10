@@ -1803,11 +1803,11 @@ author_profile: true
         ```
     - Query Graph
         <div align="center">
-            <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/my_joint_query_udf_graph.png" alt="Joint Query-UDF Graph" width="400">
+            <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_graph.png" alt="Joint Query-UDF Graph" width="400">
         </div>
     - UDF DAG
         <div align="center">
-            <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/my_joint_query_udf_graph.png" alt="Joint Query-UDF Graph" width="400">
+            <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_fig2_dag.png" alt="Joint Query-UDF Graph" width="400">
         </div>
 
 - COLUMN → INV 연결 (Data Flow Edge)
