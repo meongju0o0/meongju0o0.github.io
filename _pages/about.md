@@ -125,7 +125,7 @@ author_profile: true
 
 ## Work Experience
 * 2026.03 -- 2028.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Master Student**
-* 2022.03 -- 2026.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Undergraduation Intern**
+* 2022.03 -- 2026.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Undergraduate Intern**
 
 ## Projects
 ### Lab Projects
@@ -162,28 +162,14 @@ author_profile: true
 ### Domesitc Conference
 * **Juyeong Shin**, Young-Koo Lee. (2026). [Analysis of Learning-Based UDF Cost Estimation and Query Optimization Across Database Management Systems](). Journal of Korea Computer Congress, Pages -- .
     * Implementation: [](https://github.com/meongju0o0/)
-
----
-
 * **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12577759). Journal of Korea Software Congress, Pages 1139 -- 1141.
     * Implementation: [🌈UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
-
----
-
 * **Juyeong Shin**, Young-Koo Lee. (2023). [Distributed Data Augmentation Technique for Graph Neural Network](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11705601). Journal of Korea Software Congress, Pages 1800 -- 1802.
     * Implementation: [DistMHAug](https://github.com/meongju0o0/DistMHAug)
-
----
-
 * **Juyeong Shin**, Young-Koo Lee. (2022). [GraphSAINT-NRW, ERW: Subgraph Sampling Techniques using Random Walk Reflecting Node Degree](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11224420). Journal of Korea Software Congress, Pages 1308 -- 1310.
     * Implementation: [GraphSAINT-NRW-ERW](https://github.com/meongju0o0/GraphSAINT-NRW-ERW)
-
----
-
 * Kijin Kwon, **Juyeong Shin**, Young-Koo Lee. (2022). [Efficient Sampling Techniques for Embedding Large Graphs](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11113618). Journal of Korea Computer Congress, Pages 1223 -- 1225.
     * Implementation: [Efficient-Sampling-Techniques-for-Embedding-Large-Graphs](https://github.com/meongju0o0/Efficient-Sampling-Techniques-for-Embedding-Large-Graphs)
-
----
 
 ## Awards and Honors
 * Participation Award in Undergraduate Paper Contest
@@ -203,6 +189,7 @@ author_profile: true
 
 ## Participations
 ### Conference
+* 2026 Korea Computer Congress
 * 2025 Korea Software Congress
 * 2023 Korea Software Congress
 * 2022 Korea Software Congress
