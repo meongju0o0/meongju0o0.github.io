@@ -1802,17 +1802,21 @@ author_profile: true
             return z
         ```
     - Query Graph
-        ![query_graph](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_graph.png)
+        <div align="center">
+            <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/my_joint_query_udf_graph.png" alt="Joint Query-UDF Graph" width="400">
+        </div>
     - UDF DAG
-        ![udf_dag_example](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_fig2_dag.png)
+        <div align="center">
+            <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/my_joint_query_udf_graph.png" alt="Joint Query-UDF Graph" width="400">
+        </div>
 
-- COLUMN → INV 연결
+- COLUMN → INV 연결 (Data Flow Edge)
     - Query Graph의 COLUMN 노드들과
     - UDF Graph의 INV 노드 간에 간선 생성
     - 위 예시에서, 
         - `func(x, y)` INV 노드와
         - title.production_year, title.id COLUMN 노드를 연결
-- COLUMN → COMP 연결
+- COLUMN → COMP 연결 (Data Flow Edge)
     - computation 노드에서 직접 사용되는 입력 컬럼은 UDF에 바로 연결
     - 위 예시에서, 
         - `x`: `title.production_year`
