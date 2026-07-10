@@ -1399,15 +1399,15 @@ author_profile: true
     2. Save UDF result to DBMS temporary table
 
 - 이때, 
-    - e.g., 1)
+    - e.g., `(1)`
         ```python
         return 1
         ```
-    - e.g., 2)
+    - e.g., `(2)`
         ```python
         return large_string
         ```
-    - 1)보다 2)가 더 비쌀 수 있음
+    - `(1)`보다 `(2)`가 더 비쌀 수 있음
 - 이를 RET node로 표현
 
 #### 3.1.5. Transferable Featurization
@@ -1770,13 +1770,67 @@ author_profile: true
 - 위 두 Graph를 합쳐서 **Joint Query-UDF Representation** 생성
 
 #### 3.3.1. 왜 UDF만 표현하면 안되는가?
-#### 3.3.2. COLUMN → INV 연결
-#### 3.3.3. COLUMN → COMP 연결
-#### 3.3.4. RET → Query Plan 연결
-#### 3.3.5. Projection의 경우
-#### 3.3.6. Aggregation의 겨웅
-#### 3.3.7. on-UDF Features
+- 예를 들어, 동일한 UDF가 있다고 하자
+    ```python
+    def udf(x):
+        for i in range(100):
+            x += i
+        return x
+    ```
+
+- 그러나, Query에 따라, 
+    - Plan A: `10,000 rows -> UDF`
+    - Plan B: `10 rows -> UDF`
+
+- 따라서, GRACEFUL은 **UDF 그래프**와 **Query Plan 그래프**를 연결해서 하나의 큰 그래프로 생성
+
+#### 3.3.2. UDF 그래프와 Query Plan 그래프 결합
+- 예를 들어, 아래와 같은 SQL과 UDF가 주어졌다고 하자
+    - SQL
+        ```sql
+        SELECT COUNT(*) FROM title
+        WHERE func(title.production_year, title.id) > 5;
+        ```
+    - UDF
+        ```python
+        def func(x, y):
+            if x < 20:
+                z = x ** 2
+            else:
+                for i in range(100):
+                    z += math.pow(math.sqrt(y), i)
+            return z
+        ```
+    - Query Graph
+        ![query_graph](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_graph.png)
+    - UDF DAG
+        ![udf_dag_example](/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_fig2_dag.png)
+
+- COLUMN → INV 연결
+    - Query Graph의 COLUMN 노드들과
+    - UDF Graph의 INV 노드 간에 간선 생성
+    - 위 예시에서, 
+        - `func(x, y)` INV 노드와
+        - title.production_year, title.id COLUMN 노드를 연결
+- COLUMN → COMP 연결
+    - computation 노드에서 직접 사용되는 입력 컬럼은 UDF에 바로 연결
+    - 위 예시에서, 
+        - `x`: `title.production_year`
+        - `y`: `title.id`
+        - `z = x ** 2`는 `title.production_year`와 연결
+        - `z += math.pow(math.sqrt(y), i)`는 `title.id`와 연결
+- RET → Query Plan 연결
+    - UDF가 selection에 사용되는 경우: UDF DAG의 `RET` 노드와 Query Plan의 `FILTER` 노드 연결
+        - 이때, Filter 노드에 `on_udf = True`라는 플래그를 추가
+        - 일반적인 predicate으로 구성된 selection은 `on_udf = False`
+    - UDF가 projection에 사용되는 경우: UDF DAG의 `RET` 노드와 Query Plan의 `COLUMN` 노드 연결
+    - UDF가 aggregation에 사용되는 경우: UDF DAG의 `RET` 노드와 Query Plan의 `AGGR` 노드 연결
+
 #### 3.3.8. 최종 그래프 (Joint-Query UDF Representation)
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/my_joint_query_udf_graph.png" alt="Joint Query-UDF Graph" width="500">
+</div>
 
 ### 3.4. Model Architecture
 
