@@ -152,7 +152,7 @@ author_profile: true
 - **KIISE Database Society of Korea Digital Library**, 2026 --
     - Nginx, SQLite, React.js, Express.js
     - Source Code: [kdbc-papers](https://github.com/meongju0o0/kdbc-papers)
-    - [http://163.180.116.100:8080/](http://163.180.116.100:8080/)
+    - [https://dkelab.kr/kdbc-papers](https://dkelab.kr/kdbc-papers)
 - **Jekyll Minimal Mistakes Blog Customizing**, 2022 --
     - Ruby, Jekyll, node.js, Firebase, GitHub
     - Source Code: [meongju0o0.github.io](https://github.com/meongju0o0/meongju0o0.github.io)

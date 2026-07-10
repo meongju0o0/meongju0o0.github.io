@@ -1837,6 +1837,26 @@ author_profile: true
 </div>
 
 ### 3.4. Model Architecture
+#### 3.4.1. 전체 구조
+- 모델 입력: Joint Query-UDF Graph
+    1. Node Encoding: 각 노드의 feature를 dense vector로 변환 (node type 별 독립 encoder)
+    2. GNN: Topological Message Passing (DAG 구조를 따라 bottom-up)
+    3. Graph Embedding: Message Passing을 통해 하나의 joint representation으로 aggregate
+    4. MLP (Regression)
+- 모델 출력: Runtime Prediction
+
+#### 3.4.2. Node Encoding
+- 각 노드 타입마다 feature schema가 다름
+- 노드 타입 별로 별도의 encoder MLP를 설정
+    - Query side node types: `column`, `table`, `output_column`, `filter_column`, `plan`, `logical_pred`
+    - UDF side: `INV`, `COMP`, `BRANCH`, `LOOP`, `LOOPEND`, `RET`
+- Feature 종류별 처리 방법
+    - **Numeric**: 스칼라 값 그대로 (e.g., cardinality, column statistics)
+    - **Categorical**: 
+
+#### 3.4.3. Topological Message Passing (GNN)
+#### 3.4.4. Graph Embedding
+#### 3.4.5. Runtime Prediction (MLP Regression)
 
 ## 4. Pull-up / Push-down Advisor
 ### 4.1. Why this Problem?
