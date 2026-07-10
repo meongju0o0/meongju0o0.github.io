@@ -125,7 +125,7 @@ author_profile: true
 
 ## Work Experience
 * 2026.03 -- 2028.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Master Student**
-* 2022.03 -- 2026.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Research Intern**
+* 2022.03 -- 2026.02: Data & Knowledge Engineering Laboratory, Kyung Hee University, **Undergraduation Intern**
 
 ## Projects
 ### Lab Projects
