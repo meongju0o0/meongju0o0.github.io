@@ -1802,13 +1802,13 @@ author_profile: true
             return z
         ```
     - Query Graph
-        <div align="center">
-            <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_graph.png" alt="Joint Query-UDF Graph" width="250">
-        </div>
+    <div align="center">
+        <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/query_graph.png" alt="Joint Query-UDF Graph" width="200">
+    </div>
     - UDF DAG
-        <div align="center">
-            <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_fig2_dag.png" alt="Joint Query-UDF Graph" width="300">
-        </div>
+    <div align="center">
+        <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/graceful_fig2_dag.png" alt="Joint Query-UDF Graph" width="300">
+    </div>
 
 - COLUMN → INV 연결 (Data Flow Edge)
     - Query Graph의 COLUMN 노드들과
