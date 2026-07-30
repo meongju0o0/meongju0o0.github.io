@@ -1964,19 +1964,72 @@ author_profile: true
     - 10,000,000 rows를 Join하는 경우
 - 동일한 방식의 Join을 사용하더라도 위 두 경우는 비용이 완전히 다름
 
-### 4.2 Problem Situation: Unknown UDF Filter Cardinality
+### 4.2. Problem Situation: Unknown UDF Filter Cardinality
+#### 4.2.0. Problem Situation
 - 예시 SQL: 
     ```sql
     SELECT *
-    FROM A JOIN B
-    WHERE udf(A.x)
+    FROM movie_keyword as mk 
+    JOIN title as t ON mk.movie_id = t.id
+    JOIN movie_info_idx as mi_idx ON t.id = mi_idx.movie_id
+    WHERE t.series_years = '1987-1997'
+    AND udf(mk.movie_id, mk.keyword_id) <= 26026;
     ```
 - Optimizer가 알고 싶은 것: **"UDF Filter 이후 몇 개 row가 남는가?"**
 - 그러나, `udf(A.x)`의 내부 로직은 DBMS는 알 수 없기 때문에, `selectivity = ?`인 상태
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/unknown_udf_filter_selectivity.png" alt="Unknown UDF-Filter Cardinality" width="500">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/unknown_udf_filter_selectivity.png" alt="Unknown UDF-Filter Cardinality" width="800">
 </div>
+
+#### 4.2.1. Problems of Push-Down
+- Push-Down에서는 UDF를 가장 먼저 실행
+    - 이때까지는 상관이 없음
+    - UDF Input Cardinality를 정확히 알고 있기 때문 (Figure 3 예시에서 4.5m)
+- 그러나, UDF Filter 이후의 Cardinality를 알 수가 없음
+    - 추정가능한 것은 UDF Input Cardinality와 동일한 fixed upper bound 뿐임
+
+- 따라서, 
+    - UDF 이후의 Join 입력 Cardinality: Unknown
+    - 그 다음 Join 입력 Cardinality: Unknown
+    - 최종 Cardinality: Unknown
+- 연쇄적으로 Unknown Cardinality가 누적됨
+
+- 이러한 Unknown Cardinality는 Join Cardinality 뿐 아니라 Join Cost도 Unknown으로 만듦
+
+    | Join 알고리즘 | 특징 | 적합한 상황 |
+    | -------------------------- | -------------------------- | -------------------------- |
+    | **Nested Loop Join (NLJ)** | 바깥 테이블의 각 row마다 안쪽 테이블을 탐색 | 입력이 매우 적거나 Index가 있을 때 |
+    | **Hash Join (HJ)**         | 작은 테이블로 Hash Table을 만든 뒤 Probe | 대용량 Equi-Join에서 가장 많이 사용 |
+    | **Sort-Merge Join (SMJ)**  | 두 테이블을 정렬한 뒤 Merge | 이미 정렬되어 있거나 Range Join일 때 |
+
+    - e.g., 
+        - Input Cardinality 100 rows -> Nested Loop Join
+        - Input Cardinality 10,000,000 rows -> Hash Join
+
+#### 4.2.2. Problems of Pull-Up
+- 기존 Join 들은 DBMS Cardinality Estimator가 비교적 잘 예측
+- 그러나, Join을 여러 번 거칠수록 Cardinality Estimation 오차가 커짐
+- 이에 따라, Pull-Up의 경우, UDF Input Cardinality가 부정확함
+    - Figure 3 ②, "Uncertainty in UDF Input Cardinality Estimation (because of Joins)"
+
+#### 4.2.3. Comparison of Push-Down & Pull-Up Problems
+| Push-down               | Pull-up                        |
+| ----------------------- | ------------------------------ |
+| UDF 입력 Cardinality는 정확함 | UDF 입력 Cardinality가 부정확함       |
+| UDF 출력 Selectivity를 모름  | Join Cardinality 오차가 UDF까지 전달됨 |
+| 이후 Join Cost가 불확실       | UDF Cost가 불확실                  |
+
+#### 4.2.4. GRACEFUL's Approach
+- 기존 Optimizer는 Cardinality를 점추정(하나의 단일 스칼라로 추정)하여 Cost를 추정
+- 그러나, UDF가 있으면 이 Cardinality 자체를 알 수 없음
+
+- 따라서, GRACEFUL은 **여러 UDF-Filter Selectivity에 대해 반복적으로 Cost를 추정하여 Cost Distribution**을 생성
+- 이 Cost Distribution을 바탕으로 Pull-Up과 Push-Down 중 어느 플랜이 더 안정적이면서 유리한지를 판단
+
+### 4.3. Regret Optimization
+
+### 4.4. Pull-Up / Push-Down Decision
 
 ## 5. A novel UDF Benchmark
 ### 5.1. Benchmark Design
