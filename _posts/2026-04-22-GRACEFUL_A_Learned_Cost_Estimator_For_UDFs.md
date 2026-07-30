@@ -1896,13 +1896,13 @@ author_profile: true
 
 ##### 3.4.3.2. Depth별 전파
 1. 특정 canonical edge type $\tau = (s, e, t)$에 대해, 이번 depth에 해당하는 edge 부분집합을 추출
-    - $E_{\tau}^{(d)} = \{ (u,v) \in E_{\tau} : \delta(u,v) = d \}$
+    $$E_{\tau}^{(d)} = \{ (u,v) \in E_{\tau} : \delta(u,v) = d \}$$
 2. source 노드 $u$ 의 hidden state $h_{u}^{(d)}$ 를 메시지로 복사
-    - $m_{u \rightarrow v} = h_{u}^{(d)}, (u,v) \in E_{\tau}^{(d)}$
+    $$m_{u \rightarrow v} = h_{u}^{(d)}, (u,v) \in E_{\tau}^{(d)}$$
 3. destination 노드 $v$ 로 들어오는 메시지 합산
-    - $\text{ft}_v = \sum_{u : (u,v) \in E_{\tau}^{(d)}} m_{u \rightarrow v} = \sum_{u : (u,v) \in E_{\tau}^{(d)}} h_{u}^{(d)}$
+    $$\text{ft}_v = \sum_{u : (u,v) \in E_{\tau}^{(d)}} m_{u \rightarrow v} = \sum_{u : (u,v) \in E_{\tau}^{(d)}} h_{u}^{(d)}$$
 4. destination 노드 $v$ 의 hidden state $h_{v}^{(d)}$ 와 합산된 메시지 $\text{ft}_v$ 병합
-    - $h_{v}^{(d+1)} = \text{MLP}_{\tau}([h_{v}^{(d)} \parallel \text{ft}_v]), \text{MLP}_{\tau} : \mathbb{R}^{2H} \rightarrow \mathbb{R}^{H}$
+    $$h_{v}^{(d+1)} = \text{MLP}_{\tau}([h_{v}^{(d)} \parallel \text{ft}_v]), \text{MLP}_{\tau} : \mathbb{R}^{2H} \rightarrow \mathbb{R}^{H}$$
 
 #### 3.4.4. Graph Embedding
 - 별도의 global pooling / readout layer 미존재
@@ -1914,6 +1914,22 @@ author_profile: true
 - $\mathbb{R}^{H} \rightarrow \mathbb{R}^1$
 
 #### 3.4.6. Loss Function: Q-Error 기반 QLoss
+##### 3.4.6.1. 라벨 정규화
+- QLoss branch는 log 변환 없이 `MinMaxScaler(feature_range=(1e-2, 1))`만 적용
+- $y^{raw}$: 초 단위 runtime, $[y^{raw}_{\min}, y^{raw}_{\max}]$: 학습셋 runtime의 최소/최대
+
+    $$y^{norm} = 10^{-2} + (1 - 10^{-2}) \cdot \frac{y^{raw} - y^{raw}_{\min}}{y^{raw}_{\max} - y^{raw}_{\min}}$$
+
+- 모델은 $y^{norm}$ 공간에서 직접 $\hat{y}^{norm}$ 예측 → §3.4.6의 모든 항이 이 공간에서 계산
+- 따라서 라벨 범위는 $[10^{-2}, 1]$
+    - penalty term의 $(1 - \hat{y}_i)$: 상한 $1$ 기준 편차
+    - 과소 threshold $\tau = 10^{-3}$ < 정규화 하한 $10^{-2}$
+        - 정상 라벨 범위보다 더 낮게 예측했을 때만 penalty 발동하는 buffer zone
+- 추론 시 역변환하여 초 단위 runtime으로 복원
+
+    $$\hat{y}^{raw} = y^{raw}_{\min} + \frac{\hat{y}^{norm} - 10^{-2}}{1 - 10^{-2}} \cdot (y^{raw}_{\max} - y^{raw}_{\min})$$
+
+##### 3.4.6.2. QLoss
 - penalty mask (음수·과소 판별)
     - 과소 threshold: $\tau$
     - $\text{penalty}_i = 1[\hat{y}_i < \tau]$
