@@ -1921,8 +1921,8 @@ author_profile: true
 
     $$y^{norm} = 10^{-2} + (1 - 10^{-2}) \cdot \frac{y^{raw} - y^{raw}_{\min}}{y^{raw}_{\max} - y^{raw}_{\min}}$$
 
-- 모델은 $y^{norm}$ 공간에서 직접 $\hat{y}^{norm}$ 예측 → §3.4.6의 모든 항이 이 공간에서 계산
-- 따라서 라벨 범위는 $[10^{-2}, 1]$
+- 모델은 $y^{norm}$ 공간에서 직접 $\hat{y}^{norm}$ 학습 및 예측 → i.e., **QLoss**의 모든 항을 정규화된 $y^{norm}$ 공간에서 계산
+- 따라서, $y^{norm} \in [10^{-2}, 1], \hat{y}^{norm} \in [10^{-2}, 1]$
     - penalty term의 $(1 - \hat{y}_i)$: 상한 $1$ 기준 편차
     - 과소 threshold $\tau = 10^{-3}$ < 정규화 하한 $10^{-2}$
         - 정상 라벨 범위보다 더 낮게 예측했을 때만 penalty 발동하는 buffer zone
