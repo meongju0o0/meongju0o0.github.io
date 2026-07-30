@@ -1975,7 +1975,7 @@ author_profile: true
 - 그러나, `udf(A.x)`의 내부 로직은 DBMS는 알 수 없기 때문에, `selectivity = ?`인 상태
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/unknown_udf_filter_selectivity.png.png" alt="Unknown UDF-Filter Cardinality" width="500">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/unknown_udf_filter_selectivity.png" alt="Unknown UDF-Filter Cardinality" width="500">
 </div>
 
 ## 5. A novel UDF Benchmark
