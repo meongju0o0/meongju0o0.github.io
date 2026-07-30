@@ -1951,10 +1951,32 @@ author_profile: true
     $$L = \frac{1}{N} \sum_{i=1}^{N} l_i$$
 
 ## 4. Pull-up / Push-down Advisor
-### 4.1. Why this Problem?
-### 4.2. Regret Optimization
-### 4.3. Pull-up/Push-down Decision
+### 4.1. Background: The Need for Cardinality Estimation
+- 일반적인 Query Optimizer는 여러 실행 plan을 우선 생성
+    ```
+    Plan A 비용 = ?
+    Plan B 비용 = ?
+    ```
+- 이후 여러 후보 plan 중 가장 비용이 작은 plan을 선택
 
+- 비용을 계산하기 위해서는 연산자 자체의 비용 뿐 아니라 입력되는 Cardinality를 알아야 함
+    - 100 rows를 Join하는 경우
+    - 10,000,000 rows를 Join하는 경우
+- 동일한 방식의 Join을 사용하더라도 위 두 경우는 비용이 완전히 다름
+
+### 4.2 Problem Situation: Unknown UDF Filter Cardinality
+- 예시 SQL: 
+    ```sql
+    SELECT *
+    FROM A JOIN B
+    WHERE udf(A.x)
+    ```
+- Optimizer가 알고 싶은 것: **"UDF Filter 이후 몇 개 row가 남는가?"**
+- 그러나, `udf(A.x)`의 내부 로직은 DBMS는 알 수 없기 때문에, `selectivity = ?`인 상태
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/unknown_udf_filter_selectivity.png.png" alt="Unknown UDF-Filter Cardinality" width="500">
+</div>
 
 ## 5. A novel UDF Benchmark
 ### 5.1. Benchmark Design
