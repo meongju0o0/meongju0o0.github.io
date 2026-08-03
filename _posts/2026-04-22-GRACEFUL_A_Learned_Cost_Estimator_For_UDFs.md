@@ -2015,11 +2015,11 @@ author_profile: true
 
 #### 4.2.3. Comparison of Push-Down & Pull-Up Problems
 
-    | Push-down               | Pull-up                        |
-    | ----------------------- | ------------------------------ |
-    | UDF 입력 Cardinality는 정확함 | UDF 입력 Cardinality가 부정확함       |
-    | UDF 출력 Selectivity를 모름  | Join Cardinality 오차가 UDF까지 전달됨 |
-    | 이후 Join Cost가 불확실       | UDF Cost가 불확실                  |
+| Push-down | Pull-up |
+| -------------------------- | -------------------------- |
+| UDF 입력 Cardinality는 정확함 | UDF 입력 Cardinality가 부정확함       |
+| UDF 출력 Selectivity를 모름  | Join Cardinality 오차가 UDF까지 전달됨 |
+| 이후 Join Cost가 불확실       | UDF Cost가 불확실                  |
 
 #### 4.2.4. GRACEFUL's Approach
 - 기존 Optimizer는 Cardinality를 점추정(하나의 단일 스칼라로 추정)하여 Cost를 추정
