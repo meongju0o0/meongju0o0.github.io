@@ -2066,34 +2066,39 @@ author_profile: true
     - Cost Estimation 수행
 6. Cost Distribution 생성
 
-<div style="display: flex; gap: 40px; justify-content: center;">
-<div>
+<table>
+<tr>
+<td width="50%" valign="top">
 
-**Pull-Up**
+<b>Pull-Up</b>
 
-| Selectivity | Cost |
-| ----- | ----- |
-| 0.1 | 1.8 |
-| 0.3 | 2.5 |
-| 0.5 | 4.1 |
-| 0.7 | 6.8 |
-| 0.9 | 9.4 |
+<table>
+<tr><th>Selectivity</th><th>Cost</th></tr>
+<tr><td>0.1</td><td>1.8</td></tr>
+<tr><td>0.3</td><td>2.5</td></tr>
+<tr><td>0.5</td><td>4.1</td></tr>
+<tr><td>0.7</td><td>6.8</td></tr>
+<tr><td>0.9</td><td>9.4</td></tr>
+</table>
 
-</div>
-<div>
+</td>
 
-**Push-Down**
+<td width="50%" valign="top">
 
-| Selectivity | Cost |
-| ----- | ----- |
-| 0.1 | 12.3 |
-| 0.3 | 9.9 |
-| 0.5 | 8.4 |
-| 0.7 | 7.1 |
-| 0.9 | 6.5 |
+<b>Push-Down</b>
 
-</div>
-</div>
+<table>
+<tr><th>Selectivity</th><th>Cost</th></tr>
+<tr><td>0.1</td><td>12.3</td></tr>
+<tr><td>0.3</td><td>9.9</td></tr>
+<tr><td>0.5</td><td>8.4</td></tr>
+<tr><td>0.7</td><td>7.1</td></tr>
+<tr><td>0.9</td><td>6.5</td></tr>
+</table>
+
+</td>
+</tr>
+</table>
 
 ### 4.4. Pull-Up / Push-Down Decision
 
