@@ -2066,39 +2066,9 @@ author_profile: true
     - Cost Estimation 수행
 6. Cost Distribution 생성
 
-<table>
-<tr>
-<td width="50%" valign="top">
-
-<b>Pull-Up</b>
-
-<table>
-<tr><th>Selectivity</th><th>Cost</th></tr>
-<tr><td>0.1</td><td>1.8</td></tr>
-<tr><td>0.3</td><td>2.5</td></tr>
-<tr><td>0.5</td><td>4.1</td></tr>
-<tr><td>0.7</td><td>6.8</td></tr>
-<tr><td>0.9</td><td>9.4</td></tr>
-</table>
-
-</td>
-
-<td width="50%" valign="top">
-
-<b>Push-Down</b>
-
-<table>
-<tr><th>Selectivity</th><th>Cost</th></tr>
-<tr><td>0.1</td><td>12.3</td></tr>
-<tr><td>0.3</td><td>9.9</td></tr>
-<tr><td>0.5</td><td>8.4</td></tr>
-<tr><td>0.7</td><td>7.1</td></tr>
-<tr><td>0.9</td><td>6.5</td></tr>
-</table>
-
-</td>
-</tr>
-</table>
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cost_distribution.png" alt="Cost Distribution" width="800">
+</div>
 
 ### 4.4. Pull-Up / Push-Down Decision
 
