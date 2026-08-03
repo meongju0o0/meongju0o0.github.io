@@ -2014,12 +2014,11 @@ author_profile: true
     - Figure 3 ②, "Uncertainty in UDF Input Cardinality Estimation (because of Joins)"
 
 #### 4.2.3. Comparison of Push-Down & Pull-Up Problems
-
-    | Push-down | Pull-up |
-    | -------------------------- | -------------------------- |
-    | UDF 입력 Cardinality는 정확함 | UDF 입력 Cardinality가 부정확함 |
-    | UDF 출력 Selectivity를 모름 | Join Cardinality 오차가 UDF까지 전달됨 |
-    | 이후 Join Cost가 불확실 | UDF Cost가 불확실 |
+| Push-down | Pull-up |
+| -------------------------- | -------------------------- |
+| UDF 입력 Cardinality는 정확함 | UDF 입력 Cardinality가 부정확함 |
+| UDF 출력 Selectivity를 모름 | Join Cardinality 오차가 UDF까지 전달됨 |
+| 이후 Join Cost가 불확실 | UDF Cost가 불확실 |
 
 #### 4.2.4. GRACEFUL's Approach
 - 기존 Optimizer는 Cardinality를 점추정(하나의 단일 스칼라로 추정)하여 Cost를 추정
@@ -2029,6 +2028,27 @@ author_profile: true
 - 이 Cost Distribution을 바탕으로 Pull-Up과 Push-Down 중 어느 플랜이 더 안정적이면서 유리한지를 판단
 
 ### 4.3. Regret Optimization
+#### 4.3.1. Overall Idea
+- 기존 Optimizer의 작동 방식
+    - 하나의 selectivity 예측 -> 하나의 cost 예측
+- UDF 환경
+    - Unknown selectivity -> cost 예측이 불가능
+- GRACEUFL의 접근법
+    - UDF-Filter의 output selectivity 여러 개를 가정
+    - [0.1, 0.3, 0.5, 0.7, 0.9]
+    - 각 selectivity에 대해 cost 계산
+
+<div align="center">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/udf_pullup_advisor.png" alt="UDF Pull-Up/Push-Down Advisor" width="800">
+</div>
+
+#### Cost Distribution Generation
+1. **Pull-Up Plan 생성**
+2. **Selectivity를 여러 개 가정**
+3. **Cardinality 수정**
+4. **Graph Feature 수정**
+5. **Cost Prediction (GNN)**
+6. **Cost Distribution 생성**
 
 ### 4.4. Pull-Up / Push-Down Decision
 
