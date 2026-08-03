@@ -2042,13 +2042,58 @@ author_profile: true
     <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/udf_pullup_advisor.png" alt="UDF Pull-Up/Push-Down Advisor" width="800">
 </div>
 
-#### Cost Distribution Generation
-1. **Pull-Up Plan 생성**
-2. **Selectivity를 여러 개 가정**
-3. **Cardinality 수정**
-4. **Graph Feature 수정**
-5. **Cost Prediction (GNN)**
-6. **Cost Distribution 생성**
+#### 4.3.2. Cost Distribution Generation
+1. Push-Down / Pull-Up Plan 생성
+    - 주어진 query에 대해
+        - Push-Down / Pull-Up Plan 2개 생성
+2. Selectivity를 여러 개 가정
+    - selectivity를 아래와 같이 가정
+        - [0.1, 0.3, 0.5, 0.7, 0.9]
+3. cardinality 수정
+    - UDF Input Cardinality를 1000 rows라 하자
+        - selectivity = 0.1 -> UDF Output Cardinality = 100 rows
+        - selectivity = 0.3 -> UDF Output Cardinality = 300 rows
+        - selectivity = 0.5 -> UDF Output Cardinality = 500 rows
+        - selectivity = 0.7 -> UDF Output Cardinality = 700 rows
+        - selectivity = 0.9 -> UDF Output Cardinality = 900 rows
+4. Graph Feature 수정
+    - 각 selectivity마다 UDF-Filter 이후 Operator Node(e.g., Join)의 Feature를 수정하여 별도의 그래프 생성
+        - Node Feature `in_rows` 값을 수정
+    - 총 5개의 selectivity를 가정하였다면, 각 selectivity에 따른 UDF-Filter 이후 Operator Node의 `in_rows` Feature가 수정된 총 5개의 그래프를 생성
+5. Cost Prediction (GNN)
+    - 각 selectivity에 따라
+    - `in_rows`가 수정된 모든 그래프를 하나씩 GNN 모델에 투입하여
+    - Cost Estimation 수행
+6. Cost Distribution 생성
+
+<div style="display: flex; gap: 40px; justify-content: center;">
+<div>
+
+**Pull-Up**
+
+| Selectivity | Cost |
+|:-----------:|-----:|
+| 0.1 | 1.8 |
+| 0.3 | 2.5 |
+| 0.5 | 4.1 |
+| 0.7 | 6.8 |
+| 0.9 | 9.4 |
+
+</div>
+<div>
+
+**Push-Down**
+
+| Selectivity | Cost |
+|:-----------:|-----:|
+| 0.1 | 12.3 |
+| 0.3 | 9.9 |
+| 0.5 | 8.4 |
+| 0.7 | 7.1 |
+| 0.9 | 6.5 |
+
+</div>
+</div>
 
 ### 4.4. Pull-Up / Push-Down Decision
 
