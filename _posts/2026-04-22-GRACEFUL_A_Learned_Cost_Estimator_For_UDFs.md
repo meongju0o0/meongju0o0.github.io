@@ -2067,7 +2067,7 @@ author_profile: true
 6. Cost Distribution 생성
 
 <div align="center">
-    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cost_distribution.png" alt="Cost Distribution" width="800">
+    <img src="/images/2026-04-22-GRACEFUL_A_Learned_Cost_Estimator_For_UDFs/cost_distribution.png" alt="Cost Distribution" width="600">
 </div>
 
 ### 4.4. Pull-Up / Push-Down Decision
