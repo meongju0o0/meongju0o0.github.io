@@ -2014,7 +2014,8 @@ author_profile: true
     - Figure 3 ②, "Uncertainty in UDF Input Cardinality Estimation (because of Joins)"
 
 #### 4.2.3. Comparison of Push-Down & Pull-Up Problems
-| Push-down | Pull-up |
+
+| Push-Down | Pull-Up |
 | -------------------------- | -------------------------- |
 | UDF 입력 Cardinality는 정확함 | UDF 입력 Cardinality가 부정확함 |
 | UDF 출력 Selectivity를 모름 | Join Cardinality 오차가 UDF까지 전달됨 |
