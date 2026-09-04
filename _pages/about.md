@@ -163,7 +163,7 @@ author_profile: true
 
 ## Publications
 ### Domestic Conference
-* **Juyeong Shin**, Young-Koo Lee. (2026). [Analysis of Learning-Based UDF Cost Estimation and Query Optimization Across Database Management Systems](https://www.dbpia.co.kr/). Journal of Korea Computer Congress, Pages 513 -- 515.
+* **Juyeong Shin**, Young-Koo Lee. (2026). [Analysis of Learning-Based UDF Cost Estimation and Query Optimization Across Database Management Systems](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12929364). Journal of Korea Computer Congress, Pages 513 -- 515.
     * Implementation: [](https://github.com/meongju0o0/)
 * **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12577759). Journal of Korea Software Congress, Pages 1139 -- 1141.
     * Implementation: [🌈UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
