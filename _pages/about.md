@@ -163,8 +163,8 @@ author_profile: true
 
 ## Publications
 ### Domestic Conference
+* Junhyeon Shin, **Juyeong Shin**, Young-Koo Lee. (2026). [Accelerating SQL Query Execution via Approximate Evaluation of VLM Predicates](https://www.dbpia.co.kr/journal/). Journal of Korea Software Congress, Pages -- .
 * **Juyeong Shin**, Young-Koo Lee. (2026). [Analysis of Learning-Based UDF Cost Estimation and Query Optimization Across Database Management Systems](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12929364). Journal of Korea Computer Congress, Pages 513 -- 515.
-    * Implementation: [](https://github.com/meongju0o0/)
 * **Juyeong Shin**, Young-Koo Lee. (2025). [A Personalized News Recommendation System with User-Controlled Diversity](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE12577759). Journal of Korea Software Congress, Pages 1139 -- 1141.
     * Implementation: [🌈UC-DIVERSI](https://github.com/meongju0o0/UC-DIVERSI)
 * **Juyeong Shin**, Young-Koo Lee. (2023). [Distributed Data Augmentation Technique for Graph Neural Network](https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11705601). Journal of Korea Software Congress, Pages 1800 -- 1802.
@@ -175,6 +175,8 @@ author_profile: true
     * Implementation: [Efficient-Sampling-Techniques-for-Embedding-Large-Graphs](https://github.com/meongju0o0/Efficient-Sampling-Techniques-for-Embedding-Large-Graphs)
 
 ## Awards and Honors
+* Outstanding Researcher Nomination Scholarship
+    * 1st & 2nd semester of 2026
 * Participation Award in Undergraduate Paper Contest
     * Korea Software Congress, 2025
 * Excellence Student Award in Yong-In Studies Class
@@ -192,10 +194,10 @@ author_profile: true
 
 ## Participation
 ### Conference
-* 2026 Korea Computer Congress
-* 2025 Korea Software Congress
-* 2023 Korea Software Congress
-* 2022 Korea Software Congress
+* Korea Computer Congress
+    * 2026
+* Korea Software Congress
+    * 2022, 2023, 2025, 2026
 
 ### Club Activity
 * 2025.03 -- 2027.02: Buddha-Dhamma Religion Club
