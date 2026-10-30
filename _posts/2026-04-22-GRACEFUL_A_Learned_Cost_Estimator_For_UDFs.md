@@ -20,13 +20,16 @@ author_profile: true
     - UDF(User-Defined Function)는 기본 DBMS 기능을 사용자 정의 로직으로 확장하는 핵심 기능
     - 그러나 내부 실행 비용을 추정하기 매우 어려워 쿼리 최적화 통합에 큰 난제
     - 결과적으로 기존 DBMS 옵티마이저의 비용 모델들은 UDF를 무시하거나 정적(static) 가정에 의존하여 비효율적인 실행 계획을 생성
-- **GRACEFUL 제안**
-    - 본 논문은 UDF가 포함된 쿼리 플랜의 비용을 정밀하게 예측하여 DBMS가 올바른 최적화 결정을 내릴 수 있도록 돕는 새로운 학습 기반 비용 모델인 **GRACEFUL**을 제안
+- **GRACEFUL**
+    - 본 논문은 UDF가 포함된 쿼리 플랜의 비용을 딥러닝을 통해 예측
+    - DBMS가 올바른 최적화 결정을 내릴 수 있도록 돕는 새로운 학습 기반 비용 모델인 GRACEFUL을 제안
 - **최적화 효과**
-    - 무조건 필터를 먼저 적용(filter push-down)하는 기존 옵티마이저의 기본 방식과 달리, 
-    - GRACEFUL의 비용 예측에 기반해 정보에 입각한 UDF 필터의 Pull-up / Push-down 결정을 내림으로써 평가에서 **최대 50배의 속도 향상(speedup)**을 달성
+    - 기존 옵티마이저의 기본 방식: 무조건 필터를 먼저 적용(filter push-down)
+    - GRACEFUL의 비용 예측에 기반해 정보에 입각한 UDF Filter Placement를 결정
+        - Pull-up / Push-down
+    - 최대 50배 speedup을 달성
 - **벤치마크 공개**
-    - UDF 쿼리 최적화 분야의 후속 연구를 촉진하기 위해 **90,000개 이상의 합성(synthetic) UDF 쿼리 데이터셋**을 구축하여 공개
+    - 90,000개 이상의 합성 UDF 쿼리 데이터셋을 구축하여 공개
 
 ### 1.2. Introduction
 #### 1.2.1. "Modern Databases Increasingly Face UDFs"
@@ -1122,7 +1125,7 @@ author_profile: true
 - 따라서, `computation` 노드 하나로 구분하지 않고
 - `+`, `np.linalg.inv`, `math.sin`, `string concat`과 같은 연산을 분리하여 표현해야 GNN이 비용 차이를 학습할 수 있음
 
-##### 3.1.2.4. 그러나, 모든 연산을 다 분해하지는 않는다
+##### 3.1.2.4. Computation Node
 - 예를 들어,
     ```python
     x = a + b * c - d
