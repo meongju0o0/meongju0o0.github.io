@@ -2045,11 +2045,9 @@ author_profile: true
 
 #### 4.3.2. Cost Distribution Generation
 1. Push-Down / Pull-Up Plan 생성
-    - 주어진 query에 대해
-        - Push-Down / Pull-Up Plan 2개 생성
-2. Selectivity를 여러 개 가정
-    - selectivity를 아래와 같이 가정
-        - [0.1, 0.3, 0.5, 0.7, 0.9]
+    - 주어진 query에 대해 Push-Down / Pull-Up Plan 2개 생성
+2. selectivity를 여러 개 가정
+    - selectivity: [0.1, 0.3, 0.5, 0.7, 0.9]
 3. cardinality 수정
     - UDF Input Cardinality를 1000 rows라 하자
         - selectivity = 0.1 -> UDF Output Cardinality = 100 rows
@@ -2062,9 +2060,7 @@ author_profile: true
         - Node Feature `in_rows` 값을 수정
     - 총 5개의 selectivity를 가정하였다면, 각 selectivity에 따른 UDF-Filter 이후 Operator Node의 `in_rows` Feature가 수정된 총 5개의 그래프를 생성
 5. Cost Prediction (GNN)
-    - 각 selectivity에 따라
-    - `in_rows`가 수정된 모든 그래프를 하나씩 GNN 모델에 투입하여
-    - Cost Estimation 수행
+    - 각 selectivity에 따라 `in_rows`가 수정된 모든 그래프를 하나씩 GNN 모델에 투입하여 cost estimation 수행
 6. Cost Distribution 생성
 
 <div align="center">
