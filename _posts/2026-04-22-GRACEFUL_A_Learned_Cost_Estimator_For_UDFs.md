@@ -16,66 +16,20 @@ author_profile: true
 
 ## 1. Introduction
 ### 1.1. Abstract
-#### 1.1.1. User-Defined-Functions (UDFs) are a pivotal feature in modern DBMS...
-> UDF는 중요하지만 최적화가 어렵다
-
-- SQL만으로는 표현하기 어려운 사용자/비즈니스 로직을 함수로 생성 가능
-    - 문자열 포맷팅
-    - 사용자 정의 필터링 조건
-    - 특정 도메인 전용 계산
-    - 커스텀 aggregation
-    - 변환 함수
-- 위 예시들은 실제 서비스 환경에서 자주 등장
-- 그러나, UDF는 DBMS optimizer 관점에서 다루기 어려운 주제
-- UDF 실행에 필요한 cost estimation이 어렵기 때문
-
-#### 1.1.2. 기존 cost model의 한계
-- 기존 cost model은 보통 아래 연산들에 대해서는 꽤 잘 작동
-    - scan, filter, join, sort, aggregation
-- 이러한 연산들은 DBMS가 오래 전부터 잘 연구해 온 연산
-- cardinality나 selectivity와 같은 통계 정보를 활용하여 대략적인 비용 추산이 가능
-
-- 그러나, UDF는 내부 구조가 너무 다양해서 이런 전통적 hand-crafted cost function으로 다루기 어려움
-- 따라서, 기존 optimizer는
-    - UDF를 일반 predicate처럼 취급하거나
-    - UDF 비용을 일정하다고 가정하거나
-    - 아예 제대로 반영하지 못함
-- 그 결과 suboptimal plan, 즉 비효율적인 실행 계획을 선택
-
-#### 1.1.3. GRACEFUL의 제안
-- 따라서, GRACEFUL은 learned cost model을 제안
-- 사람이 손으로 UDF 비용 공식을 구하는 대신, 데이터와 실행 결과를 바탕으로 모델이 비용을 학습
-
-- GRACEFUL은 query plan과 UDF의 구조를 함께 보고
-    - 이 UDF가 어떤 구조인지
-    - 어떤 branch가 얼마나 자주 실행될지
-    - 어떤 loop가 얼마나 돌 가능성이 있는지
-    - 데이터 분포가 어떤지
-- 를 반영하여 실행 비용을 예측
-
-- 위 예측을 바탕으로 optimizer가 더 좋은 결정을 할 수 있음
-
-#### 1.1.4 대표적인 효과: filter pull-up / push-down
-- 일반적으로 DBMS에서는 filter push-down이 좋은 최적화
-    - 가능한 빨리 filter를 적용하여서 row 수를 줄이면 이후 연산이 빨라짐
-
-- UDF filter는 다를 수 있음
-    - 어떤 UDF가 매우 비싼 함수라면
-    - 초반에 많은 row에 대해 해당 UDF를 사용하는 것은 오히려 손해일 수 있음
-
-- 즉, 
-    - 일반 predicate는 빨리 적용하는 것이 좋지만
-    - 비싼 UDF predicate는 나중에 적용하는 것이 더 좋을 수도 있음
-
-- GRACEFUL은 이런 경우를 비용 예측으로 판단하여
-- pull-up (UDF filter 먼저 적용) / push-down (UDF filter를 나중에 적용) 중 결정
-- 그 결과, 약 50배의 속도 개선을 달성
-
-#### 1.1.5 데이터셋 공개
-- UDF 쿼리 최적화는 데이터셋이 부족한 분야
-- 해당 논문에서 9만 개 이상의 synthetic UDF query benchmark를 공개
-
-- 즉, 후속 연구가 쉽게 재현되고 비교 가능한 기반을 제공
+- **배경 및 문제점**
+    - UDF(User-Defined Function)는 기본 DBMS 기능을 사용자 정의 로직으로 확장하는 핵심 기능
+    - 그러나 내부 실행 비용을 추정하기 매우 어려워 쿼리 최적화 통합에 큰 난제
+    - 결과적으로 기존 DBMS 옵티마이저의 비용 모델들은 UDF를 무시하거나 정적(static) 가정에 의존하여 비효율적인 실행 계획을 생성
+- **GRACEFUL**
+    - 본 논문은 UDF가 포함된 쿼리 플랜의 비용을 딥러닝을 통해 예측
+    - DBMS가 올바른 최적화 결정을 내릴 수 있도록 돕는 새로운 학습 기반 비용 모델인 GRACEFUL을 제안
+- **최적화 효과**
+    - 기존 옵티마이저의 기본 방식: 무조건 필터를 먼저 적용(filter push-down)
+    - GRACEFUL의 비용 예측에 기반해 정보에 입각한 UDF Filter Placement를 결정
+        - Pull-up / Push-down
+    - 최대 50배 speedup을 달성
+- **벤치마크 공개**
+    - 90,000개 이상의 합성 UDF 쿼리 데이터셋을 구축하여 공개
 
 ### 1.2. Introduction
 #### 1.2.1. "Modern Databases Increasingly Face UDFs"
@@ -1171,7 +1125,7 @@ author_profile: true
 - 따라서, `computation` 노드 하나로 구분하지 않고
 - `+`, `np.linalg.inv`, `math.sin`, `string concat`과 같은 연산을 분리하여 표현해야 GNN이 비용 차이를 학습할 수 있음
 
-##### 3.1.2.4. 그러나, 모든 연산을 다 분해하지는 않는다
+##### 3.1.2.4. Computation Node
 - 예를 들어,
     ```python
     x = a + b * c - d
